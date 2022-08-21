@@ -13,8 +13,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(title: Text(AppRoutes.getScreen(_index).name)),
         body: Center(
-          child: AppRoutes.getScreen(_index),
+          child: AppRoutes.getScreen(_index).screen,
         ),
         bottomNavigationBar: NavigationBar(
             height: 60,

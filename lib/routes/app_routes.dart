@@ -27,8 +27,8 @@ class AppRoutes {
     return appRoutes;
   }
 
-  static Widget getScreen(int index) {
-    return menuOptions[index].screen;
+  static MenuOption getScreen(int index) {
+    return menuOptions[index];
   }
 
   static List<NavigationDestination> getNavigationDestinyties() {
