@@ -1,3 +1,4 @@
+import 'package:contabilidad/themes/app_themes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/routes/app_routes.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       initialRoute: AppRoutes.initalRoute,
       routes: AppRoutes.getAppRoutes(),
+      theme: AppTheme.lightTheme,
     );
   }
 }
