@@ -16,6 +16,11 @@ class AppRoutes {
         route: "deposit",
         icon: Icons.monetization_on_outlined,
         screen: const DepositScreen()),
+    MenuOption(
+        name: "Configuración",
+        route: "configs",
+        icon: Icons.add_card_outlined,
+        screen: const AddingScreen()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {
