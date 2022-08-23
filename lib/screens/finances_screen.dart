@@ -65,7 +65,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
               ],
               onChanged: setList),
           DropdownButtonFormField(
-              value: subKeyOption,
+              value: subKeyOption ?? "",
               items: lista,
               onChanged: lista.isEmpty
                   ? null
