@@ -2,7 +2,7 @@ import "package:sqflite/sqflite.dart";
 import "package:contabilidad/models/models.dart";
 import "package:path/path.dart";
 
-class Db {
+class DatabaseSQL {
   static Future<Database> _openDb() async {
     return openDatabase(join(await getDatabasesPath(), 'gastos.db'),
         onCreate: (db, version) {
@@ -27,10 +27,16 @@ class Db {
         where: "id = ?", whereArgs: [expenses.id]);
   }
 
-  static Future<List<ExpensesAndFinance>> getAll(
-      ExpensesAndFinance expenses) async {
+  static Future<List<ExpensesAndFinance>> getAll() async {
     Database database = await _openDb();
     final List<Map<String, dynamic>> expensesMap =
         await database.query("finance");
+    return List.generate(
+        expensesMap.length,
+        (i) => ExpensesAndFinance(
+            id: expensesMap[i]['id'],
+            key: expensesMap[i]['key'],
+            name: expensesMap[i]['name'],
+            price: expensesMap[i]['price']));
   }
 }

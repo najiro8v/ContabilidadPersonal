@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:contabilidad/db/db.dart';
+
+import 'package:contabilidad/models/models.dart';
+
 class AddingScreen extends StatefulWidget {
   const AddingScreen({Key? key}) : super(key: key);
 
@@ -18,6 +22,27 @@ class _AddingScreenState extends State<AddingScreen> {
   String subCategory = "";
   String category = "";
   double valueInitial = 0.0;
+
+  listExpenses() async {
+    print("---");
+    List<ExpensesAndFinance> listado = await DatabaseSQL.getAll();
+    print(listado);
+  }
+
+  addExpenses() async {
+    await DatabaseSQL.insert(ExpensesAndFinance(
+        id: 1,
+        name: "ExpensesAndFinance",
+        descri: "Pruebas de sqlite",
+        key: "tst",
+        price: 15.55));
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +98,11 @@ class _AddingScreenState extends State<AddingScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: valueInitial <= 0 ? null : () {},
+                    onPressed: valueInitial <= 0 ? null : () => addExpenses(),
                     child: const Text("Agregar a la base de datos")),
+                TextButton(
+                    onPressed: () => listExpenses,
+                    child: const Text("Leer  la base de datos"))
               ],
             )
           ],
