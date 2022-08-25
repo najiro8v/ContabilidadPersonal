@@ -26,15 +26,19 @@ class _AddingScreenState extends State<AddingScreen> {
   listExpenses() async {
     print("---");
     List<ExpensesAndFinance> listado = await DatabaseSQL.getAll();
-    print(listado);
+  }
+
+  dropTable() async {
+    print("RESET");
+    await DatabaseSQL.dropResest();
   }
 
   addExpenses() async {
     await DatabaseSQL.insert(ExpensesAndFinance(
-        id: 1,
+        id: 2,
         name: "ExpensesAndFinance",
-        descri: "Pruebas de sqlite",
-        key: "tst",
+        desc: "Pruebas de sqlite",
+        key: "test",
         price: 15.55));
   }
 
@@ -42,6 +46,7 @@ class _AddingScreenState extends State<AddingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //listExpenses();
   }
 
   @override
@@ -94,15 +99,17 @@ class _AddingScreenState extends State<AddingScreen> {
                     label: Text("Valor inicial de la subcategoría")),
               ),
             const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                    onPressed: valueInitial <= 0 ? null : () => addExpenses(),
+                    onPressed: addExpenses,
                     child: const Text("Agregar a la base de datos")),
                 TextButton(
-                    onPressed: () => listExpenses,
-                    child: const Text("Leer  la base de datos"))
+                    onPressed: listExpenses,
+                    child: const Text("Leer  la base de datos")),
+                TextButton(
+                    onPressed: dropTable, child: const Text("Drop table")),
               ],
             )
           ],

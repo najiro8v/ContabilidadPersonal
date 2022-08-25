@@ -7,7 +7,7 @@ class DatabaseSQL {
     return openDatabase(join(await getDatabasesPath(), 'gastos.db'),
         onCreate: (db, version) {
       return db.execute(
-          "CREATE TABLE  finance(id INTEGER PRIMARY KEY, name TEXT, price REAL, desc TEXT)");
+          "CREATE TABLE finance(id INTEGER PRIMARY KEY, name TEXT, price REAL, desc TEXT,key TEXT)");
     }, version: 1);
   }
 
@@ -31,12 +31,20 @@ class DatabaseSQL {
     Database database = await _openDb();
     final List<Map<String, dynamic>> expensesMap =
         await database.query("finance");
+
     return List.generate(
         expensesMap.length,
         (i) => ExpensesAndFinance(
             id: expensesMap[i]['id'],
             key: expensesMap[i]['key'],
+            desc: expensesMap[i]['desc'],
             name: expensesMap[i]['name'],
             price: expensesMap[i]['price']));
+  }
+
+  static Future<void> dropResest() async {
+    Database database = await _openDb();
+    await database.rawQuery(
+        " CREATE TABLE finance (id INTEGER PRIMARY KEY, name TEXT, price REAL, desc TEXT,key TEXT)");
   }
 }

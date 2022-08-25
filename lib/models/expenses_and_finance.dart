@@ -3,14 +3,14 @@ class ExpensesAndFinance {
   final String key;
   final String? name;
   final double? price;
-  final String? descri;
+  final String? desc;
   ExpensesAndFinance(
       {required this.id,
       required this.key,
       required this.name,
       required this.price,
-      this.descri});
+      this.desc});
   Map<String, dynamic> toMap() {
-    return {"id": id, "name": name, "key": key, "desc": descri, "price": price};
+    return {"id": id, "name": name, "key": key, "desc": desc, "price": price};
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:contabilidad/db/db.dart';
+
 import "package:contabilidad/widget/widget.dart";
+import 'package:contabilidad/models/models.dart';
 
 class FinancesScreen extends StatefulWidget {
   const FinancesScreen({Key? key}) : super(key: key);
@@ -28,7 +31,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
       "t2": "transporte de Lumaca Cartago"
     },
   };
-  final Map<String, String> dropdownOptions = {
+  Map<String, String> dropdownOptions = {
     "gto": "Gastos",
     "ing": "Ingresos",
     "trans": "Transporte",
@@ -45,6 +48,23 @@ class _FinancesScreenState extends State<FinancesScreen> {
             ))
         .toList();
     setState(() {});
+  }
+
+  listExpenses() async {
+    print("---");
+    List<ExpensesAndFinance> listado = await DatabaseSQL.getAll();
+    for (var e in listado) {
+      dropdownOptions.addAll({e.key: e.name!});
+    }
+    setState(() {});
+    print(dropdownOptions);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    listExpenses();
   }
 
   @override
