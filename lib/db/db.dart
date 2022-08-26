@@ -21,6 +21,7 @@ class DatabaseSQL {
     idb.Database db = await _openDb();
     idb.Transaction tx = db.transaction(_nameDb, idbModeReadWrite);
     idb.ObjectStore store = tx.objectStore(_nameDb);
+    store.getAll()
   }
 
   static Future<void> delete(ExpensesAndFinance expenses) async {
