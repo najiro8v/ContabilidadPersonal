@@ -1,6 +1,7 @@
-import "package:sqflite/sqflite.dart";
+import "package:idb_sqflite/idb_sqflite.dart";
 import "package:contabilidad/models/models.dart";
 import "package:path/path.dart";
+import 'package:sqflite/sqflite.dart';
 
 class DatabaseSQL {
   static Future<Database> _openDb() async {

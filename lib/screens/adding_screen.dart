@@ -99,19 +99,6 @@ class _AddingScreenState extends State<AddingScreen> {
                     label: Text("Valor inicial de la subcategoría")),
               ),
             const SizedBox(height: 15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                    onPressed: addExpenses,
-                    child: const Text("Agregar a la base de datos")),
-                TextButton(
-                    onPressed: listExpenses,
-                    child: const Text("Leer  la base de datos")),
-                TextButton(
-                    onPressed: dropTable, child: const Text("Drop table")),
-              ],
-            )
           ],
         ),
       ),

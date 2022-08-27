@@ -51,7 +51,6 @@ class _FinancesScreenState extends State<FinancesScreen> {
   }
 
   listExpenses() async {
-    print("---");
     List<ExpensesAndFinance> listado = await DatabaseSQL.getAll();
     for (var e in listado) {
       dropdownOptions.addAll({e.key: e.name!});
