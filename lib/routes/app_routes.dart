@@ -7,15 +7,20 @@ class AppRoutes {
   static const initalRoute = "home";
   static final menuOptions = <MenuOption>[
     MenuOption(
-        name: "Counts and finances",
+        name: "Finanzas",
         route: "finances",
-        icon: Icons.monetization_on_outlined,
+        icon: Icons.add_chart_sharp,
         screen: const FinancesScreen()),
     MenuOption(
         name: "Depositos",
         route: "deposit",
         icon: Icons.monetization_on_outlined,
         screen: const DepositScreen()),
+    MenuOption(
+        name: "Configuración",
+        route: "configs",
+        icon: Icons.add_card_outlined,
+        screen: const AddingScreen()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

@@ -1,3 +1,4 @@
+import 'package:contabilidad/themes/app_themes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/routes/app_routes.dart';
@@ -14,9 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Contabilidad',
       initialRoute: AppRoutes.initalRoute,
       routes: AppRoutes.getAppRoutes(),
+      theme: AppTheme.lightTheme,
     );
   }
 }
