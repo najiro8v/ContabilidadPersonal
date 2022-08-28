@@ -8,4 +8,8 @@ class CategoryController {
     return List.generate(listado.length,
         (i) => Category(key: listado[i]['key'], name: listado[i]['name']));
   }
+
+  static Future<void> insertCategorie(Category category) async {
+    await DatabaseSQL.insert(dbName, category);
+  }
 }

@@ -2,8 +2,6 @@ import 'package:contabilidad/widget/category_custom_adding.dart';
 import 'package:flutter/material.dart';
 
 ///import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:contabilidad/db/db.dart';
-
 import 'package:contabilidad/models/models.dart';
 import 'package:flutter/services.dart';
 
@@ -55,9 +53,6 @@ class _AddingScreenState extends State<AddingScreen> {
       "entry": "",
       "entryKey": "",
       "entryValue": "",
-      "": "",
-      "password": "",
-      "role": ""
     };
     return Scaffold(
       body: Container(
@@ -108,7 +103,16 @@ class _AddingScreenState extends State<AddingScreen> {
                 ),
               const SizedBox(height: 15),
               TextButton(
-                  onPressed: addExpenses,
+                  onPressed: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    if (!myFormKey.currentState!.validate()) {
+                      return;
+                    }
+                    if (formValues["categoryKey"] != "add") {
+                      print("agregado");
+                    }
+                    print(formValues);
+                  },
                   child: const Text("Agregar Categoria"))
             ],
           ),
