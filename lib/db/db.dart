@@ -13,8 +13,15 @@ class DatabaseSQL {
   }
 
   static Future<void> insert(ExpensesAndFinance expenses) async {
+<<<<<<< HEAD
     Database database = await _openDb();
     database.insert("finance", expenses.toMap());
+=======
+    idb.Database db = await _openDb();
+    idb.Transaction tx = db.transaction(_nameDb, idbModeReadWrite);
+    idb.ObjectStore store = tx.objectStore(_nameDb);
+    store.getAll()
+>>>>>>> 2381277 (more data of sql)
   }
 
   static Future<void> delete(ExpensesAndFinance expenses) async {
