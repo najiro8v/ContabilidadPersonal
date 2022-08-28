@@ -1,3 +1,4 @@
+import 'package:contabilidad/controllers/category_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/db/db.dart';
@@ -51,12 +52,12 @@ class _FinancesScreenState extends State<FinancesScreen> {
   }
 
   listExpenses() async {
-    List<ExpensesAndFinance> listado = await DatabaseSQL.getAll();
-    for (var e in listado) {
+    List<Category> listado = await CategoryController.getCategories();
+    /*for (var e in listado) {
       dropdownOptions.addAll({e.key: e.name!});
     }
-    setState(() {});
-    print(dropdownOptions);
+    setState(() {});*/
+    print(listado);
   }
 
   @override
@@ -94,7 +95,6 @@ class _FinancesScreenState extends State<FinancesScreen> {
           const SizedBox(
             height: 15,
           ),
-          const InputsCustomFinances()
         ]),
       ),
     );

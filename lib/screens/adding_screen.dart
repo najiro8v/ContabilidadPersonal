@@ -1,8 +1,11 @@
+import 'package:contabilidad/widget/category_custom_adding.dart';
 import 'package:flutter/material.dart';
 
+///import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:contabilidad/db/db.dart';
 
 import 'package:contabilidad/models/models.dart';
+import 'package:flutter/services.dart';
 
 class AddingScreen extends StatefulWidget {
   const AddingScreen({Key? key}) : super(key: key);
@@ -12,7 +15,8 @@ class AddingScreen extends StatefulWidget {
 }
 
 class _AddingScreenState extends State<AddingScreen> {
-  final Map<String, String> dropdownOptions = {
+  final Map<dynamic, String> dropdownOptions = {
+    "": "",
     "gto": "Gastos",
     "ing": "Ingresos",
     "trans": "Transporte",
@@ -21,85 +25,93 @@ class _AddingScreenState extends State<AddingScreen> {
   String option = "";
   String subCategory = "";
   String category = "";
+  double categoryValue = 0.0;
   double valueInitial = 0.0;
+  bool addEnded = true;
+  bool event = true;
 
-  listExpenses() async {
-    print("---");
-    List<ExpensesAndFinance> listado = await DatabaseSQL.getAll();
+  listCategory() async {
+    //if (!kIsWeb) List<dynamic> listado = await DatabaseSQL.get("Category");
   }
 
   dropTable() async {
-    print("RESET");
-    await DatabaseSQL.dropResest();
+    //await DatabaseSQL.dropResest();
   }
 
-  addExpenses() async {
-    await DatabaseSQL.insert(ExpensesAndFinance(
-        id: 2,
-        name: "ExpensesAndFinance",
-        desc: "Pruebas de sqlite",
-        key: "test",
-        price: 15.55));
-  }
+  addExpenses() async {}
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //listExpenses();
   }
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
+    final Map<String, String> formValues = {
+      "category": "",
+      "categoryKey": "",
+      "entry": "",
+      "entryKey": "",
+      "entryValue": "",
+      "": "",
+      "password": "",
+      "role": ""
+    };
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          children: [
-            DropdownButtonFormField(
-                hint: const Text("Selecciona una categoria"),
-                items: dropdownOptions.entries
-                    .map((value) => DropdownMenuItem(
-                          value: value.key,
-                          child: Text(value.value),
-                        ))
-                    .toList(),
-                onChanged: ((value) {
-                  option = value.toString();
-                  setState(() {});
-                })),
-            const SizedBox(height: 15),
-            if (option == "add")
-              TextFormField(
-                onChanged: (value) {
-                  category = value.toString();
-                  setState(() {});
-                },
-                decoration: const InputDecoration(
-                    label: Text("Nombre de la categoria")),
-              ),
-            const SizedBox(height: 15),
-            if (option.isNotEmpty)
-              TextFormField(
-                onChanged: (value) {
-                  subCategory = value.toString();
-                  setState(() {});
-                },
-                decoration: const InputDecoration(
-                    label: Text("Nombre de la subcategoría")),
-              ),
-            const SizedBox(height: 15),
-            if (subCategory.isNotEmpty)
-              TextFormField(
-                onChanged: (value) {
-                  valueInitial = double.parse(value.toString());
-                  setState(() {});
-                },
-                decoration: const InputDecoration(
-                    label: Text("Valor inicial de la subcategoría")),
-              ),
-            const SizedBox(height: 15),
-          ],
+        child: Form(
+          key: myFormKey,
+          child: ListView(
+            children: [
+              DropdownButtonFormField(
+                  value: option,
+                  hint: const Text("Selecciona una categoria"),
+                  items: dropdownOptions.entries
+                      .map((value) => DropdownMenuItem(
+                            value: value.key,
+                            child: Text(value.value),
+                          ))
+                      .toList(),
+                  onChanged: ((value) {
+                    option = value.toString();
+
+                    if (option == "add") {
+                      this.event = false;
+                    } else {
+                      formValues["category"] = option;
+                      formValues["categoryKey"] = "";
+                    }
+
+                    setState(() {});
+                  })),
+              if (option == "add")
+                CategoryCustomAdding(
+                  formProprety: const {
+                    "name": "category",
+                    "key": "categoryKey"
+                  },
+                  formValues: formValues,
+                  padding: 20,
+                ),
+              const SizedBox(height: 15),
+              if (option.isNotEmpty && event)
+                CategoryCustomAdding(
+                  formProprety: const {
+                    "name": "entry",
+                    "key": "entryKey",
+                    "value": "entryValue"
+                  },
+                  formValues: formValues,
+                  padding: 0,
+                ),
+              const SizedBox(height: 15),
+              TextButton(
+                  onPressed: addExpenses, child: const Text("Agregar Data"))
+            ],
+          ),
         ),
       ),
     );
