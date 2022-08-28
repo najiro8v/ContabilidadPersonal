@@ -96,8 +96,7 @@ class _AddingScreenState extends State<AddingScreen> {
                   formValues: formValues,
                   padding: 20,
                 ),
-              const SizedBox(height: 15),
-              if (option.isNotEmpty && event)
+              if (option.isNotEmpty)
                 CategoryCustomAdding(
                   formProprety: const {
                     "name": "entry",
@@ -109,7 +108,8 @@ class _AddingScreenState extends State<AddingScreen> {
                 ),
               const SizedBox(height: 15),
               TextButton(
-                  onPressed: addExpenses, child: const Text("Agregar Data"))
+                  onPressed: addExpenses,
+                  child: const Text("Agregar Categoria"))
             ],
           ),
         ),

@@ -10,29 +10,35 @@ class CategoryCustomAdding extends StatelessWidget {
       {super.key,
       required this.formProprety,
       required this.formValues,
-      this.padding});
+      this.padding = 0});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(horizontal: padding!),
       child: Column(
         children: [
           InputsCustomFinances(
-              formProprety: formProprety["name"]!, formValues: formValues),
+              labelText: "Nombre de la categoria",
+              formProprety: formProprety["name"]!,
+              formValues: formValues),
           const SizedBox(
             height: 10,
           ),
           InputsCustomFinances(
-              formProprety: formProprety["key"]!, formValues: formValues),
+              labelText: "LLave de la categoria",
+              formProprety: formProprety["key"]!,
+              formValues: formValues),
           const SizedBox(
             height: 10,
           ),
           if (formProprety["value"] != null)
             InputsCustomFinances(
+              labelText: "Valor de la categoria",
               formProprety: formProprety["value"]!,
               formValues: formValues,
               isNumber: true,
+              initialValue: "0",
               onValueChanges: (value) {
                 String valor = value.toString();
                 if (valor.isEmpty) return;
