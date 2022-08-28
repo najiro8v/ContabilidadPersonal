@@ -1,7 +1,6 @@
-import "package:idb_sqflite/idb_sqflite.dart";
+import "package:sqflite/sqflite.dart";
 import "package:contabilidad/models/models.dart";
 import "package:path/path.dart";
-import 'package:sqflite/sqflite.dart';
 
 class DatabaseSQL {
   static Future<Database> _openDb() async {
@@ -13,15 +12,8 @@ class DatabaseSQL {
   }
 
   static Future<void> insert(ExpensesAndFinance expenses) async {
-<<<<<<< HEAD
     Database database = await _openDb();
     database.insert("finance", expenses.toMap());
-=======
-    idb.Database db = await _openDb();
-    idb.Transaction tx = db.transaction(_nameDb, idbModeReadWrite);
-    idb.ObjectStore store = tx.objectStore(_nameDb);
-    store.getAll()
->>>>>>> 2381277 (more data of sql)
   }
 
   static Future<void> delete(ExpensesAndFinance expenses) async {
