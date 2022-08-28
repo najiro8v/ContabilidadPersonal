@@ -46,7 +46,7 @@ class CategoryCustomAdding extends StatelessWidget {
                 if (valor.contains(",")) valor = valor.replaceAll(",", ".");
                 formValues[formProprety["value"]!] = valor.isEmpty
                     ? 0.toString()
-                    : double.parse(valor).toDouble();
+                    : double.parse(valor).toString();
               },
             ),
           const SizedBox(

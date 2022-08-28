@@ -1,4 +1,5 @@
 import 'package:contabilidad/controllers/category_controller.dart';
+import 'package:contabilidad/controllers/controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/db/db.dart';
@@ -17,26 +18,16 @@ class _FinancesScreenState extends State<FinancesScreen> {
   String? keyOption;
   String? subKeyOption;
   List<DropdownMenuItem<String>> lista = [];
-  final Map<String, Map<String, String>> subDropdownOption = {
-    "gto": {
-      "g": "",
-      "g1": "Pago de servicio",
-      "g2": "Pago de deudas",
-      "g3": "Pago de comida",
-      "g4": "Gastos de salidas"
-    },
-    "ing": {"i": "", "i1": "Pago de Trabajo", "i2": "cobro de prestamos"},
-    "trans": {
-      "t": "",
-      "t1": "transporte de Lomas",
-      "t2": "transporte de Lumaca Cartago"
-    },
+  final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
+  final Map<String, String> formValues = {
+    "category": "",
+    "categoryKey": "",
+    "entry": "",
+    "entryKey": "",
+    "entryValue": "",
   };
-  Map<String, String> dropdownOptions = {
-    "gto": "Gastos",
-    "ing": "Ingresos",
-    "trans": "Transporte",
-  };
+  final Map<String, Map<String, String>> subDropdownOption = {};
+  Map<String, String> dropdownOptions = {};
 
   void setList(value) {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -48,54 +39,85 @@ class _FinancesScreenState extends State<FinancesScreen> {
               child: Text(e.value),
             ))
         .toList();
+
     setState(() {});
   }
 
-  listExpenses() async {
+  listCategories() async {
     List<Category> listado = await CategoryController.getCategories();
-    /*for (var e in listado) {
-      dropdownOptions.addAll({e.key: e.name!});
+    for (var e in listado) {
+      dropdownOptions.addAll({"${e.key}": "${e.name}"});
     }
-    setState(() {});*/
-    print(listado);
+    setState(() {});
+  }
+
+  listEntries() async {
+    List<Entry> listado = await EntryController.getCategories();
+    for (var e in listado) {
+      /*subDropdownOption.addAll({
+        "${e.category}": {"":"",}
+      );*/
+    }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    listExpenses();
+    listCategories();
+    listEntries();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
-        child: Column(children: [
-          DropdownButtonFormField(
-              value: keyOption,
-              items: [
-                ...dropdownOptions.entries
-                    .map((value) => DropdownMenuItem(
-                          value: value.key,
-                          child: Text(value.value),
-                        ))
-                    .toList()
-              ],
-              onChanged: setList),
-          DropdownButtonFormField(
-              value: subKeyOption ?? "",
-              items: lista,
-              onChanged: lista.isEmpty
-                  ? null
-                  : (value) {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    }),
-          const SizedBox(
-            height: 15,
-          ),
-        ]),
+      body: Form(
+        key: myFormKey,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+          child: Column(children: [
+            DropdownButtonFormField(
+                value: keyOption,
+                items: [
+                  ...dropdownOptions.entries
+                      .map((value) => DropdownMenuItem(
+                            value: value.key,
+                            child: Text(value.value),
+                          ))
+                      .toList()
+                ],
+                onChanged: setList),
+            DropdownButtonFormField(
+                value: subKeyOption ?? "",
+                items: lista,
+                onChanged: lista.isEmpty
+                    ? null
+                    : (value) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      }),
+            const SizedBox(
+              height: 15,
+            ),
+            InputsCustomFinances(
+              formProprety: "desc",
+              formValues: formValues,
+              labelText: "descripción",
+              padding: 10,
+            ),
+            InputsCustomFinances(
+              formProprety: "value",
+              formValues: formValues,
+              initialValue: "0",
+              isNumber: true,
+              labelText: "valor",
+              padding: 10,
+            ),
+            TextButton(
+                onPressed: () {
+                  DatabaseSQL.deleteDatabase('finance.db');
+                },
+                child: Text("delete db"))
+          ]),
+        ),
       ),
     );
   }

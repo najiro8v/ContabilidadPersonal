@@ -7,9 +7,9 @@ class AppRoutes {
   static const initalRoute = "home";
   static final menuOptions = <MenuOption>[
     MenuOption(
-        name: "Counts and finances",
+        name: "Finanzas",
         route: "finances",
-        icon: Icons.monetization_on_outlined,
+        icon: Icons.add_chart_sharp,
         screen: const FinancesScreen()),
     MenuOption(
         name: "Depositos",

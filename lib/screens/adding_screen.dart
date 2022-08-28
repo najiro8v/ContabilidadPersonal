@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 ///import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:contabilidad/models/models.dart';
-import 'package:flutter/services.dart';
+import "package:contabilidad/controllers/controller.dart";
 
 class AddingScreen extends StatefulWidget {
   const AddingScreen({Key? key}) : super(key: key);
@@ -103,14 +103,21 @@ class _AddingScreenState extends State<AddingScreen> {
                 ),
               const SizedBox(height: 15),
               TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
                     if (!myFormKey.currentState!.validate()) {
                       return;
                     }
-                    if (formValues["categoryKey"] != "add") {
+                    if (option == "add") {
                       print("agregado");
+                      var a = Category(
+                          key: formValues["categoryKey"],
+                          name: formValues["category"]);
+
+                      print(a.name);
+                      await CategoryController.insertCategorie(a);
                     }
+
                     print(formValues);
                   },
                   child: const Text("Agregar Categoria"))
