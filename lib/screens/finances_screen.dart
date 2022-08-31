@@ -134,7 +134,16 @@ class _FinancesScreenState extends State<FinancesScreen> {
               ),
             TextButton(
                 onPressed: () {
-                  DatabaseSQL.deleteDatabase('finance.db');
+                  final ValueEntry newEntry = ValueEntry(
+                      name: name,
+                      key: key,
+                      value: value,
+                      date: date,
+                      latitud: latitud,
+                      length: length,
+                      type: type,
+                      entry: entry);
+                  EntryController.insert(newEntry);
                 },
                 child: Text("delete db"))
           ]),
