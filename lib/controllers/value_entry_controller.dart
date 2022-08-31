@@ -23,8 +23,7 @@ class ValueEntryController {
             type: listado[i]['type_id'],
             categoryName: "",
             entry: listado[i]['entry_id'],
-            key: listado[i]['key'],
-            name: listado[i]['name'],
+            desc: listado[i]['desc'],
             length: 1,
             latitud: 1));
   }

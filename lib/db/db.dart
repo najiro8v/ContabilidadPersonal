@@ -78,8 +78,7 @@ class DatabaseSQL {
         "Id_Value_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
     valueEntryTB += "entry_id INTEGER ,";
     valueEntryTB += "type_id INTEGER ,";
-    valueEntryTB += "name TEXT NOT NULL,";
-    valueEntryTB += "key TEXT NOT NULL UNIQUE,";
+    valueEntryTB += "desc TEXT NOT NULL,";
     valueEntryTB += "date INTEGER NOT NULL,";
     valueEntryTB += "latitud INTEGER ,";
     valueEntryTB += "length INTEGER,";
@@ -147,8 +146,7 @@ class DatabaseSQL {
           "Id_Value_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       valueEntryTB += "entry_id INTEGER ,";
       valueEntryTB += "type_id INTEGER ,";
-      valueEntryTB += "name TEXT NOT NULL,";
-      valueEntryTB += "key TEXT NOT NULL UNIQUE,";
+      valueEntryTB += "desc TEXT NOT NULL,";
       valueEntryTB += "date INTEGER NOT NULL,";
       valueEntryTB += "latitud INTEGER ,";
       valueEntryTB += "length INTEGER,";

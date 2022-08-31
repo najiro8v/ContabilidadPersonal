@@ -23,7 +23,8 @@ class _FinancesScreenState extends State<FinancesScreen> {
   final Map<String, String> formValues = {
     "category": "",
     "categoryKey": "",
-    "entry": "",
+    "categoryID"
+        "entry": "",
     "entryKey": "",
     "entryValue": "",
   };
@@ -135,10 +136,9 @@ class _FinancesScreenState extends State<FinancesScreen> {
             TextButton(
                 onPressed: () {
                   final ValueEntry newEntry = ValueEntry(
-                      name: name,
-                      key: key,
-                      value: value,
-                      date: date,
+                      desc: formValues["desc"],
+                      value: double.tryParse(formValues["value"]!) ?? 0,
+                      date: 1661904000000,
                       latitud: latitud,
                       length: length,
                       type: type,

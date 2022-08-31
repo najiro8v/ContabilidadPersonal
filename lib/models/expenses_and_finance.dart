@@ -38,8 +38,7 @@ class Entry {
 }
 
 class ValueEntry {
-  final String? name;
-  final String? key;
+  final String? desc;
   final double? value;
   final int? date;
   final double? latitud;
@@ -50,8 +49,7 @@ class ValueEntry {
   final String? categoryName;
 
   ValueEntry({
-    required this.name,
-    required this.key,
+    required this.desc,
     required this.value,
     required this.date,
     required this.latitud,
@@ -66,7 +64,7 @@ class ValueEntry {
     return {
       "entry_id": entry,
       "type_id": type,
-      "name": name,
+      "desc": desc,
       "value": value,
       "date": date,
       "latitud": latitud,
