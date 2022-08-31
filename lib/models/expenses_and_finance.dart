@@ -22,13 +22,16 @@ class Entry {
   final String? name;
   final double? value;
   final int? category;
+  final String? categoryKey;
+  final String? categoryName;
 
-  Entry({
-    required this.key,
-    required this.name,
-    required this.value,
-    required this.category,
-  });
+  Entry(
+      {required this.key,
+      required this.name,
+      required this.value,
+      required this.category,
+      this.categoryKey,
+      this.categoryName});
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key, "category_id": category, "value": value};
   }

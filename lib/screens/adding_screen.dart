@@ -15,9 +15,6 @@ class AddingScreen extends StatefulWidget {
 class _AddingScreenState extends State<AddingScreen> {
   final Map<dynamic, String> dropdownOptions = {
     "": "",
-    "gto": "Gastos",
-    "ing": "Ingresos",
-    "trans": "Transporte",
     "add": "Agregar uno nuevo",
   };
   String option = "";
@@ -28,8 +25,12 @@ class _AddingScreenState extends State<AddingScreen> {
   bool addEnded = true;
   bool event = true;
 
-  listCategory() async {
-    //if (!kIsWeb) List<dynamic> listado = await DatabaseSQL.get("Category");
+  listCategories() async {
+    List<Category> listado = await CategoryController.get();
+    for (var e in listado) {
+      dropdownOptions.addAll({"${e.key}": "${e.name}"});
+    }
+    setState(() {});
   }
 
   dropTable() async {
@@ -37,23 +38,22 @@ class _AddingScreenState extends State<AddingScreen> {
   }
 
   addExpenses() async {}
-
+  final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
+  final Map<String, String> formValues = {
+    "category": "",
+    "categoryKey": "",
+    "entry": "",
+    "entryKey": "",
+    "entryValue": "",
+  };
   @override
   void initState() {
     super.initState();
-    //listExpenses();
+    listCategories();
   }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-    final Map<String, String> formValues = {
-      "category": "",
-      "categoryKey": "",
-      "entry": "",
-      "entryKey": "",
-      "entryValue": "",
-    };
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -72,14 +72,12 @@ class _AddingScreenState extends State<AddingScreen> {
                       .toList(),
                   onChanged: ((value) {
                     option = value.toString();
-
                     if (option == "add") {
-                      this.event = false;
+                      event = false;
                     } else {
-                      formValues["category"] = option;
-                      formValues["categoryKey"] = "";
+                      formValues["category"] = dropdownOptions[option]!;
+                      formValues["categoryKey"] = option;
                     }
-
                     setState(() {});
                   })),
               if (option == "add")
@@ -108,17 +106,32 @@ class _AddingScreenState extends State<AddingScreen> {
                     if (!myFormKey.currentState!.validate()) {
                       return;
                     }
+                    int idCategory;
+
                     if (option == "add") {
-                      print("agregado");
-                      var a = Category(
+                      var newCategory = Category(
                           key: formValues["categoryKey"],
                           name: formValues["category"]);
-
-                      print(a.name);
-                      await CategoryController.insertCategorie(a);
+                      idCategory = await CategoryController.insert(newCategory);
+                      await EntryController.insert(Entry(
+                          key: newCategory.key.toString().characters.first,
+                          name: "",
+                          value: 0,
+                          category: idCategory));
+                    } else {
+                      var category = Category(
+                          key: formValues["categoryKey"],
+                          name: formValues["category"]);
+                      idCategory = await CategoryController.getId(category);
                     }
-
-                    print(formValues);
+                    await EntryController.insert(Entry(
+                        key: formValues["entryKey"]!,
+                        name: formValues["entry"],
+                        value: double.parse(formValues["entryValue"]!),
+                        category: idCategory));
+                    myFormKey.currentState!.reset();
+                    option = "";
+                    setState(() {});
                   },
                   child: const Text("Agregar Categoria"))
             ],

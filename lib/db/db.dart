@@ -17,7 +17,7 @@ class DatabaseSQL {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path,
-        version: 4, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   static Future<void> deleteDatabase(String path) =>
@@ -29,40 +29,57 @@ class DatabaseSQL {
 
   _createDB(Database db, int version) async {
     /*Catetory Table */
-    String categoryTB = "CREATE TABLE Category (";
+    String categoryTB = "CREATE TABLE IF NOT EXISTS Category (";
     categoryTB += "Id_Category INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
     categoryTB += "name TEXT NOT NULL,";
-    categoryTB += "key TEXT NOT NULL";
+    categoryTB += "key TEXT NOT NULL UNIQUE";
     categoryTB += ")";
     await db.execute(categoryTB);
+    /**Values default */
+    await db.execute("INSERT INTO Category(name,key) values('Gastos','gto')");
+    await db.execute("INSERT INTO Category(name,key) values('Ingresos','ing')");
+    await db
+        .execute("INSERT INTO Category(name,key) values('Transporte','trans')");
+
+    /*** */
 
     /*Type Table */
-    String typeTB = "CREATE TABLE Type (";
+    String typeTB = "CREATE TABLE IF NOT EXISTS Type (";
     typeTB += "Id_Type INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
     typeTB += "name TEXT NOT NULL";
     typeTB += ")";
     await db.execute(typeTB);
-
+    /**Values default */
+    await db.execute("INSERT INTO Type (name) values('test')");
+    /*** */
     /*Entry Table */
-    String entryTB = "CREATE TABLE Entry (";
+    String entryTB = "CREATE TABLE IF NOT EXISTS Entry (";
     entryTB += "Id_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
     entryTB += "category_id INTEGER ,";
     entryTB += "name TEXT NOT NULL,";
-    entryTB += "key TEXT NOT NULL,";
+    entryTB += "key TEXT NOT NULL UNIQUE,";
     entryTB += "value REAL NOT NULL,";
     entryTB +=
         "FOREIGN KEY (category_id) REFERENCES Category (Id_Category) ON DELETE SET NULL ON UPDATE NO ACTION";
     entryTB += ")";
     await db.execute(entryTB);
+    /**Values default */
+    await db.execute(
+        "INSERT INTO Entry(category_id,name,key,value) values(1,'Gatos diarios','gto1',0)");
+    await db.execute(
+        "INSERT INTO Entry(category_id,name,key,value) values(2,'Ingresos diarios','ing1',0)");
+    await db.execute(
+        "INSERT INTO Entry(category_id,name,key,value) values(3,'Bus Lomas','trans1',395)");
+    /*** */
 
     /*ValueEntry Table */
-    String valueEntryTB = "CREATE TABLE Value_Entry (";
+    String valueEntryTB = "CREATE TABLE IF NOT EXISTS Value_Entry (";
     valueEntryTB +=
         "Id_Value_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
     valueEntryTB += "entry_id INTEGER ,";
     valueEntryTB += "type_id INTEGER ,";
     valueEntryTB += "name TEXT NOT NULL,";
-    valueEntryTB += "key TEXT NOT NULL,";
+    valueEntryTB += "key TEXT NOT NULL UNIQUE,";
     valueEntryTB += "date INTEGER NOT NULL,";
     valueEntryTB += "latitud INTEGER ,";
     valueEntryTB += "length INTEGER,";
@@ -72,45 +89,66 @@ class DatabaseSQL {
         "FOREIGN KEY (type_id) REFERENCES Type (Id_Type) ON DELETE SET NULL ON UPDATE NO ACTION";
     valueEntryTB += ")";
     await db.execute(valueEntryTB);
+    /**Values default */
+    /*** */
   }
 
   _upgradeDB(Database db, int oldVersion, int version) async {
     /*Catetory Table */
     if (oldVersion < version) {
-      String categoryTB = "CREATE TABLE Category (";
+      /*Catetory Table */
+      String categoryTB = "CREATE TABLE IF NOT EXISTS Category (";
       categoryTB += "Id_Category INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       categoryTB += "name TEXT NOT NULL,";
-      categoryTB += "key TEXT NOT NULL";
+      categoryTB += "key TEXT NOT NULL UNIQUE";
       categoryTB += ")";
       await db.execute(categoryTB);
+      /**Values default */
+      await db.execute("INSERT INTO Category(name,key) values('Gastos','gto')");
+      await db
+          .execute("INSERT INTO Category(name,key) values('Ingresos','ing')");
+      await db.execute(
+          "INSERT INTO Category(name,key) values('Transporte','trans')");
+
+      /*** */
 
       /*Type Table */
-      String typeTB = "CREATE TABLE Type (";
+      String typeTB = "CREATE TABLE IF NOT EXISTS Type (";
       typeTB += "Id_Type INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       typeTB += "name TEXT NOT NULL";
       typeTB += ")";
       await db.execute(typeTB);
-
+      /**Values default */
+      await db.execute("INSERT INTO Type (name) values('test')");
+      /*** */
       /*Entry Table */
-      String entryTB = "CREATE TABLE Entry (";
+      String entryTB = "CREATE TABLE IF NOT EXISTS Entry (";
       entryTB += "Id_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       entryTB += "category_id INTEGER ,";
       entryTB += "name TEXT NOT NULL,";
-      entryTB += "key TEXT NOT NULL,";
+      entryTB += "key TEXT NOT NULL UNIQUE,";
       entryTB += "value REAL NOT NULL,";
       entryTB +=
           "FOREIGN KEY (category_id) REFERENCES Category (Id_Category) ON DELETE SET NULL ON UPDATE NO ACTION";
       entryTB += ")";
       await db.execute(entryTB);
+      /**Values default */
+      await db.execute(
+          "INSERT INTO Entry(category_id,name,key,value) values(1,'Gatos diarios','gto1',0)");
+      await db.execute(
+          "INSERT INTO Entry(category_id,name,key,value) values(2,'Ingresos diarios','ing1',0)");
+      await db.execute(
+          "INSERT INTO Entry(category_id,name,key,value) values(3,'Bus Lomas','trans1',395)");
+      /*** */
 
       /*ValueEntry Table */
-      String valueEntryTB = "CREATE TABLE Value_Entry (";
+      String valueEntryTB = "CREATE TABLE IF NOT EXISTS Value_Entry (";
       valueEntryTB +=
           "Id_Value_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       valueEntryTB += "entry_id INTEGER ,";
       valueEntryTB += "type_id INTEGER ,";
       valueEntryTB += "name TEXT NOT NULL,";
-      valueEntryTB += "key TEXT NOT NULL,";
+      valueEntryTB += "key TEXT NOT NULL UNIQUE,";
       valueEntryTB += "date INTEGER NOT NULL,";
       valueEntryTB += "latitud INTEGER ,";
       valueEntryTB += "length INTEGER,";
@@ -128,9 +166,9 @@ class DatabaseSQL {
     db.close();
   }
 
-  static Future<void> insert(String dbName, dynamic model) async {
+  static Future<int> insert(String dbName, dynamic model) async {
     Database database = await instance.database;
-    database.insert(dbName, model.toMap());
+    return database.insert(dbName, model.toMap());
   }
 
   static Future<void> delete(String dbName, dynamic model) async {
@@ -146,8 +184,10 @@ class DatabaseSQL {
 
   static Future<List<dynamic>> get(String dbName, {String query = ""}) async {
     Database database = await instance.database;
-    if (query.isEmpty) query = dbName;
-    final List<Map<String, dynamic>> result = await database.query(query);
+
+    final List<Map<String, dynamic>> result = query.isEmpty
+        ? await database.query(dbName)
+        : await database.rawQuery(query);
     return result.toList();
   }
 }

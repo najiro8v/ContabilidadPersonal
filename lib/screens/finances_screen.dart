@@ -1,5 +1,6 @@
 import 'package:contabilidad/controllers/category_controller.dart';
 import 'package:contabilidad/controllers/controller.dart';
+import 'package:contabilidad/models/finance_option.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/db/db.dart';
@@ -26,8 +27,13 @@ class _FinancesScreenState extends State<FinancesScreen> {
     "entryKey": "",
     "entryValue": "",
   };
-  final Map<String, Map<String, String>> subDropdownOption = {};
-  Map<String, String> dropdownOptions = {};
+
+  final Map<String, Map<String, subOption>> subDropdownOption = {
+    "": {"": subOption(name: "", value: "")}
+  };
+  Map<String, String> dropdownOptions = {
+    "": "",
+  };
 
   void setList(value) {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -36,15 +42,17 @@ class _FinancesScreenState extends State<FinancesScreen> {
         .entries
         .map((e) => DropdownMenuItem(
               value: e.key,
-              child: Text(e.value),
+              child: Text(e.value.name),
             ))
         .toList();
 
+    formValues["desc"] = "";
+    formValues["value"] = "0";
     setState(() {});
   }
 
   listCategories() async {
-    List<Category> listado = await CategoryController.getCategories();
+    List<Category> listado = await CategoryController.get();
     for (var e in listado) {
       dropdownOptions.addAll({"${e.key}": "${e.name}"});
     }
@@ -52,11 +60,17 @@ class _FinancesScreenState extends State<FinancesScreen> {
   }
 
   listEntries() async {
-    List<Entry> listado = await EntryController.getCategories();
+    List<Entry> listado = await EntryController.get();
     for (var e in listado) {
-      /*subDropdownOption.addAll({
-        "${e.category}": {"":"",}
-      );*/
+      subDropdownOption.containsKey(e.categoryKey)
+          ? subDropdownOption[e.categoryKey]!.addAll({
+              e.key: subOption(name: "${e.name}", value: "${e.value}"),
+            })
+          : subDropdownOption.addAll({
+              "${e.categoryKey}": {
+                e.key: subOption(name: "${e.name}", value: "${e.value}"),
+              }
+            });
     }
   }
 
@@ -93,24 +107,31 @@ class _FinancesScreenState extends State<FinancesScreen> {
                     ? null
                     : (value) {
                         FocusScope.of(context).requestFocus(FocusNode());
+                        formValues["desc"] = "";
+                        formValues["value"] = "0";
+
+                        print(subDropdownOption[keyOption]);
                       }),
             const SizedBox(
               height: 15,
             ),
-            InputsCustomFinances(
-              formProprety: "desc",
-              formValues: formValues,
-              labelText: "descripción",
-              padding: 10,
-            ),
-            InputsCustomFinances(
-              formProprety: "value",
-              formValues: formValues,
-              initialValue: "0",
-              isNumber: true,
-              labelText: "valor",
-              padding: 10,
-            ),
+            if (subKeyOption != null && subKeyOption!.isNotEmpty)
+              InputsCustomFinances(
+                initialValue: formValues["desc"],
+                formProprety: "desc",
+                formValues: formValues,
+                labelText: "descripción",
+                padding: 10,
+              ),
+            if (subKeyOption != null && subKeyOption!.isNotEmpty)
+              InputsCustomFinances(
+                formProprety: "value",
+                formValues: formValues,
+                initialValue: formValues["value"],
+                isNumber: true,
+                labelText: "valor",
+                padding: 10,
+              ),
             TextButton(
                 onPressed: () {
                   DatabaseSQL.deleteDatabase('finance.db');

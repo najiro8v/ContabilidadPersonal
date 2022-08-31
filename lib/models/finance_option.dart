@@ -11,3 +11,12 @@ class FinanceOption {
   final IconData icon;
   final Widget screen;
 }
+
+class subOption {
+  final String value;
+  final String name;
+  subOption({
+    required this.value,
+    required this.name,
+  });
+}
