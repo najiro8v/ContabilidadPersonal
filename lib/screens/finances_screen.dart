@@ -108,8 +108,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                         FocusScope.of(context).requestFocus(FocusNode());
                         formValues["desc"] = "";
                         formValues["value"] = "0";
-                        formValues["categoryKey"];
-                        print(subDropdownOption[keyOption]);
+                        formValues["entryKey"] = value.toString();
                       }),
             const SizedBox(
               height: 15,
@@ -135,7 +134,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                 onPressed: () async {
                   int idEntry = await EntryController.getId(Entry(
                       category: 0,
-                      key: formValues["category"]!,
+                      key: formValues["entryKey"]!,
                       name: "",
                       value: 0));
                   final ValueEntry newEntry = ValueEntry(

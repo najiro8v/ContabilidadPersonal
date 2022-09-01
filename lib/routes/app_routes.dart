@@ -1,3 +1,4 @@
+import 'package:contabilidad/screens/entries_screen.dart';
 import "package:flutter/material.dart";
 
 import "package:contabilidad/models/models.dart";
@@ -16,6 +17,11 @@ class AppRoutes {
         route: "deposit",
         icon: Icons.monetization_on_outlined,
         screen: const DepositScreen()),
+    MenuOption(
+        name: "Entradas",
+        route: "entries",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const EntriesScreen()),
     MenuOption(
         name: "Configuración",
         route: "configs",

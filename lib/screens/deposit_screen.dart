@@ -1,3 +1,4 @@
+import 'package:contabilidad/widget/widget.dart';
 import 'package:flutter/material.dart';
 
 class DepositScreen extends StatelessWidget {
@@ -5,10 +6,8 @@ class DepositScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('DepositScreen'),
-      ),
+    return Scaffold(
+      body: ListView(children: [Text("data")]),
     );
   }
 }
