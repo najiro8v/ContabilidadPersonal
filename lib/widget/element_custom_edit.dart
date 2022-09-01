@@ -22,50 +22,67 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-                child: InputsCustomFinances(
-              formValues: widget.formValues,
-              formProprety: widget.formProprety["key"]!,
-              labelText: "Llave",
-              enable: isEnable,
-            )),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-                child: InputsCustomFinances(
-              formValues: widget.formValues,
-              formProprety: widget.formProprety["value"]!,
-              labelText: "",
-              enable: isEnable,
-            )),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-                child: InputsCustomFinances(
-              formValues: widget.formValues,
-              formProprety: widget.formProprety["desc"]!,
-              labelText: "",
-              enable: isEnable,
-            )),
-            TextButton(
-                onPressed: () {
-                  isEnable = !isEnable;
-                  setState(() {});
-                },
-                child: Text("Editar"))
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: InputsCustomFinances(
+                formValues: widget.formValues,
+                formProprety: widget.formProprety["key"]!,
+                labelText: "Llave",
+                enable: isEnable,
+              )),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: InputsCustomFinances(
+                formValues: widget.formValues,
+                formProprety: widget.formProprety["value"]!,
+                labelText: "Valor",
+                enable: isEnable,
+              )),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                  flex: 4,
+                  child: InputsCustomFinances(
+                    formValues: widget.formValues,
+                    formProprety: widget.formProprety["desc"]!,
+                    labelText: "Descrición",
+                    enable: isEnable,
+                  )),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                flex: 2,
+                child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor:
+                          isEnable ? Colors.teal[700] : Colors.indigo[900],
+                      primary: Colors.indigo.shade100,
+                    ),
+                    onPressed: () {
+                      isEnable = !isEnable;
+                      setState(() {});
+                    },
+                    child: Text(isEnable ? "Guardar" : "Editar")),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          )
+        ],
+      ),
     );
   }
 }

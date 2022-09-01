@@ -21,12 +21,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
       body: Container(
         child: Form(
           key: myFormKey,
-          child: ListView(children: [
-            ElementCustomEdit(
-                formProprety: {"key": "key", "value": "value", "desc": "desc"},
-                formValues: formValues,
-                label: "label")
-          ]),
+          child: ListView.builder(children: []),
         ),
       ),
     );

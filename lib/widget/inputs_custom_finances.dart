@@ -7,7 +7,7 @@ class InputsCustomFinances extends StatelessWidget {
   final String? labelText;
   final String? helperText;
   final bool? isNumber;
-  final bool enable;
+  final bool? enable;
   final IconData? icon;
   final IconData? iconSuffix;
   final TextInputType? keyboardType;
@@ -56,12 +56,11 @@ class InputsCustomFinances extends StatelessWidget {
           suffixIcon: iconSuffix == null ? null : Icon(iconSuffix),
           icon: icon == null ? null : Icon(icon),
         ),
-        onChanged: !enable
-            ? null
-            : onValueChanges ??
-                (value) {
-                  formValues[formProprety] = value;
-                },
+        enabled: enable,
+        onChanged: onValueChanges ??
+            (value) {
+              formValues[formProprety] = value;
+            },
       )),
     );
   }
