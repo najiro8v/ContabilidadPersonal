@@ -1,10 +1,8 @@
-import 'package:contabilidad/controllers/category_controller.dart';
-import 'package:contabilidad/controllers/controller.dart';
-import 'package:contabilidad/models/finance_option.dart';
 import 'package:flutter/material.dart';
 
-import 'package:contabilidad/db/db.dart';
-
+import 'package:contabilidad/controllers/controller.dart';
+import 'package:contabilidad/controllers/value_entry_controller.dart';
+import 'package:contabilidad/models/finance_option.dart';
 import "package:contabilidad/widget/widget.dart";
 import 'package:contabilidad/models/models.dart';
 
@@ -46,7 +44,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
               child: Text(e.value.name),
             ))
         .toList();
-
+    formValues["categoryKey"] = value;
     formValues["desc"] = "";
     formValues["value"] = "0";
     setState(() {});
@@ -89,7 +87,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
         key: myFormKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
-          child: Column(children: [
+          child: ListView(children: [
             DropdownButtonFormField(
                 value: keyOption,
                 items: [
@@ -110,7 +108,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                         FocusScope.of(context).requestFocus(FocusNode());
                         formValues["desc"] = "";
                         formValues["value"] = "0";
-
+                        formValues["categoryKey"];
                         print(subDropdownOption[keyOption]);
                       }),
             const SizedBox(
@@ -134,18 +132,23 @@ class _FinancesScreenState extends State<FinancesScreen> {
                 padding: 10,
               ),
             TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  int idEntry = await EntryController.getId(Entry(
+                      category: 0,
+                      key: formValues["category"]!,
+                      name: "",
+                      value: 0));
                   final ValueEntry newEntry = ValueEntry(
                       desc: formValues["desc"],
                       value: double.tryParse(formValues["value"]!) ?? 0,
                       date: 1661904000000,
-                      latitud: latitud,
-                      length: length,
-                      type: type,
-                      entry: entry);
-                  EntryController.insert(newEntry);
+                      latitud: 1,
+                      length: 1,
+                      type: 1,
+                      entry: idEntry);
+                  ValueEntryController.insert(newEntry);
                 },
-                child: Text("delete db"))
+                child: const Text("Agregar Entrada"))
           ]),
         ),
       ),

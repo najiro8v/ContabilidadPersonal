@@ -50,7 +50,8 @@ class DatabaseSQL {
     typeTB += ")";
     await db.execute(typeTB);
     /**Values default */
-    await db.execute("INSERT INTO Type (name) values('test')");
+    await db.execute("INSERT INTO Type (name) values('Debito')");
+    await db.execute("INSERT INTO Type (name) values('Crédito')");
     /*** */
     /*Entry Table */
     String entryTB = "CREATE TABLE IF NOT EXISTS Entry (";
@@ -118,7 +119,8 @@ class DatabaseSQL {
       typeTB += ")";
       await db.execute(typeTB);
       /**Values default */
-      await db.execute("INSERT INTO Type (name) values('test')");
+      await db.execute("INSERT INTO Type (name) values('Debito')");
+      await db.execute("INSERT INTO Type (name) values('Crédito')");
       /*** */
       /*Entry Table */
       String entryTB = "CREATE TABLE IF NOT EXISTS Entry (";
