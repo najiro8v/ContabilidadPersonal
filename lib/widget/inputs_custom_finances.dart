@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class InputsCustomFinances extends StatelessWidget {
+class InputsCustomFinances extends StatefulWidget {
   final String formProprety;
   final String? hintText;
   final String? labelText;
@@ -20,7 +20,7 @@ class InputsCustomFinances extends StatelessWidget {
       {Key? key,
       required this.formProprety,
       required this.formValues,
-      this.initialValue,
+      this.initialValue = "",
       this.isNumber = false,
       this.hintText,
       this.labelText,
@@ -32,13 +32,25 @@ class InputsCustomFinances extends StatelessWidget {
       this.enable = true,
       this.padding = 0})
       : super(key: key);
+
+  @override
+  State<InputsCustomFinances> createState() => _InputsCustomFinancesState();
+}
+
+class _InputsCustomFinancesState extends State<InputsCustomFinances> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: padding!),
+      padding: EdgeInsets.symmetric(horizontal: widget.padding!),
       child: (TextFormField(
-        inputFormatters: isNumber!
-            ? [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+.?[0-9]*'))]
+        controller: TextEditingController()
+          ..text = widget.isNumber != null &&
+                  widget.isNumber! &&
+                  widget.initialValue!.isNotEmpty
+              ? double.parse(widget.initialValue!).toString()
+              : widget.initialValue ?? "",
+        inputFormatters: widget.isNumber!
+            ? [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+.?[0-9]*$'))]
             : [],
         validator: ((value) {
           if (value == null || value.isEmpty) {
@@ -46,20 +58,19 @@ class InputsCustomFinances extends StatelessWidget {
           }
           return null;
         }),
-        initialValue: isNumber != null && isNumber!
-            ? double.parse(initialValue!).toString()
-            : "",
+        keyboardType: widget.keyboardType,
         decoration: InputDecoration(
-          labelText: labelText,
-          hintText: hintText,
-          helperText: helperText,
-          suffixIcon: iconSuffix == null ? null : Icon(iconSuffix),
-          icon: icon == null ? null : Icon(icon),
+          labelText: widget.labelText,
+          hintText: widget.hintText,
+          helperText: widget.helperText,
+          suffixIcon:
+              widget.iconSuffix == null ? null : Icon(widget.iconSuffix),
+          icon: widget.icon == null ? null : Icon(widget.icon),
         ),
-        enabled: enable,
-        onChanged: onValueChanges ??
+        enabled: widget.enable,
+        onChanged: widget.onValueChanges ??
             (value) {
-              formValues[formProprety] = value;
+              widget.formValues[widget.formProprety] = value;
             },
       )),
     );

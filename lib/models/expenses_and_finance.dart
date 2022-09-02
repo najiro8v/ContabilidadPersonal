@@ -38,6 +38,7 @@ class Entry {
 }
 
 class ValueEntry {
+  final int? id;
   final String? desc;
   final double? value;
   final int? date;
@@ -48,17 +49,17 @@ class ValueEntry {
   final String? entryName;
   final String? categoryName;
 
-  ValueEntry({
-    required this.desc,
-    required this.value,
-    required this.date,
-    required this.latitud,
-    required this.length,
-    required this.type,
-    required this.entry,
-    this.entryName,
-    this.categoryName,
-  });
+  ValueEntry(
+      {required this.desc,
+      required this.value,
+      required this.date,
+      required this.latitud,
+      required this.length,
+      required this.type,
+      required this.entry,
+      this.entryName,
+      this.categoryName,
+      this.id});
 
   Map<String, dynamic> toMap() {
     return {

@@ -52,6 +52,16 @@ class _AddingScreenState extends State<AddingScreen> {
     listCategories();
   }
 
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Categoria agregada con exito'),
+        backgroundColor: Colors.green[600],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,6 +141,7 @@ class _AddingScreenState extends State<AddingScreen> {
                         category: idCategory));
                     myFormKey.currentState!.reset();
                     option = "";
+                    _showToast(context);
                     setState(() {});
                   },
                   child: const Text("Agregar Categoria"))

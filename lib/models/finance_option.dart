@@ -12,11 +12,13 @@ class FinanceOption {
   final Widget screen;
 }
 
-class subOption {
+class SubOption {
   final String value;
   final String name;
-  subOption({
+  final String? desc;
+  SubOption({
     required this.value,
     required this.name,
+    this.desc,
   });
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/controllers/controller.dart';
-import 'package:contabilidad/controllers/value_entry_controller.dart';
 import 'package:contabilidad/models/finance_option.dart';
 import "package:contabilidad/widget/widget.dart";
 import 'package:contabilidad/models/models.dart';
@@ -21,14 +20,13 @@ class _FinancesScreenState extends State<FinancesScreen> {
   final Map<String, String> formValues = {
     "category": "",
     "categoryKey": "",
-    "categoryID"
-        "entry": "",
     "entryKey": "",
-    "entryValue": "",
+    "desc": "",
+    "value": "",
   };
 
-  final Map<String, Map<String, subOption>> subDropdownOption = {
-    "": {"": subOption(name: "", value: "")}
+  final Map<String, Map<String, SubOption>> subDropdownOption = {
+    "": {"": SubOption(name: "", value: "")}
   };
   Map<String, String> dropdownOptions = {
     "": "",
@@ -63,14 +61,24 @@ class _FinancesScreenState extends State<FinancesScreen> {
     for (var e in listado) {
       subDropdownOption.containsKey(e.categoryKey)
           ? subDropdownOption[e.categoryKey]!.addAll({
-              e.key: subOption(name: "${e.name}", value: "${e.value}"),
+              e.key: SubOption(name: "${e.name}", value: "${e.value}"),
             })
           : subDropdownOption.addAll({
               "${e.categoryKey}": {
-                e.key: subOption(name: "${e.name}", value: "${e.value}"),
+                e.key: SubOption(name: "${e.name}", value: "${e.value}"),
               }
             });
     }
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Entrada agregada con exito'),
+        backgroundColor: Colors.green[600],
+      ),
+    );
   }
 
   @override
@@ -106,9 +114,12 @@ class _FinancesScreenState extends State<FinancesScreen> {
                     ? null
                     : (value) {
                         FocusScope.of(context).requestFocus(FocusNode());
-                        formValues["desc"] = "";
-                        formValues["value"] = "0";
+                        final subOption = subDropdownOption[
+                            formValues["categoryKey"]]![value];
+                        formValues["desc"] = subOption!.name;
+                        formValues["value"] = subOption.value;
                         formValues["entryKey"] = value.toString();
+                        setState(() {});
                       }),
             const SizedBox(
               height: 15,
@@ -129,9 +140,24 @@ class _FinancesScreenState extends State<FinancesScreen> {
                 isNumber: true,
                 labelText: "valor",
                 padding: 10,
+                keyboardType: TextInputType.number,
+                onValueChanges: (value) {
+                  String valor = value.toString();
+                  if (valor.isEmpty) return;
+                  valor.replaceAll(" ", "");
+                  if (valor.contains(",")) valor = valor.replaceAll(",", ".");
+                  formValues["value"] = valor.isEmpty
+                      ? 0.toString()
+                      : double.parse(valor).toString();
+                },
               ),
             TextButton(
                 onPressed: () async {
+                  myFormKey.currentState!.validate();
+                  if (!myFormKey.currentState!.validate()) {
+                    return;
+                  }
+                  if (formValues["entryKey"]!.isEmpty) return;
                   int idEntry = await EntryController.getId(Entry(
                       category: 0,
                       key: formValues["entryKey"]!,
@@ -146,6 +172,13 @@ class _FinancesScreenState extends State<FinancesScreen> {
                       type: 1,
                       entry: idEntry);
                   ValueEntryController.insert(newEntry);
+                  myFormKey.currentState!.reset();
+
+                  subKeyOption = "";
+                  lista = [];
+                  keyOption = "";
+                  _showToast(context);
+                  setState(() {});
                 },
                 child: const Text("Agregar Entrada"))
           ]),
