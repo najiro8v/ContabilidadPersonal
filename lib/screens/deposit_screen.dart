@@ -5,8 +5,8 @@ class DepositScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(children: const [Text("data")]),
+    return const Scaffold(
+      body: Center(child: Text("data")),
     );
   }
 }
