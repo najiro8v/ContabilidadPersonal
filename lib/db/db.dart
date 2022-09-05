@@ -1,5 +1,5 @@
 import "package:sqflite/sqflite.dart";
-import "package:contabilidad/models/models.dart";
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class DatabaseSQL {
@@ -22,10 +22,6 @@ class DatabaseSQL {
 
   static Future<void> deleteDatabase(String path) =>
       databaseFactory.deleteDatabase('finance.db');
-
-  static _deleteDB() async {
-    await deleteDatabase('finance.db');
-  }
 
   _createDB(Database db, int version) async {
     /*Catetory Table */
@@ -179,10 +175,11 @@ class DatabaseSQL {
     database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
   }
 
-  static Future<void> update(String dbName, dynamic model) async {
+  static Future<void> update(String dbName, dynamic model,
+      {required int id, required String idName}) async {
     Database database = await instance.database;
     database
-        .update(dbName, model.toMap(), where: "id = ?", whereArgs: [model.id]);
+        .update(dbName, model.toMap(), where: "$idName = ?", whereArgs: [id]);
   }
 
   static Future<List<dynamic>> get(String dbName, {String query = ""}) async {

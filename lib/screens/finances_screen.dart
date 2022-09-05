@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/controllers/controller.dart';
@@ -126,7 +128,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
             ),
             if (subKeyOption != null && subKeyOption!.isNotEmpty)
               InputsCustomFinances(
-                initialValue: formValues["desc"],
+                initialValue: formValues["desc"]!,
                 formProprety: "desc",
                 formValues: formValues,
                 labelText: "descripción",
@@ -136,7 +138,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
               InputsCustomFinances(
                 formProprety: "value",
                 formValues: formValues,
-                initialValue: formValues["value"],
+                initialValue: formValues["value"]!,
                 isNumber: true,
                 labelText: "valor",
                 padding: 10,
@@ -166,7 +168,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                   final ValueEntry newEntry = ValueEntry(
                       desc: formValues["desc"],
                       value: double.tryParse(formValues["value"]!) ?? 0,
-                      date: 1661904000000,
+                      date: DateTime.now().toUtc().millisecondsSinceEpoch,
                       latitud: 1,
                       length: 1,
                       type: 1,

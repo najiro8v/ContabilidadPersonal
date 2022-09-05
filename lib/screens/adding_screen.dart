@@ -141,6 +141,7 @@ class _AddingScreenState extends State<AddingScreen> {
                         category: idCategory));
                     myFormKey.currentState!.reset();
                     option = "";
+                    // ignore: use_build_context_synchronously
                     _showToast(context);
                     setState(() {});
                   },

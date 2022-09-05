@@ -18,10 +18,10 @@ class ValueEntryController {
         listado.length,
         (i) => ValueEntry(
               value: listado[i]['value'],
-              date: 1661904000000,
+              date: listado[i]['date'],
               entryName: listado[i]['entryName'],
               type: listado[i]['type_id'],
-              categoryName: "",
+              categoryName: listado[i]['categoryName'],
               entry: listado[i]['entry_id'],
               desc: listado[i]['desc'],
               length: 1,
@@ -36,5 +36,10 @@ class ValueEntryController {
 
   static Future<void> delete(int id) async {
     return await DatabaseSQL.delete(dbName, id: id, idName: "Id_Value_Entry");
+  }
+
+  static Future<void> update(ValueEntry value, int id) async {
+    return await DatabaseSQL.update(dbName, value,
+        id: id, idName: "Id_Value_Entry");
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
-class InputsCustomFinances extends StatefulWidget {
+class InputsCustomDinamyc extends StatefulWidget {
   final String formProprety;
   final String? hintText;
   final String? labelText;
@@ -20,7 +20,7 @@ class InputsCustomFinances extends StatefulWidget {
   }
 
   final Function(String)? onValueChanges;
-  InputsCustomFinances(
+  InputsCustomDinamyc(
       {super.key,
       required this.formProprety,
       required this.formValues,
@@ -37,22 +37,21 @@ class InputsCustomFinances extends StatefulWidget {
       this.padding = 0});
 
   @override
-  State<InputsCustomFinances> createState() => _InputsCustomFinancesState();
+  State<InputsCustomDinamyc> createState() => _InputsCustomDinamycState();
 }
 
-class _InputsCustomFinancesState extends State<InputsCustomFinances> {
-  _InputsCustomFinancesState();
+class _InputsCustomDinamycState extends State<InputsCustomDinamyc> {
+  _InputsCustomDinamycState();
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: widget.padding!),
       child: (TextFormField(
-          controller: TextEditingController()
-            ..text = widget.isNumber != null &&
-                    widget.isNumber! &&
-                    widget.initialValue.isNotEmpty
-                ? double.parse(widget.initialValue).toString()
-                : widget.initialValue,
+          initialValue: widget.isNumber != null &&
+                  widget.isNumber! &&
+                  widget.initialValue.isNotEmpty
+              ? double.parse(widget.initialValue).toString()
+              : widget.initialValue,
           inputFormatters: widget.isNumber!
               ? [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+.?[0-9]*$'))]
               : [],

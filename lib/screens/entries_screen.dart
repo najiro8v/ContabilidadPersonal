@@ -11,49 +11,51 @@ class EntriesScreen extends StatefulWidget {
 }
 
 class _EntriesScreenState extends State<EntriesScreen> {
-  final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-  final Map<String, String> formValues = {};
   List<ValueEntry> listado = [];
-  getEntrys() async {
-    listado = await ValueEntryController.get();
 
-    for (int i = 0; i < listado.length; i++) {
-      formValues.addAll({"desc$i": "$i"});
-      formValues.addAll({"key$i": "$i"});
-      formValues.addAll({"value$i": "$i"});
-    }
+  getEntrys({int toast = 0}) async {
+    listado = await ValueEntryController.get();
+    listado.sort((a, b) => a.categoryName!.compareTo(b.categoryName!));
+    final m = DateTime.now().toUtc().month < 10
+        ? "0${DateTime.now().toUtc().month}"
+        : DateTime.now().month;
+    final d = DateTime.now().toUtc().day < 10
+        ? "0${DateTime.now().toUtc().day}"
+        : DateTime.now().toUtc().day;
+
+    final today =
+        DateTime.parse("${DateTime.now().toUtc().year}-$m-$d 00:01:00Z");
+    listado =
+        listado.where((i) => i.date! >= today.millisecondsSinceEpoch).toList();
     setState(() {});
   }
 
   @override
   void initState() {
-    getEntrys();
     super.initState();
+    getEntrys();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: myFormKey,
-        child: ListView.separated(
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (_, index) => listado.isEmpty
-              ? const Text("Sin Entradas")
-              : ElementCustomEdit(
-                  changeList: getEntrys(),
-                  formProprety: {
-                    "value$index": "${listado[index].value}",
-                    "desc$index": "${listado[index].desc}",
-                    "key$index": "${listado[index].entryName}",
-                  },
-                  formValues: formValues,
-                  padding: 10,
-                  label: "lolo",
-                  index: index,
-                  id: listado[index].id!),
-          itemCount: listado.isEmpty ? 0 : listado.length,
-        ),
+      body: ListView.separated(
+        separatorBuilder: (_, __) => const Divider(),
+        itemBuilder: (_, index) => listado.isEmpty
+            ? const Center(
+                child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "Listado Sin Entradas",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ))
+            : ElementCustomEdit(
+                changeList: getEntrys(),
+                padding: 10,
+                label: "lolo",
+                entrie: listado[index]),
+        itemCount: listado.isEmpty ? 1 : listado.length,
       ),
     );
   }
