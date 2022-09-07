@@ -17,14 +17,16 @@ class FinancesScreen extends StatefulWidget {
 class _FinancesScreenState extends State<FinancesScreen> {
   String? keyOption;
   String? subKeyOption;
+  String type = "";
   List<DropdownMenuItem<String>> lista = [];
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-  final Map<String, String> formValues = {
+  final Map<String, dynamic> formValues = {
     "category": "",
     "categoryKey": "",
     "entryKey": "",
     "desc": "",
     "value": "",
+    "D&C": false,
   };
 
   final Map<String, Map<String, SubOption>> subDropdownOption = {
@@ -36,6 +38,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
 
   void setList(value) {
     FocusScope.of(context).requestFocus(FocusNode());
+    type = value.toString().contains("ing") ? "Debito" : "Credito";
     subKeyOption = subDropdownOption[value]!.entries.first.key;
     lista = subDropdownOption[value]!
         .entries
@@ -127,6 +130,18 @@ class _FinancesScreenState extends State<FinancesScreen> {
               height: 15,
             ),
             if (subKeyOption != null && subKeyOption!.isNotEmpty)
+              SwitchListTile(
+                  title: Text("Entrada de tipo $type"),
+                  value: formValues["D&C"],
+                  onChanged: ((value) {
+                    type = type.compareTo("Debito") == 0 ? "Credito" : "Debito";
+                    formValues["D&C"] = !formValues["D&C"];
+                    setState(() {});
+                  })),
+            const SizedBox(
+              height: 8,
+            ),
+            if (subKeyOption != null && subKeyOption!.isNotEmpty)
               InputsCustomFinances(
                 initialValue: formValues["desc"]!,
                 formProprety: "desc",
@@ -171,7 +186,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                       date: DateTime.now().toUtc().millisecondsSinceEpoch,
                       latitud: 1,
                       length: 1,
-                      type: 1,
+                      type: type.compareTo("Debito") == 0 ? 1 : 2,
                       entry: idEntry);
                   ValueEntryController.insert(newEntry);
                   myFormKey.currentState!.reset();
