@@ -1,4 +1,5 @@
 import 'package:contabilidad/screens/entries_screen.dart';
+import 'package:contabilidad/screens/settings/settings_screen.dart';
 import "package:flutter/material.dart";
 
 import "package:contabilidad/models/models.dart";
@@ -26,7 +27,7 @@ class AppRoutes {
         name: "Configuración",
         route: "configs",
         icon: Icons.add_card_outlined,
-        screen: const AddingScreen()),
+        screen: const SettingsScreen())
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

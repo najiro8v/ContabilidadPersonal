@@ -65,6 +65,7 @@ class _AddingScreenState extends State<AddingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Agregar Categorias")),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Form(

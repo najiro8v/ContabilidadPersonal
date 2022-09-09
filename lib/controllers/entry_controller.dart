@@ -1,5 +1,6 @@
 import 'package:contabilidad/models/models.dart' show Entry;
 import "package:contabilidad/db/db.dart";
+import 'package:contabilidad/models/query_option.dart';
 import 'category_controller.dart';
 
 class EntryController {
@@ -17,6 +18,20 @@ class EntryController {
             key: listado[i]['key'],
             name: listado[i]['name'],
             categoryKey: listado[i]['categoryKey']));
+  }
+
+  static Future<List<dynamic>> getBy({required QueryOption queryOption}) async {
+    List<dynamic> listado =
+        await DatabaseSQL.get(dbName, queryOption: queryOption);
+    List.generate(listado.length, (i) {
+      var temp = {};
+
+      for (var element in queryOption.columns!) {
+        temp[element] = listado[i];
+      }
+      return temp;
+    });
+    return listado;
   }
 
   static Future<int> insert(Entry entry) async {

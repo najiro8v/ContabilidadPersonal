@@ -1,3 +1,4 @@
+import 'package:contabilidad/models/query_option.dart';
 import "package:sqflite/sqflite.dart";
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
@@ -182,12 +183,25 @@ class DatabaseSQL {
         .update(dbName, model.toMap(), where: "$idName = ?", whereArgs: [id]);
   }
 
-  static Future<List<dynamic>> get(String dbName, {String query = ""}) async {
+  static Future<List<dynamic>> get(String dbName,
+      {String query = "", QueryOption? queryOption}) async {
     Database database = await instance.database;
 
     final List<Map<String, dynamic>> result = query.isEmpty
         ? await database.query(dbName)
-        : await database.rawQuery(query);
+        : queryOption != null
+            ? await database.query(dbName,
+                columns: queryOption.columns,
+                distinct: queryOption.distinct,
+                groupBy: queryOption.groupBy,
+                having: queryOption.having,
+                limit: queryOption.limit,
+                offset: queryOption.offset,
+                orderBy: queryOption.orderBy,
+                where: queryOption.where,
+                whereArgs: queryOption.whereArgs)
+            : await database.rawQuery(query);
+
     return result.toList();
   }
 }

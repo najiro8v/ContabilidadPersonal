@@ -6,13 +6,13 @@ class SettingsRoutes {
   static const initalRoute = "home";
   static final menuOptions = <MenuOption>[
     MenuOption(
-        name: "Entradas",
-        route: "entries",
+        name: "Editar categorias",
+        route: "editcateg",
         icon: Icons.align_vertical_bottom_sharp,
         screen: const UpdateScreen()),
     MenuOption(
-        name: "Configuración",
-        route: "configs",
+        name: "Agregar Cateorias",
+        route: "addcateg",
         icon: Icons.add_card_outlined,
         screen: const AddingScreen()),
   ];
