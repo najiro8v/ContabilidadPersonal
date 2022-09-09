@@ -27,6 +27,7 @@ class EntryController {
       var temp = {};
 
       for (var element in queryOption.columns!) {
+        listado.length
         temp[element] = listado[i];
       }
       return temp;
