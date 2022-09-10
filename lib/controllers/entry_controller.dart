@@ -8,7 +8,7 @@ class EntryController {
 
   static Future<List<Entry>> get() async {
     String query =
-        "select t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategoryController.dbName} T1 ON T1.Id_Category = T0.category_id";
+        "select t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategoryController.dbName} T1 ON T1.Id_Category = T0.category_id ORDER BY t0.name";
     List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
     return List.generate(
         listado.length,

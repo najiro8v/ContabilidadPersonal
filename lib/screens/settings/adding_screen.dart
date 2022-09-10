@@ -138,7 +138,9 @@ class _AddingScreenState extends State<AddingScreen> {
                     await EntryController.insert(Entry(
                         key: formValues["entryKey"]!,
                         name: formValues["entry"],
-                        value: double.parse(formValues["entryValue"]!),
+                        value: formValues["entryValue"]!.isEmpty
+                            ? 0
+                            : double.parse(formValues["entryValue"]!),
                         category: idCategory));
                     myFormKey.currentState!.reset();
                     option = "";

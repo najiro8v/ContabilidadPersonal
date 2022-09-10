@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:contabilidad/db/db.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/controllers/controller.dart';
@@ -39,7 +40,10 @@ class _FinancesScreenState extends State<FinancesScreen> {
   void setList(value) {
     FocusScope.of(context).requestFocus(FocusNode());
     type = value.toString().contains("ing") ? "Debito" : "Credito";
-    subKeyOption = subDropdownOption[value]!.entries.first.key;
+    dynamic subKey = subDropdownOption[value]!.entries.firstWhere(
+        (element) => element.value.name.isEmpty,
+        orElse: () => subDropdownOption[value]!.entries.first);
+    subKeyOption = subKey.key;
     lista = subDropdownOption[value]!
         .entries
         .map((e) => DropdownMenuItem(
@@ -48,7 +52,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
             ))
         .toList();
     formValues["categoryKey"] = value;
-    formValues["desc"] = "";
+    formValues["desc"] = subDropdownOption[value]![subKey.key]!.name;
     formValues["value"] = "0";
     setState(() {});
   }
@@ -197,7 +201,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                   _showToast(context);
                   setState(() {});
                 },
-                child: const Text("Agregar Entrada"))
+                child: const Text("Agregar Entrada")),
           ]),
         ),
       ),
