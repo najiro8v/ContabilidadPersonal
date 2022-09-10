@@ -3,24 +3,31 @@
 import 'package:contabilidad/widget/inputs_custom_dinamyc.dart';
 import 'package:flutter/material.dart';
 
-import "package:contabilidad/controllers/controller.dart";
 import 'package:contabilidad/models/models.dart';
 
 class ElementCustomEdit extends StatefulWidget {
   final String label;
   final double? padding;
-  final ValueEntry entrie;
-  final Future changeList;
-  ValueEntry getentrie() {
-    return entrie;
+  final Object obj;
+  final Future emitFunction;
+  Object getObj() {
+    return obj;
   }
 
-  const ElementCustomEdit(
-      {super.key,
-      this.padding,
-      required this.entrie,
-      required this.changeList,
-      required this.label});
+  Function update = () => {};
+  Function delete = () => {};
+  ElementCustomEdit({
+    super.key,
+    this.padding,
+    required this.obj,
+    required this.emitFunction,
+    required this.label,
+    required deleteFunction,
+    required updateFunction,
+  }) {
+    update = updateFunction;
+    delete = deleteFunction;
+  }
 
   @override
   State<ElementCustomEdit> createState() => _ElementCustomEditState();
@@ -28,15 +35,16 @@ class ElementCustomEdit extends StatefulWidget {
 
 class _ElementCustomEditState extends State<ElementCustomEdit> {
   bool isEnable = false;
-  ValueEntry? entrie;
+  dynamic obj;
 
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-  void _showToast(BuildContext context, String message) {
+  void _showToast(BuildContext context, String message, {isError = false}) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green[600],
+        backgroundColor:
+            isError ? Colors.deepOrangeAccent[400] : Colors.green[600],
       ),
     );
   }
@@ -50,11 +58,11 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
   @override
   void initState() {
     super.initState();
-    entrie = widget.getentrie();
+    obj = widget.getObj();
     formValues = {
-      "key": "${entrie!.categoryName}",
-      "value": "${entrie!.value}",
-      "desc": "${entrie!.desc}",
+      "key": "${obj is! Map ? obj!.categoryName : obj!["key"]}",
+      "value": "${obj is! Map ? obj!.value : obj!["value"]}",
+      "desc": "${obj is! Map ? obj!.desc : obj!["name"]}",
     };
   }
 
@@ -108,7 +116,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                   width: 10,
                 ),
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Row(
                     children: [
                       Expanded(
@@ -126,42 +134,47 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                                 setState(() {});
                                 return;
                               }
-                              var newValueEntry = ValueEntry(
-                                  desc: formValues["desc"],
-                                  value: double.tryParse(formValues["value"]!),
-                                  date: widget.getentrie().date,
-                                  latitud: widget.getentrie().latitud,
-                                  length: widget.getentrie().length,
-                                  type: widget.getentrie().type,
-                                  entry: widget.getentrie().entry);
-
-                              await ValueEntryController.update(
-                                      newValueEntry, widget.getentrie().id!)
-                                  .then((value) => _showToast(
-                                      context, "Entrada actualizada con Exito"))
-                                  .catchError((onError) =>
-                                      _showToast(context, "Entrada con error"));
-
-                              setState(() {});
+                              String msg = "Registro actualizado con Exito";
+                              bool isError = false;
+                              try {
+                                int id = obj is Map ? obj!["id"] : obj.id;
+                                await widget.update(obj, id, formValues);
+                                await widget.emitFunction;
+                              } catch (e) {
+                                print(e);
+                                msg = "Error en actualización de registro";
+                                isError = true;
+                              } finally {
+                                _showToast(context, msg, isError: isError);
+                                setState(() {});
+                              }
                             },
                             child: Text(isEnable ? "Guardar" : "Editar")),
                       ),
+                      const SizedBox(width: 10),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: TextButton(
-                            onPressed: () async {
-                              await ValueEntryController.delete(
-                                      widget.getentrie().id!)
-                                  .then((value) => _showToast(
-                                      context, "Entrada eliminada con Exito"))
-                                  .catchError((onError) =>
-                                      _showToast(context, "Entrada con error"));
+                          style:
+                              TextButton.styleFrom(backgroundColor: Colors.red),
+                          onPressed: () async {
+                            String msg = "Registro eliminado con Exito";
+                            bool isError = false;
+                            try {
+                              int id = obj is Map ? obj!["id"] : obj.id;
+                              await widget.delete(id);
+                              await widget.emitFunction;
+                            } catch (e) {
+                              print(e);
+                              msg = "Error en eliminación de registro";
+                              isError = true;
+                            } finally {
+                              _showToast(context, msg, isError: isError);
                               setState(() {});
-                            },
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            )),
+                            }
+                          },
+                          child: const Icon(Icons.delete, size: 25),
+                        ),
                       )
                     ],
                   ),

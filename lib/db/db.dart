@@ -18,7 +18,7 @@ class DatabaseSQL {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path,
-        version: 3, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 5, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   static Future<void> deleteDatabase(String path) =>
@@ -63,9 +63,18 @@ class DatabaseSQL {
     await db.execute(entryTB);
     /**Values default */
     await db.execute(
+        "INSERT INTO Entry(category_id,name,key,value) values(1,'','gto0',0)");
+    await db.execute(
         "INSERT INTO Entry(category_id,name,key,value) values(1,'Gatos diarios','gto1',0)");
+
+    //
+    await db.execute(
+        "INSERT INTO Entry(category_id,name,key,value) values(2,'','ing0',0)");
     await db.execute(
         "INSERT INTO Entry(category_id,name,key,value) values(2,'Ingresos diarios','ing1',0)");
+    //
+    await db.execute(
+        "INSERT INTO Entry(category_id,name,key,value) values(3,'','trans0',395)");
     await db.execute(
         "INSERT INTO Entry(category_id,name,key,value) values(3,'Bus Lomas','trans1',395)");
     /*** */
@@ -131,6 +140,7 @@ class DatabaseSQL {
           "FOREIGN KEY (category_id) REFERENCES Category (Id_Category) ON DELETE SET NULL ON UPDATE NO ACTION";
       entryTB += ")";
       await db.execute(entryTB);
+
       /**Values default */
       /*await db.execute(
           "INSERT INTO Entry(category_id,name,key,value) values(1,'Gatos diarios','gto1',0)");
@@ -179,7 +189,7 @@ class DatabaseSQL {
   static Future<void> update(String dbName, dynamic model,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    database
+    await database
         .update(dbName, model.toMap(), where: "$idName = ?", whereArgs: [id]);
   }
 
@@ -187,20 +197,21 @@ class DatabaseSQL {
       {String query = "", QueryOption? queryOption}) async {
     Database database = await instance.database;
 
-    final List<Map<String, dynamic>> result = query.isEmpty
-        ? await database.query(dbName)
-        : queryOption != null
-            ? await database.query(dbName,
-                columns: queryOption.columns,
-                distinct: queryOption.distinct,
-                groupBy: queryOption.groupBy,
-                having: queryOption.having,
-                limit: queryOption.limit,
-                offset: queryOption.offset,
-                orderBy: queryOption.orderBy,
-                where: queryOption.where,
-                whereArgs: queryOption.whereArgs)
-            : await database.rawQuery(query);
+    final List<Map<String, dynamic>> result =
+        query.isEmpty && queryOption == null
+            ? await database.query(dbName)
+            : queryOption != null
+                ? await database.query(dbName,
+                    columns: queryOption.columns,
+                    distinct: queryOption.distinct,
+                    groupBy: queryOption.groupBy,
+                    having: queryOption.having,
+                    limit: queryOption.limit,
+                    offset: queryOption.offset,
+                    orderBy: queryOption.orderBy,
+                    where: queryOption.where,
+                    whereArgs: queryOption.whereArgs)
+                : await database.rawQuery(query);
 
     return result.toList();
   }

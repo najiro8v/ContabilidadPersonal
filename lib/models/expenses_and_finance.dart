@@ -18,6 +18,7 @@ class Type {
 }
 
 class Entry {
+  final int? id;
   final String key;
   final String? name;
   final double? value;
@@ -31,7 +32,8 @@ class Entry {
       required this.value,
       required this.category,
       this.categoryKey,
-      this.categoryName});
+      this.categoryName,
+      this.id});
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key, "category_id": category, "value": value};
   }

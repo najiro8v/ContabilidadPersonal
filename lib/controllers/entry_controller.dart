@@ -17,22 +17,30 @@ class EntryController {
             category: listado[i]['category_id'],
             key: listado[i]['key'],
             name: listado[i]['name'],
-            categoryKey: listado[i]['categoryKey']));
+            categoryKey: listado[i]['categoryKey'],
+            id: listado[i]['Id_Entry']));
   }
 
   static Future<List<dynamic>> getBy({required QueryOption queryOption}) async {
     List<dynamic> listado =
         await DatabaseSQL.get(dbName, queryOption: queryOption);
-    List.generate(listado.length, (i) {
+    var data = List.generate(listado.length, (i) {
       var temp = {};
 
       for (var element in queryOption.columns!) {
-        listado.length
-        temp[element] = listado[i];
+        for (var key in listado[i].keys) {
+          if (element == key) {
+            if (element == "Id_Entry") {
+              temp["id"] = listado[i][key];
+            } else {
+              temp[element] = listado[i][key];
+            }
+          }
+        }
       }
       return temp;
     });
-    return listado;
+    return data;
   }
 
   static Future<int> insert(Entry entry) async {
@@ -44,5 +52,9 @@ class EntryController {
         "select T0.Id_Entry from $dbName T0 where T0.key = '${entry.key}'";
     List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
     return listado.first.row[0];
+  }
+
+  static Future<void> update(Entry value, int id) async {
+    return await DatabaseSQL.update(dbName, value, id: id, idName: "Id_Entry");
   }
 }

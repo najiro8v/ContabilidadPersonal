@@ -1,3 +1,4 @@
 export 'package:contabilidad/widget/inputs_custom_finances.dart';
-export 'element_custom_edit.dart';
-export 'category_custom_adding.dart';
+export 'package:contabilidad/widget/element_custom_edit.dart';
+export 'package:contabilidad/widget/category_custom_adding.dart';
+export 'package:contabilidad/widget/inputs_custom_dinamyc.dart';

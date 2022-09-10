@@ -30,6 +30,23 @@ class _EntriesScreenState extends State<EntriesScreen> {
     setState(() {});
   }
 
+  Future<dynamic> updateFunction(obj, id, formValues) async {
+    final updateValueEntry = ValueEntry(
+      desc: formValues["desc"],
+      value: double.parse(formValues["value"]),
+      date: obj.date,
+      entry: obj.entry,
+      latitud: obj.latitud,
+      length: obj.length,
+      type: obj.type,
+    );
+    return await ValueEntryController.update(updateValueEntry, id);
+  }
+
+  Future<dynamic> deleteFunction(id) async {
+    return await ValueEntryController.delete(id);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -51,10 +68,12 @@ class _EntriesScreenState extends State<EntriesScreen> {
                 ),
               ))
             : ElementCustomEdit(
-                changeList: getEntrys(),
+                emitFunction: getEntrys(),
                 padding: 10,
                 label: "lolo",
-                entrie: listado[index]),
+                obj: listado[index],
+                deleteFunction: deleteFunction,
+                updateFunction: updateFunction),
         itemCount: listado.isEmpty ? 1 : listado.length,
       ),
     );

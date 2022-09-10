@@ -1,7 +1,7 @@
-import 'package:contabilidad/controllers/category_controller.dart';
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/models/expenses_and_finance.dart';
 import 'package:contabilidad/models/query_option.dart';
+import 'package:contabilidad/widget/widget.dart';
 import 'package:flutter/material.dart';
 
 class UpdateScreen extends StatefulWidget {
@@ -28,12 +28,26 @@ class _UpdateScreenState extends State<UpdateScreen> {
         await CategoryController.getId(Category(key: key, name: ""));
     final List<dynamic> listado = await EntryController.getBy(
         queryOption: QueryOption(
-            columns: ["name", "key", "value"],
-            where: "category_id = ? ",
+            columns: ["name", "key", "value", "Id_Entry", "category_id"],
+            where: "category_id = ? and name <> '' ",
             whereArgs: [idCategory],
             orderBy: "name"));
+
     subLists.addAll({key: listado});
     setState(() {});
+  }
+
+  Future<dynamic> updateFunction(obj, id, formValues) async {
+    final updateEntry = Entry(
+        key: obj["key"],
+        name: formValues["desc"],
+        value: double.parse(formValues["value"]),
+        category: obj["category_id"]);
+    return await EntryController.update(updateEntry, id);
+  }
+
+  Future<dynamic> deleteFunction(id) async {
+    return await ValueEntryController.delete(id);
   }
 
   @override
@@ -60,16 +74,28 @@ class _UpdateScreenState extends State<UpdateScreen> {
                               }
                               return Center(child: Text("${e.name}"));
                             },
-                            body: Container(
-                              height: 100,
+                            body: SingleChildScrollView(
                               child: ListView(
+                                primary: false,
                                 shrinkWrap: true,
                                 children: subLists.isEmpty
                                     ? []
                                     : subLists[e.key.toString()] != null
-                                        ? subLists[e.key.toString()]![0]
-                                            .map((obj) =>
-                                                Text(obj.name.toString()))
+                                        ? subLists[e.key.toString()]!
+                                            .map((obj) => Container(
+                                                margin:
+                                                    const EdgeInsets.all(10),
+                                                child: ElementCustomEdit(
+                                                  emitFunction: getSubList(
+                                                      e.key.toString()),
+                                                  deleteFunction:
+                                                      deleteFunction,
+                                                  updateFunction:
+                                                      updateFunction,
+                                                  label: "",
+                                                  obj: obj,
+                                                  padding: 10,
+                                                )))
                                             .toList()
                                         : [],
                               ),
