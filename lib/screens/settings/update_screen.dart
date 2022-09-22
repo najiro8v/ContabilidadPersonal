@@ -20,10 +20,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
     setState(() {});
   }
 
+  String lastKey = "";
   getSubList(String key) async {
     if (subLists.containsKey(key)) {
       return;
     }
+    lastKey = key;
     int idCategory =
         await CategoryController.getId(Category(key: key, name: ""));
     final List<dynamic> listado = await EntryController.getBy(
@@ -47,7 +49,10 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   Future<dynamic> deleteFunction(id) async {
-    return await ValueEntryController.delete(id);
+    await EntryController.delete(id);
+    subLists[lastKey]!.removeWhere((item) => item["id"] == id);
+    setState(() {});
+    return lastKey;
   }
 
   @override

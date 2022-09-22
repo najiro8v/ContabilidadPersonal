@@ -180,10 +180,10 @@ class DatabaseSQL {
     return database.insert(dbName, model.toMap());
   }
 
-  static Future<void> delete(String dbName,
+  static Future<int> delete(String dbName,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
+    return database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
   }
 
   static Future<void> update(String dbName, dynamic model,

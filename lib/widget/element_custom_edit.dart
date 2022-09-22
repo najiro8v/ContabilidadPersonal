@@ -2,9 +2,10 @@
 
 import 'package:contabilidad/widget/inputs_custom_dinamyc.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
+//import 'package:contabilidad/models/models.dart';
 
-import 'package:contabilidad/models/models.dart';
-
+// ignore: must_be_immutable
 class ElementCustomEdit extends StatefulWidget {
   final String label;
   final double? padding;
@@ -141,7 +142,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                                 await widget.update(obj, id, formValues);
                                 await widget.emitFunction;
                               } catch (e) {
-                                print(e);
+                                // print(e);
                                 msg = "Error en actualización de registro";
                                 isError = true;
                               } finally {
@@ -165,7 +166,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                               await widget.delete(id);
                               await widget.emitFunction;
                             } catch (e) {
-                              print(e);
+                              developer.log('log me', name: 'my.app.category');
                               msg = "Error en eliminación de registro";
                               isError = true;
                             } finally {
