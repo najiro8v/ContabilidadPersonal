@@ -1,10 +1,9 @@
 // ignore_for_file: no_logic_in_create_state
-
+import 'dart:developer' as developer;
 import 'package:contabilidad/widget/inputs_custom_dinamyc.dart';
 import 'package:flutter/material.dart';
 
-import 'package:contabilidad/models/models.dart';
-
+// ignore: must_be_immutable
 class ElementCustomEdit extends StatefulWidget {
   final String label;
   final double? padding;
@@ -141,7 +140,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                                 await widget.update(obj, id, formValues);
                                 await widget.emitFunction;
                               } catch (e) {
-                                print(e);
+                                developer.log("update custom edit", error: e);
                                 msg = "Error en actualización de registro";
                                 isError = true;
                               } finally {
@@ -165,7 +164,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                               await widget.delete(id);
                               await widget.emitFunction;
                             } catch (e) {
-                              print(e);
+                              developer.log("delete custom edit", error: e);
                               msg = "Error en eliminación de registro";
                               isError = true;
                             } finally {
