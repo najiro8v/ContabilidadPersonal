@@ -17,7 +17,7 @@ class AppRoutes {
         name: "Depositos",
         route: "deposit",
         icon: Icons.monetization_on_outlined,
-        screen: const DepositScreen()),
+        screen: const DataScreen()),
     MenuOption(
         name: "Entradas",
         route: "entries",
