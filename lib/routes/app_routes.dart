@@ -30,6 +30,24 @@ class AppRoutes {
         screen: const SettingsScreen())
   ];
 
+  static final menus = <MenuOption>[
+    MenuOption(
+        name: "Finanzas",
+        route: "finances",
+        icon: Icons.add_chart_sharp,
+        screen: const FinancesScreen()),
+    MenuOption(
+        name: "Entradas",
+        route: "entries",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const EntriesScreen()),
+    MenuOption(
+        name: "Configuración",
+        route: "configs",
+        icon: Icons.settings,
+        screen: const SettingsScreen())
+  ];
+
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {
     Map<String, Widget Function(BuildContext)> appRoutes = {};
     appRoutes.addAll({'home': (BuildContext context) => const HomeScreen()});
@@ -43,9 +61,14 @@ class AppRoutes {
     return menuOptions[index];
   }
 
+  static MenuOption getScreenMenus(int index) {
+    return menus[index];
+  }
+
   static List<NavigationDestination> getNavigationDestinyties() {
     List<NavigationDestination> iconAppRoutes = [];
-    for (final option in menuOptions) {
+
+    for (final option in menus) {
       iconAppRoutes.addAll({
         NavigationDestination(
             icon: Icon(option.icon),

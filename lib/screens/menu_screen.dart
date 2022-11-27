@@ -10,20 +10,31 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final destinationRoutes = AppRoutes.getNavigationDestinyties();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(AppRoutes.getScreen(_index).name)),
+        key: _scaffoldKey,
+        appBar: AppBar(title: Text(AppRoutes.getScreenMenus(_index).name)),
         body: Center(
-          child: AppRoutes.getScreen(_index).screen,
+          child: AppRoutes.getScreenMenus(_index).screen,
         ),
         bottomNavigationBar: NavigationBar(
             height: 60,
             selectedIndex: _index,
             onDestinationSelected: (value) {
-              _index = value;
+              destinationRoutes[value];
+              if (AppRoutes.getScreenMenus(value).route == "configs") {
+                _scaffoldKey.currentState!.openEndDrawer();
+              } else {
+                _index = value;
+              }
               setState(() {});
             },
-            destinations: [...AppRoutes.getNavigationDestinyties()]));
+            destinations: destinationRoutes),
+        endDrawer: Drawer(
+          child: Container(color: Colors.red),
+        ));
   }
 }
