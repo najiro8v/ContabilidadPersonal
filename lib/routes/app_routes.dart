@@ -9,11 +9,13 @@ class AppRoutes {
   static const initalRoute = "home";
   static final menuOptions = <MenuOption>[
     MenuOption(
+        menuPrincipal: true,
         name: "Finanzas",
         route: "finances",
         icon: Icons.add_chart_sharp,
         screen: const FinancesScreen()),
     MenuOption(
+        menuPrincipal: true,
         name: "Depositos",
         route: "deposit",
         icon: Icons.monetization_on_outlined,
@@ -24,24 +26,7 @@ class AppRoutes {
         icon: Icons.align_vertical_bottom_sharp,
         screen: const EntriesScreen()),
     MenuOption(
-        name: "Configuración",
-        route: "configs",
-        icon: Icons.add_card_outlined,
-        screen: const SettingsScreen())
-  ];
-
-  static final menus = <MenuOption>[
-    MenuOption(
-        name: "Finanzas",
-        route: "finances",
-        icon: Icons.add_chart_sharp,
-        screen: const FinancesScreen()),
-    MenuOption(
-        name: "Entradas",
-        route: "entries",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const EntriesScreen()),
-    MenuOption(
+        menuPrincipal: true,
         name: "Configuración",
         route: "configs",
         icon: Icons.settings,
@@ -57,18 +42,20 @@ class AppRoutes {
     return appRoutes;
   }
 
-  static MenuOption getScreen(int index) {
-    return menuOptions[index];
+  static MenuOption getScreen(int index, {all = true}) {
+    return _actualMenu(all)[index];
   }
 
-  static MenuOption getScreenMenus(int index) {
-    return menus[index];
+  static List<MenuOption> _actualMenu(bool all) {
+    return all
+        ? menuOptions
+        : menuOptions.where((e) => e.menuPrincipal == true).toList();
   }
 
-  static List<NavigationDestination> getNavigationDestinyties() {
+  static List<NavigationDestination> getNavigationDestinyties(
+      {bool all = true}) {
     List<NavigationDestination> iconAppRoutes = [];
-
-    for (final option in menus) {
+    for (final option in _actualMenu(all)) {
       iconAppRoutes.addAll({
         NavigationDestination(
             icon: Icon(option.icon),

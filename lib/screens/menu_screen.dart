@@ -1,4 +1,5 @@
 import 'package:contabilidad/routes/app_routes.dart';
+import 'package:contabilidad/widget/widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,22 +11,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final destinationRoutes = AppRoutes.getNavigationDestinyties();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final destinationRoutes = AppRoutes.getNavigationDestinyties(all: false);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text(AppRoutes.getScreenMenus(_index).name)),
+        appBar:
+            AppBar(title: Text(AppRoutes.getScreen(_index, all: false).name)),
         body: Center(
-          child: AppRoutes.getScreenMenus(_index).screen,
+          child: AppRoutes.getScreen(_index, all: false).screen,
         ),
         bottomNavigationBar: NavigationBar(
             height: 60,
             selectedIndex: _index,
             onDestinationSelected: (value) {
               destinationRoutes[value];
-              if (AppRoutes.getScreenMenus(value).route == "configs") {
+              if (AppRoutes.getScreen(value, all: false).route == "configs") {
                 _scaffoldKey.currentState!.openEndDrawer();
               } else {
                 _index = value;
@@ -33,8 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             },
             destinations: destinationRoutes),
-        endDrawer: Drawer(
-          child: Container(color: Colors.red),
-        ));
+        endDrawer: const CustomDrawer());
   }
 }
