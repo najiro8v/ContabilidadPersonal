@@ -22,27 +22,24 @@ class _DataScreenState extends State<DataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Syncfusion Flutter chart'),
-        ),
         body: Column(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: SfSparkBarChart(
-                data: data.entries.map((e) => e.key).toList(),
-                axisCrossesAt: 0,
-                trackball: SparkChartTrackball(
-                    dashArray: [1, 5, 10, 15],
-                    hideDelay: 1,
-                    tooltipFormatter: ((details) {
-                      details;
-                      return data[details.y].toString();
-                    }),
-                    activationMode: SparkChartActivationMode.tap),
-                labelDisplayMode: SparkChartLabelDisplayMode.all),
-          )
-          //Initialize the chart widget
-          /*SfCartesianChart(
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: SfSparkBarChart(
+            data: data.entries.map((e) => e.key).toList(),
+            axisCrossesAt: 0,
+            trackball: SparkChartTrackball(
+                dashArray: [1, 5, 10, 15],
+                hideDelay: 1,
+                tooltipFormatter: ((details) {
+                  details;
+                  return data[details.y].toString();
+                }),
+                activationMode: SparkChartActivationMode.tap),
+            labelDisplayMode: SparkChartLabelDisplayMode.all),
+      )
+      //Initialize the chart widget
+      /*SfCartesianChart(
               primaryXAxis: CategoryAxis(),
               // Chart title
               title: ChartTitle(text: 'Half yearly sales analysis'),
@@ -59,8 +56,8 @@ class _DataScreenState extends State<DataScreen> {
                     // Enable data label
                     dataLabelSettings: DataLabelSettings(isVisible: true))
               ]),*/
-          ,
-          /* Expanded(
+      ,
+      /* Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               //Initialize the spark charts widget
@@ -79,7 +76,7 @@ class _DataScreenState extends State<DataScreen> {
               ),
             ),
           )*/
-        ]));
+    ]));
   }
 }
 
