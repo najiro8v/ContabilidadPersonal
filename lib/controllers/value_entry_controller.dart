@@ -30,6 +30,27 @@ class ValueEntryController {
             ));
   }
 
+  static Future<List<dynamic>> getChartCount() async {
+    String query =
+        'select t0.*, T1.name AS entryName, t2.name AS categoryName from $dbName as T0';
+
+    List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
+    return List.generate(
+        listado.length,
+        (i) => ValueEntry(
+              value: listado[i]['value'],
+              date: listado[i]['date'],
+              entryName: listado[i]['entryName'],
+              type: listado[i]['type_id'],
+              categoryName: listado[i]['categoryName'],
+              entry: listado[i]['entry_id'],
+              desc: listado[i]['desc'],
+              length: 1,
+              latitud: 1,
+              id: listado[i]['Id_Value_Entry'],
+            ));
+  }
+
   static Future<int> insert(ValueEntry value) async {
     return await DatabaseSQL.insert(dbName, value);
   }
