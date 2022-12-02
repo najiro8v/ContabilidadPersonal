@@ -14,11 +14,9 @@ class CustomDrawer extends StatelessWidget {
           const SizedBox(
             height: 40,
           ),
-          _OptionConfig(
+          const _OptionConfig(
             text: "Categorias",
-            event: () {
-              Navigator.pushReplacementNamed(context, "entries");
-            },
+            route: "category",
             icon: Icons.people_outline,
           ),
           space,
@@ -65,7 +63,7 @@ class _OptionConfig extends StatelessWidget {
       title: Text(text),
       onTap: event ??
           (() {
-            Navigator.pushReplacementNamed(context, route ?? "home");
+            Navigator.pushNamed(context, route ?? "home");
           }),
     );
   }

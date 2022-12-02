@@ -10,27 +10,27 @@ class AppRoutes {
   static final menuOptions = <MenuOption>[
     MenuOption(
         menuPrincipal: true,
-        name: "Finanzas",
-        route: "finances",
-        icon: Icons.add_chart_sharp,
+        name: "Regisitros",
+        route: "entries",
+        icon: Icons.monetization_on_outlined,
         screen: const FinancesScreen()),
     MenuOption(
         menuPrincipal: true,
-        name: "Depositos",
-        route: "deposit",
-        icon: Icons.monetization_on_outlined,
+        name: "Inicio",
+        route: "finances",
+        icon: Icons.home,
         screen: const DataScreen()),
-    MenuOption(
-        name: "Entradas",
-        route: "entries",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const EntriesScreen()),
     MenuOption(
         menuPrincipal: true,
         name: "Configuración",
         route: "configs",
         icon: Icons.settings,
-        screen: const SettingsScreen())
+        screen: const SettingsScreen()),
+    MenuOption(
+        name: "Categorias",
+        route: "category",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const UpdateScreen()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

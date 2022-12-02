@@ -48,31 +48,20 @@ class _DataScreenState extends State<DataScreen> {
     return Scaffold(
         body: Column(children: [
       Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: SfCartesianChart(
-            title: ChartTitle(text: "Reporte semanal"),
-            // Enable legend
-            // Enable tooltip
-            tooltipBehavior: TooltipBehavior(enable: true),
-            series: <ChartSeries>[
-              ColumnSeries<GDPData, String>(
-                dataSource: data,
-                xValueMapper: (dynamic sales, _) => sales.x,
-                yValueMapper: (dynamic sales, _) => sales.y,
-                enableTooltip: true,
-                xAxisName: "Semana",
-              ),
-            ],
-            primaryXAxis: CategoryAxis(
-                labelStyle:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            primaryYAxis: NumericAxis(
-              axisLabelFormatter: (axisLabelRenderArgs) {
-                return ChartAxisLabel(axisLabelRenderArgs.text,
-                    const TextStyle(color: Colors.black));
-              },
-            ),
-          ))
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: SfSparkBarChart(
+            data: data.entries.map((e) => e.key).toList(),
+            axisCrossesAt: 0,
+            trackball: SparkChartTrackball(
+                dashArray: [1, 5, 10, 15],
+                hideDelay: 1,
+                tooltipFormatter: ((details) {
+                  details;
+                  return data[details.y].toString();
+                }),
+                activationMode: SparkChartActivationMode.tap),
+            labelDisplayMode: SparkChartLabelDisplayMode.all),
+      )
       //Initialize the chart widget
       /*SfCartesianChart(
               primaryXAxis: CategoryAxis(),
