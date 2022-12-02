@@ -31,6 +31,11 @@ class AppRoutes {
         route: "category",
         icon: Icons.align_vertical_bottom_sharp,
         screen: const UpdateScreen()),
+    MenuOption(
+        name: "Mis Registros",
+        route: "registries",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const EntriesScreen()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

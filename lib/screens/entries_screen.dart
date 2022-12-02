@@ -114,6 +114,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Mis Registros")),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blueGrey.withOpacity(0.5),

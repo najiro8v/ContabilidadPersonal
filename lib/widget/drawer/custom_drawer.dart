@@ -20,11 +20,9 @@ class CustomDrawer extends StatelessWidget {
             icon: Icons.people_outline,
           ),
           space,
-          _OptionConfig(
+          const _OptionConfig(
             text: "Registro",
-            event: () {
-              print("Registro");
-            },
+            route: "registries",
             icon: Icons.people_outline,
           ),
           space,
@@ -63,6 +61,9 @@ class _OptionConfig extends StatelessWidget {
       title: Text(text),
       onTap: event ??
           (() {
+            Scaffold.of(context).hasEndDrawer
+                ? Scaffold.of(context).closeEndDrawer()
+                : null;
             Navigator.pushNamed(context, route ?? "home");
           }),
     );

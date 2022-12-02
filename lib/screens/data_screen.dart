@@ -49,7 +49,7 @@ class _DataScreenState extends State<DataScreen> {
         body: Column(children: [
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: SfSparkBarChart(
+        /* child: SfSparkBarChart(
             data: data.entries.map((e) => e.key).toList(),
             axisCrossesAt: 0,
             trackball: SparkChartTrackball(
@@ -60,7 +60,7 @@ class _DataScreenState extends State<DataScreen> {
                   return data[details.y].toString();
                 }),
                 activationMode: SparkChartActivationMode.tap),
-            labelDisplayMode: SparkChartLabelDisplayMode.all),
+            labelDisplayMode: SparkChartLabelDisplayMode.all),*/
       )
       //Initialize the chart widget
       /*SfCartesianChart(

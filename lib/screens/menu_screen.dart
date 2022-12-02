@@ -35,6 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             },
             destinations: destinationRoutes),
-        endDrawer: const CustomDrawer());
+        endDrawer: CustomDrawer());
   }
 }

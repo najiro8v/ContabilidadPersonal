@@ -77,7 +77,28 @@ class _UpdateScreenState extends State<UpdateScreen> {
                               if (isExpanded) {
                                 getSubList(e.key.toString());
                               }
-                              return Center(child: Text("${e.name}"));
+                              return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Text("${e.name}")),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(Icons.edit),
+                                          color: Colors.blue,
+                                        ),
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.delete_forever),
+                                            color: Colors.red)
+                                      ],
+                                    )
+                                  ]);
                             },
                             body: SingleChildScrollView(
                               child: ListView(
