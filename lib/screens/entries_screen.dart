@@ -114,38 +114,110 @@ class _EntriesScreenState extends State<EntriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Mis Registros")),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blueGrey.withOpacity(0.5),
-          child: const Icon(Icons.date_range_outlined),
-          onPressed: () async {
-            await _openDatePicker();
-          }),
-      extendBody: true,
-      body: ListView.builder(
-        itemBuilder: (_, index) {
-          if (listado.isEmpty) {
-            return const Center(
-                child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "Listado Sin Entradas",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ));
-          }
+        appBar: AppBar(title: const Text("Mis Registros")),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.blueGrey.withOpacity(0.5),
+            child: const Icon(Icons.date_range_outlined),
+            onPressed: () async {
+              await _openDatePicker();
+            }),
+        extendBody: true,
+        body: ListView(children: [
+          const _TitleFilter(),
+          listado.isEmpty
+              ? const _NotList()
+              : ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (_, index) {
+                          return ElementCustomEdit(
+                              emitFunction: getEntrys(),
+                              padding: 10,
+                              label: "lolo",
+                              obj: listado[index],
+                              deleteFunction: deleteFunction,
+                              updateFunction: updateFunction);
+                        },
+                        itemCount: listado.isEmpty ? 1 : listado.length,
+                      ),
+                    ]),
+        ]));
+  }
+}
 
-          return ElementCustomEdit(
-              emitFunction: getEntrys(),
-              padding: 10,
-              label: "lolo",
-              obj: listado[index],
-              deleteFunction: deleteFunction,
-              updateFunction: updateFunction);
-        },
-        itemCount: listado.isEmpty ? 1 : listado.length,
-      ),
+class _TitleFilter extends StatelessWidget {
+  const _TitleFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: ((context, index) {
+              return IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.access_time_filled));
+            }),
+            shrinkWrap: true,
+            itemCount: 25,
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(child: TextFormField()),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(child: TextFormField()),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.filter_list),
+                label: const Text("Filtros")),
+            TextButton(onPressed: () {}, child: const Text("..."))
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
+}
+
+class _NotList extends StatelessWidget {
+  const _NotList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Center(
+          child: Text(
+            "Listado Sin Entradas",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     );
   }
 }

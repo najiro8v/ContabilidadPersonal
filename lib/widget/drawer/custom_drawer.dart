@@ -21,7 +21,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           space,
           const _OptionConfig(
-            text: "Registro",
+            text: "Mis Registros",
             route: "registries",
             icon: Icons.people_outline,
           ),
@@ -32,7 +32,7 @@ class CustomDrawer extends StatelessWidget {
             icon: Icons.people_outline,
           ),
           space,
-          _OptionConfig(
+          const _OptionConfig(
             text: "Cerrar Sesión",
             icon: Icons.people_outline,
           ),

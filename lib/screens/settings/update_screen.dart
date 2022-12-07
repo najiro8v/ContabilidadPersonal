@@ -64,81 +64,84 @@ class _UpdateScreenState extends State<UpdateScreen> {
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-        appBar: AppBar(title: const Text("Update Setting")),
-        body: SingleChildScrollView(
-          child: ExpansionPanelList.radio(
-              children: data.isEmpty
-                  ? []
-                  : data
-                      .map((e) => ExpansionPanelRadio(
-                            canTapOnHeader: true,
-                            value: e.key.toString(),
-                            headerBuilder: (context, isExpanded) {
-                              if (isExpanded) {
-                                getSubList(e.key.toString());
-                              }
-                              return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: Text("${e.name}")),
-                                    Row(
-                                      children: [
-                                        IconButton(
+      appBar: AppBar(title: const Text("Update Setting")),
+      body: SingleChildScrollView(
+        child: ExpansionPanelList.radio(
+            children: data.isEmpty
+                ? []
+                : data
+                    .map((e) => ExpansionPanelRadio(
+                          canTapOnHeader: true,
+                          value: e.key.toString(),
+                          headerBuilder: (context, isExpanded) {
+                            if (isExpanded) {
+                              getSubList(e.key.toString());
+                            }
+                            return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Text("${e.name}")),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                              context, 'categoryScreen',
+                                              arguments: e);
+                                        },
+                                        icon: const Icon(Icons.edit),
+                                        color: Colors.blue,
+                                      ),
+                                      IconButton(
                                           onPressed: () {},
-                                          icon: Icon(Icons.edit),
-                                          color: Colors.blue,
-                                        ),
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(Icons.delete_forever),
-                                            color: Colors.red)
-                                      ],
-                                    )
-                                  ]);
-                            },
-                            body: SingleChildScrollView(
-                              child: ListView(
-                                primary: false,
-                                shrinkWrap: true,
-                                children: subLists.isEmpty
-                                    ? []
-                                    : subLists[e.key.toString()] != null
-                                        ? subLists[e.key.toString()]!
-                                            .map((obj) => Container(
-                                                margin:
-                                                    const EdgeInsets.all(10),
-                                                child: ElementCustomEdit(
-                                                  emitFunction: getSubList(
-                                                      e.key.toString()),
-                                                  deleteFunction:
-                                                      deleteFunction,
-                                                  updateFunction:
-                                                      updateFunction,
-                                                  label: "",
-                                                  obj: obj,
-                                                  padding: 10,
-                                                )))
-                                            .toList()
-                                        : [],
-                              ),
+                                          icon:
+                                              const Icon(Icons.delete_forever),
+                                          color: Colors.red)
+                                    ],
+                                  )
+                                ]);
+                          },
+                          body: SingleChildScrollView(
+                            child: ListView(
+                              primary: false,
+                              shrinkWrap: true,
+                              children: subLists.isEmpty
+                                  ? []
+                                  : subLists[e.key.toString()] != null
+                                      ? subLists[e.key.toString()]!
+                                          .map((obj) => Container(
+                                              margin: const EdgeInsets.all(10),
+                                              child: ElementCustomEdit(
+                                                emitFunction: getSubList(
+                                                    e.key.toString()),
+                                                deleteFunction: deleteFunction,
+                                                updateFunction: updateFunction,
+                                                label: "",
+                                                obj: obj,
+                                                padding: 10,
+                                              )))
+                                          .toList()
+                                      : [],
                             ),
-                          ))
-                      .toList()),
-        )));
+                          ),
+                        ))
+                    .toList()),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, 'categoryScreen');
+        },
+        backgroundColor: Colors.indigo,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 35,
+        ),
+      ),
+    ));
   }
 }
-/*
-ListView(
-                                    children: subLists.isEmpty
-                                        ? []
-                                        : subLists[e.key.toString()] != null
-                                            ? subLists[e.key.toString()]!
-                                                .map((obj) =>
-                                                    Text(obj.name.toString()))
-                                                .toList()
-                                            : [],
-                                  ),*/

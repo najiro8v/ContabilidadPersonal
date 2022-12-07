@@ -204,6 +204,11 @@ class _FinancesScreenState extends State<FinancesScreen> {
           ]),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed("registries");
+          },
+          child: const Icon(Icons.format_list_bulleted_sharp)),
     );
   }
 }
