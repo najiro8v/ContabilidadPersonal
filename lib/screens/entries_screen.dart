@@ -1,7 +1,9 @@
+import 'package:contabilidad/provider/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/widget/widget.dart';
 import 'package:contabilidad/models/models.dart';
+import 'package:provider/provider.dart';
 
 class EntriesScreen extends StatefulWidget {
   const EntriesScreen({Key? key}) : super(key: key);
@@ -21,6 +23,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   getEntrys({int toast = 0}) async {
     listado = await ValueEntryController.get();
     listado.sort((a, b) => a.categoryName!.compareTo(b.categoryName!));
+
     final dateFilter = formDate["dateI"] ?? DateTime.now();
     final m = dateFilter.month < 10
         ? "0${dateFilter.toUtc().month}"
@@ -62,6 +65,9 @@ class _EntriesScreenState extends State<EntriesScreen> {
                 children: [
                   InputDatePickerFormField(
                       onDateSaved: (value) {
+                        Provider.of<CategoryFilterProvider>(context,
+                                listen: false)
+                            .setInitialDate(value);
                         formDate["dateI"] = value;
                         setState(() {});
                       },
@@ -113,38 +119,41 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dateI = Provider.of<CategoryFilterProvider>(
+      context,
+    ).getInitialDate();
+    formDate["dateI"] = dateI;
+    setState(() {});
     return Scaffold(
         appBar: AppBar(title: const Text("Mis Registros")),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blueGrey.withOpacity(0.5),
-            child: const Icon(Icons.date_range_outlined),
-            onPressed: () async {
-              await _openDatePicker();
-            }),
-        extendBody: true,
-        body: ListView(children: [
-          const _TitleFilter(),
+        body: Column(children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: _TitleFilter(),
+          ),
           listado.isEmpty
               ? const _NotList()
-              : ListView(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemBuilder: (_, index) {
-                          return ElementCustomEdit(
-                              emitFunction: getEntrys(),
-                              padding: 10,
-                              label: "lolo",
-                              obj: listado[index],
-                              deleteFunction: deleteFunction,
-                              updateFunction: updateFunction);
-                        },
-                        itemCount: listado.isEmpty ? 1 : listado.length,
-                      ),
-                    ]),
+              : Expanded(
+                  child: ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (_, index) {
+                            return ElementCustomEdit(
+                                emitFunction: getEntrys(),
+                                padding: 10,
+                                label: "lolo",
+                                obj: listado[index],
+                                deleteFunction: deleteFunction,
+                                updateFunction: updateFunction);
+                          },
+                          itemCount: listado.isEmpty ? 1 : listado.length,
+                        ),
+                      ]),
+                ),
         ]));
   }
 }
@@ -158,18 +167,6 @@ class _TitleFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 100,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: ((context, index) {
-              return IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.access_time_filled));
-            }),
-            shrinkWrap: true,
-            itemCount: 25,
-          ),
-        ),
         Row(
           children: [
             Expanded(child: TextFormField()),
@@ -182,6 +179,21 @@ class _TitleFilter extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: ((context, index) {
+              return IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.access_time_filled));
+            }),
+            shrinkWrap: true,
+            itemCount: 25,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -189,7 +201,11 @@ class _TitleFilter extends StatelessWidget {
                 onPressed: () {},
                 icon: const Icon(Icons.filter_list),
                 label: const Text("Filtros")),
-            TextButton(onPressed: () {}, child: const Text("..."))
+            TextButton(
+                onPressed: () async {
+                  // await _openDatePicker();
+                },
+                child: const Text("..."))
           ],
         ),
         const SizedBox(
