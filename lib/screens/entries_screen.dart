@@ -169,11 +169,29 @@ class _TitleFilter extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: TextFormField()),
+            Expanded(
+                child: DropdownButtonFormField(
+                    decoration: const InputDecoration(labelText: "Categorias"),
+                    value: 0,
+                    items: [
+                      DropdownMenuItem(
+                        value: 0,
+                        child: Icon(Icons.abc),
+                      ),
+                      const DropdownMenuItem(
+                        value: 1,
+                        child: Text("b"),
+                      )
+                    ],
+                    onChanged: (value) {})),
             const SizedBox(
               width: 10,
             ),
-            Expanded(child: TextFormField()),
+            Expanded(
+                child: TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.search_sharp), labelText: "Busqueda"),
+            )),
           ],
         ),
         const SizedBox(
