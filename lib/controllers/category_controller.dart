@@ -5,8 +5,12 @@ class CategoryController {
   static const String dbName = "Category";
   static Future<List<Category>> get() async {
     List<dynamic> listado = await DatabaseSQL.get(dbName);
-    return List.generate(listado.length,
-        (i) => Category(key: listado[i]['key'], name: listado[i]['name']));
+    return List.generate(
+        listado.length,
+        (i) => Category(
+            key: listado[i]['key'],
+            name: listado[i]['name'],
+            id: listado[i]['Id_Category']));
   }
 
   static Future<int> insert(Category category) async {

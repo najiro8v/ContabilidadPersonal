@@ -1,11 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:contabilidad/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/models/finance_option.dart';
 import "package:contabilidad/widget/widget.dart";
 import 'package:contabilidad/models/models.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/providers.dart';
+
+import "./registries/registries_filter.screen.dart";
 
 class FinancesScreen extends StatefulWidget {
   const FinancesScreen({Key? key}) : super(key: key);
@@ -104,6 +110,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
+            _TitleFilter(),
             DropdownButtonFormField(
                 value: keyOption,
                 items: [
@@ -209,6 +216,113 @@ class _FinancesScreenState extends State<FinancesScreen> {
             Navigator.of(context).pushNamed("registries");
           },
           child: const Icon(Icons.format_list_bulleted_sharp)),
+    );
+  }
+}
+
+class _TitleFilter extends StatelessWidget {
+  const _TitleFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var categoP = Provider.of<DbProvider>(context);
+    categoP.getCategorias();
+    String? pro = Provider.of<CategoryFilterProvider>(context).descr;
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+                child: DropdownButtonFormField(
+                    decoration: const InputDecoration(labelText: "Categorias"),
+                    items: /* [
+                      DropdownMenuItem(
+                        value: 0,
+                        child: Icon(Icons.abc),
+                      ),
+                      const DropdownMenuItem(
+                        value: 1,
+                        child: Text("b"),
+                      )
+                    ]*/
+                        categoP.categorias != null
+                            ? categoP.categorias
+                                ?.map((Category e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: Text(e.name!),
+                                    ))
+                                .toList()
+                            : [
+                                DropdownMenuItem(
+                                  value: 0,
+                                  child: Icon(Icons.abc),
+                                ),
+                                const DropdownMenuItem(
+                                  value: 1,
+                                  child: Text("b"),
+                                )
+                              ],
+                    onChanged: (value) {
+                      categoP.setSubCategorias(value.toString());
+                    })),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+                child: TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.search_sharp), labelText: "Busqueda"),
+            )),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          height: 50,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: ((context, index) {
+              Entry register = categoP.registros![index];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.access_time_filled),
+                  label: Text(register.name!),
+                ),
+              );
+            }),
+            shrinkWrap: true,
+            itemCount: categoP.registros!.length,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          const RegistriesFilterScreen(),
+                    ),
+                  );
+                },
+                child: const Text("..."))
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
     );
   }
 }

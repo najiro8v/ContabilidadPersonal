@@ -1,4 +1,5 @@
 import 'package:contabilidad/provider/category_filter_provider.dart';
+import 'package:contabilidad/provider/db_provider.dart';
 import 'package:contabilidad/themes/app_themes.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (_) => CategoryFilterProvider(initialDate: DateTime.now()))
+          create: (_) => CategoryFilterProvider(initialDate: DateTime.now()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DbProvider(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

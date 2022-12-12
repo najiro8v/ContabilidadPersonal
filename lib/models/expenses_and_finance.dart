@@ -1,7 +1,8 @@
 class Category {
   final String? name;
   final String? key;
-  Category({required this.name, required this.key});
+  final int? id;
+  Category({required this.name, required this.key, this.id});
 
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key};
