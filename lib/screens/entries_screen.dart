@@ -55,48 +55,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
     return await ValueEntryController.delete(id);
   }
 
-  Future _openDatePicker() async => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: const Text("Periodo de las entradas"),
-            content: Form(
-              key: myFormKey,
-              child: Column(
-                children: [
-                  InputDatePickerFormField(
-                      onDateSaved: (value) {
-                        Provider.of<CategoryFilterProvider>(context,
-                                listen: false)
-                            .setInitialDate(value);
-                        formDate["dateI"] = value;
-                        setState(() {});
-                      },
-                      fieldLabelText: "Fecha incial",
-                      initialDate: formDate["dateI"] ?? DateTime.now(),
-                      firstDate: DateTime(DateTime.now().year - 20,
-                          DateTime.now().month, DateTime.now().day),
-                      lastDate: DateTime(DateTime.now().year + 20,
-                          DateTime.now().month, DateTime.now().day),
-                      onDateSubmitted: (value) {
-                        formDate["dateI"] = value;
-                        setState(() {});
-                      },
-                      autofocus: true),
-                ],
-              ),
-            ),
-            actionsAlignment: MainAxisAlignment.spaceAround,
-            actions: [
-              TextButton(
-                onPressed: _return,
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.deepOrange[700]),
-                child: const Text("Cancelar"),
-              ),
-              TextButton(onPressed: submit, child: const Text("Guardar"))
-            ],
-          ));
-
   submit() async {
     myFormKey.currentState!.save();
     if (!myFormKey.currentState!.validate()) {
@@ -104,10 +62,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
     }
     await getEntrys();
     if (!mounted) return;
-    Navigator.of(context).pop();
-  }
-
-  _return() {
     Navigator.of(context).pop();
   }
 
@@ -173,12 +127,12 @@ class _TitleFilter extends StatelessWidget {
                 child: DropdownButtonFormField(
                     decoration: const InputDecoration(labelText: "Categorias"),
                     value: 0,
-                    items: [
+                    items: const [
                       DropdownMenuItem(
                         value: 0,
                         child: Icon(Icons.abc),
                       ),
-                      const DropdownMenuItem(
+                      DropdownMenuItem(
                         value: 1,
                         child: Text("b"),
                       )

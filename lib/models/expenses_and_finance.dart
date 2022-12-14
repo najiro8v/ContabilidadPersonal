@@ -20,9 +20,9 @@ class Type {
 
 class Entry {
   final int? id;
-  final String key;
-  final String? name;
-  final double? value;
+  String key;
+  String? name;
+  double? value;
   final int? category;
   final String? categoryKey;
   final String? categoryName;

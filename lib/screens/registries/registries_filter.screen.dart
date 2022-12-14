@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
 import 'package:contabilidad/provider/category_filter_provider.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,9 +8,7 @@ class RegistriesFilterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const arrayI = [1, 2, 3, 4, 5, 6];
-
-    final _iconList = <_CustomIcon>[
+    final iconList = <_CustomIcon>[
       _CustomIcon(icon: Icons.cake, text: "cake"),
       _CustomIcon(icon: Icons.add_location_sharp, text: "localition"),
       _CustomIcon(icon: Icons.zoom_in_outlined, text: "zoom"),
@@ -23,16 +19,16 @@ class RegistriesFilterScreen extends StatelessWidget {
       _CustomIcon(icon: Icons.mail, text: "mail"),
     ];
     return Scaffold(
-      appBar: AppBar(title: Text("Filtros")),
+      appBar: AppBar(title: const Text("Filtros")),
       body: Container(
         margin: const EdgeInsets.all(5),
         alignment: Alignment.center,
         child: GridView.count(
           semanticChildCount: 2,
           crossAxisCount: 3,
-          children: _iconList.map((e) {
+          children: iconList.map((e) {
             return Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: TextButton.icon(
                   onPressed: () {
                     Provider.of<CategoryFilterProvider>(context, listen: false)

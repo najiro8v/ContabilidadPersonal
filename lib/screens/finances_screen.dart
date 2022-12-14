@@ -9,8 +9,6 @@ import "package:contabilidad/widget/widget.dart";
 import 'package:contabilidad/models/models.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/providers.dart';
-
 import "./registries/registries_filter.screen.dart";
 
 class FinancesScreen extends StatefulWidget {
@@ -110,7 +108,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
-            _TitleFilter(),
+            const _TitleFilter(),
             DropdownButtonFormField(
                 value: keyOption,
                 items: [
@@ -229,7 +227,6 @@ class _TitleFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     var categoP = Provider.of<DbProvider>(context);
     categoP.getCategorias();
-    String? pro = Provider.of<CategoryFilterProvider>(context).descr;
 
     return Column(
       children: [
@@ -255,12 +252,12 @@ class _TitleFilter extends StatelessWidget {
                                       child: Text(e.name!),
                                     ))
                                 .toList()
-                            : [
+                            : const [
                                 DropdownMenuItem(
                                   value: 0,
                                   child: Icon(Icons.abc),
                                 ),
-                                const DropdownMenuItem(
+                                DropdownMenuItem(
                                   value: 1,
                                   child: Text("b"),
                                 )

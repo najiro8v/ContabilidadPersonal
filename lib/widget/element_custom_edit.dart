@@ -163,7 +163,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                             bool isError = false;
                             try {
                               int id = obj is Map ? obj!["id"] : obj.id;
-                              await widget.delete(id);
+                              await widget.delete(id, context);
                               await widget.emitFunction;
                             } catch (e) {
                               developer.log('log me', name: 'my.app.category');

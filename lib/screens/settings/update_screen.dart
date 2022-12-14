@@ -3,6 +3,8 @@ import 'package:contabilidad/models/expenses_and_finance.dart';
 import 'package:contabilidad/models/query_option.dart';
 import 'package:contabilidad/widget/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:contabilidad/provider/providers.dart';
+import 'package:provider/provider.dart';
 
 class UpdateScreen extends StatefulWidget {
   const UpdateScreen({Key? key}) : super(key: key);
@@ -48,11 +50,10 @@ class _UpdateScreenState extends State<UpdateScreen> {
     return await EntryController.update(updateEntry, id);
   }
 
-  Future<dynamic> deleteFunction(id) async {
-    await EntryController.delete(id);
-    subLists[lastKey]!.removeWhere((item) => item["id"] == id);
-    setState(() {});
-    return lastKey;
+  Future<dynamic> deleteFunction(id, context) async {
+    final dbP = Provider.of<DbProvider>(context, listen: false);
+    dbP.deleteEntry(id);
+    return dbP.lastOpen;
   }
 
   @override
@@ -63,19 +64,22 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bd = Provider.of<DbProvider>(context);
+    bd.getCategorias();
+
     return (Scaffold(
       appBar: AppBar(title: const Text("Update Setting")),
       body: SingleChildScrollView(
         child: ExpansionPanelList.radio(
-            children: data.isEmpty
+            children: bd.categorias!.isEmpty
                 ? []
-                : data
+                : bd.categorias!
                     .map((e) => ExpansionPanelRadio(
                           canTapOnHeader: true,
                           value: e.key.toString(),
                           headerBuilder: (context, isExpanded) {
                             if (isExpanded) {
-                              getSubList(e.key.toString());
+                              bd.getSubCategorias(e.key!);
                             }
                             return Row(
                                 mainAxisAlignment:
@@ -109,22 +113,50 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             child: ListView(
                               primary: false,
                               shrinkWrap: true,
-                              children: subLists.isEmpty
+                              children: bd.subCategory.isEmpty
                                   ? []
-                                  : subLists[e.key.toString()] != null
-                                      ? subLists[e.key.toString()]!
-                                          .map((obj) => Container(
-                                              margin: const EdgeInsets.all(10),
-                                              child: ElementCustomEdit(
-                                                emitFunction: getSubList(
-                                                    e.key.toString()),
-                                                deleteFunction: deleteFunction,
-                                                updateFunction: updateFunction,
-                                                label: "",
-                                                obj: obj,
-                                                padding: 10,
-                                              )))
-                                          .toList()
+                                  : bd.subCategory[e.key.toString()] != null
+                                      ? [
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 5, top: 5, bottom: 10),
+                                            alignment: Alignment.bottomRight,
+                                            child: TextButton.icon(
+                                                onPressed: () {
+                                                  Navigator.pushNamed(context,
+                                                      'subcategoryScreen',
+                                                      arguments: Entry(
+                                                          name: "",
+                                                          value: 0,
+                                                          categoryName: e.name,
+                                                          category: e.id,
+                                                          categoryKey: e.key,
+                                                          key: ""));
+                                                },
+                                                label: const Text("Add"),
+                                                icon: const Icon(
+                                                  Icons.add,
+                                                  size: 25,
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                          ...bd.subCategory[e.key.toString()]!
+                                              .map((obj) => Container(
+                                                  margin:
+                                                      const EdgeInsets.all(10),
+                                                  child: ElementCustomEdit(
+                                                    emitFunction: getSubList(
+                                                        e.key.toString()),
+                                                    deleteFunction:
+                                                        deleteFunction,
+                                                    updateFunction:
+                                                        updateFunction,
+                                                    label: "",
+                                                    obj: obj,
+                                                    padding: 10,
+                                                  )))
+                                              .toList(),
+                                        ]
                                       : [],
                             ),
                           ),

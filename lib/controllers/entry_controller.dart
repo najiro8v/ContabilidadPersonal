@@ -21,9 +21,9 @@ class EntryController {
             id: listado[i]['Id_Entry']));
   }
 
-  static Future<List<Entry>> getByCategory(String id_category) async {
+  static Future<List<Entry>> getByCategory(String idCategory) async {
     String query =
-        "select t0.value, t0.category_id, t0.key, t0.name from $dbName as T0 where T0.category_id = $id_category ORDER BY t0.name";
+        "select t0.value, t0.category_id, t0.key, t0.name from $dbName as T0 where T0.category_id = $idCategory ORDER BY t0.name";
     List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
     return List.generate(
         listado.length,
