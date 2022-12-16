@@ -144,18 +144,21 @@ class _PanelRadio {
           child: ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: 1,
+              itemCount: bd.subCategory[e.key] == null
+                  ? 1
+                  : bd.subCategory[e.key]!.length + 1,
               itemBuilder: (context, index) {
-                index;
                 if (bd.subCategory[e.key] == null) {
                   return Container();
+                } else if (index == 0) {
+                  return Container();
                 }
-                var entry = bd.subCategory[e.key]![index];
+                var entry = bd.subCategory[e.key]![index - 1];
                 return Container(
                     margin: const EdgeInsets.all(10),
                     child: ElementCustomEdit(
                       emitFunction: bd.getSubCategorias(e.key!),
-                      deleteFunction: updateFunction,
+                      deleteFunction: deleteFunction,
                       updateFunction: updateFunction,
                       label: "",
                       obj: entry,
