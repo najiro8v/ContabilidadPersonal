@@ -8,13 +8,11 @@ class SubCategoryAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<DbProvider>(
-      context,
-    );
+    final categoryProvider = Provider.of<DbProvider>(context, listen: false);
     Entry categoryEdit = ModalRoute.of(context)!.settings.arguments != null
         ? ModalRoute.of(context)!.settings.arguments as Entry
         : Entry(name: "", value: 0, key: "", category: 0);
-    categoryProvider.setSubCategory(categoryEdit);
+    categoryProvider.entry = categoryEdit;
     return Scaffold(
         appBar: AppBar(title: const Center(child: Text("Mis Categoria"))),
         body: ListView(

@@ -72,10 +72,11 @@ class EntryController {
     return await DatabaseSQL.update(dbName, value, id: id, idName: "Id_Entry");
   }
 
-  static Future<void> delete(int id) async {
+  static Future<int> delete(int id) async {
     var delete = await DatabaseSQL.delete(dbName, id: id, idName: "Id_Entry");
     if (delete < 0) {
       throw Error();
     }
+    return delete;
   }
 }

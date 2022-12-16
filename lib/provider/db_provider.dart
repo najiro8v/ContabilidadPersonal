@@ -29,21 +29,22 @@ class DbProvider extends ChangeNotifier {
   }
 
   getSubCategorias(String key) async {
-    int idCategory =
-        await CategoryController.getId(Category(key: key, name: ""));
-    final List<dynamic> listado = await EntryController.getBy(
-        queryOption: QueryOption(
-            columns: ["name", "key", "value", "Id_Entry", "category_id"],
-            where: "category_id = ? and name <> '' ",
-            whereArgs: [idCategory],
-            orderBy: "name"));
     if (!subCategory.containsKey(key)) {
+      int idCategory =
+          await CategoryController.getId(Category(key: key, name: ""));
+      final List<dynamic> listado = await EntryController.getBy(
+          queryOption: QueryOption(
+              columns: ["name", "key", "value", "Id_Entry", "category_id"],
+              where: "category_id = ? and name <> '' ",
+              whereArgs: [idCategory],
+              orderBy: "name"));
+
       subCategory.addAll({key: listado});
-    } else {
-      subCategory[key] = listado;
+      notifyListeners();
     }
-    lastOpen = key;
-    notifyListeners();
+    if (lastOpen != key) {
+      lastOpen = key;
+    }
   }
 
   setSubCategorias(String idCategory) async {
@@ -52,13 +53,24 @@ class DbProvider extends ChangeNotifier {
   }
 
   saveSubCategory(Entry entry, String keyCategory) async {
-    await EntryController.insert(entry);
-    await getSubCategorias(keyCategory);
+    int wasInsert = await EntryController.insert(entry);
+    if (wasInsert > 0) {
+      subCategory[keyCategory]?.add(entry.toMap());
+    }
+    notifyListeners();
+  }
+
+  deleteSubCategory(int id) async {
+    int wasDelete = await EntryController.delete(id);
+    if (wasDelete > 0) {
+      subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
+      notifyListeners();
+    }
   }
 
   deleteEntry(int id) async {
     await EntryController.delete(id);
     subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
-    await getSubCategorias(lastOpen);
+    notifyListeners();
   }
 }

@@ -50,12 +50,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
     return await EntryController.update(updateEntry, id);
   }
 
-  Future<dynamic> deleteFunction(id, context) async {
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-    dbP.deleteEntry(id);
-    return dbP.lastOpen;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -64,7 +58,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bd = Provider.of<DbProvider>(context);
+    final bd = Provider.of<DbProvider>(context, listen: false);
     bd.getCategorias();
 
     return (Scaffold(
@@ -106,6 +100,12 @@ class _panelRadio {
     return await EntryController.update(updateEntry, id);
   }
 
+  Future<dynamic> deleteFunction(id, context) async {
+    final dbP = Provider.of<DbProvider>(context, listen: false);
+    await dbP.deleteSubCategory(id);
+    return dbP.lastOpen;
+  }
+
   ExpansionPanelRadio expansionPanelRadio() {
     final bd = Provider.of<DbProvider>(context);
     return ExpansionPanelRadio(
@@ -140,49 +140,30 @@ class _panelRadio {
             ]);
       },
       body: SingleChildScrollView(
-        child: ListView(
+        child: ListView.builder(
           primary: false,
           shrinkWrap: true,
-          children: bd.subCategory.isEmpty
-              ? []
-              : bd.subCategory[e.key.toString()] != null
-                  ? [
-                      Container(
-                        margin:
-                            const EdgeInsets.only(right: 5, top: 5, bottom: 10),
-                        alignment: Alignment.bottomRight,
-                        child: TextButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(context, 'subcategoryScreen',
-                                  arguments: Entry(
-                                      name: "",
-                                      value: 0,
-                                      categoryName: e.name,
-                                      category: e.id,
-                                      categoryKey: e.key,
-                                      key: ""));
-                            },
-                            label: const Text("Add"),
-                            icon: const Icon(
-                              Icons.add,
-                              size: 25,
-                              color: Colors.white,
-                            )),
-                      ),
-                      ...bd.subCategory[e.key.toString()]!
-                          .map((obj) => Container(
-                              margin: const EdgeInsets.all(10),
-                              child: ElementCustomEdit(
-                                emitFunction: bd.getSubCategorias(e.key!),
-                                deleteFunction: updateFunction,
-                                updateFunction: updateFunction,
-                                label: "",
-                                obj: obj,
-                                padding: 10,
-                              )))
-                          .toList(),
-                    ]
-                  : [],
+          itemBuilder: (context, index) => Container(
+            margin: const EdgeInsets.only(right: 5, top: 5, bottom: 10),
+            alignment: Alignment.bottomRight,
+            child: TextButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'subcategoryScreen',
+                      arguments: Entry(
+                          name: "",
+                          value: 0,
+                          categoryName: e.name,
+                          category: e.id,
+                          categoryKey: e.key,
+                          key: ""));
+                },
+                label: const Text("Add"),
+                icon: const Icon(
+                  Icons.add,
+                  size: 25,
+                  color: Colors.white,
+                )),
+          ),
         ),
       ),
     );

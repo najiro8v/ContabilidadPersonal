@@ -1,6 +1,4 @@
-import 'package:contabilidad/provider/category_filter_provider.dart';
 import 'package:contabilidad/provider/db_provider.dart';
-import 'package:contabilidad/provider/category_provider.dart';
 import 'package:contabilidad/themes/app_themes.dart';
 import 'package:flutter/material.dart';
 

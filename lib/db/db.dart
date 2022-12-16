@@ -177,13 +177,16 @@ class DatabaseSQL {
 
   static Future<int> insert(String dbName, dynamic model) async {
     Database database = await instance.database;
-    return database.insert(dbName, model.toMap());
+
+    final response = await database.insert(dbName, model.toMap());
+
+    return response;
   }
 
   static Future<int> delete(String dbName,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    return database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
+    return await database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
   }
 
   static Future<void> update(String dbName, dynamic model,
