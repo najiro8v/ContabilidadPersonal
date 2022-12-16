@@ -1,7 +1,7 @@
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/models/expenses_and_finance.dart';
 import 'package:contabilidad/models/query_option.dart';
-import 'package:contabilidad/widget/widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:contabilidad/provider/providers.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +68,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
             children: bd.categorias!.isEmpty
                 ? []
                 : bd.categorias!
-                    .map((e) => _panelRadio(e: e, context: context)
+                    .map((e) => _PanelRadio(e: e, context: context)
                         .expansionPanelRadio())
                     .toList()),
       ),
@@ -87,10 +87,10 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 }
 
-class _panelRadio {
+class _PanelRadio {
   Category e;
   BuildContext context;
-  _panelRadio({required this.e, required this.context});
+  _PanelRadio({required this.e, required this.context});
   Future<dynamic> updateFunction(obj, id, formValues) async {
     final updateEntry = Entry(
         key: obj["key"],
@@ -143,6 +143,7 @@ class _panelRadio {
         child: ListView.builder(
           primary: false,
           shrinkWrap: true,
+          itemCount: 3,
           itemBuilder: (context, index) => Container(
             margin: const EdgeInsets.only(right: 5, top: 5, bottom: 10),
             alignment: Alignment.bottomRight,
