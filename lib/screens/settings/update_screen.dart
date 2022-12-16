@@ -151,7 +151,7 @@ class _PanelRadio {
                 if (bd.subCategory[e.key] == null) {
                   return Container();
                 } else if (index == 0) {
-                  return Container();
+                  return _AddWidget(entry: e);
                 }
                 var entry = bd.subCategory[e.key]![index - 1];
                 return Container(
@@ -166,5 +166,34 @@ class _PanelRadio {
                     ));
               }),
         ));
+  }
+}
+
+class _AddWidget extends StatelessWidget {
+  final Category entry;
+  const _AddWidget({required this.entry});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 5, top: 5, bottom: 10),
+      alignment: Alignment.bottomRight,
+      child: TextButton.icon(
+          onPressed: () {
+            Navigator.pushNamed(context, 'subcategoryScreen',
+                arguments: Entry(
+                    name: "",
+                    value: 0,
+                    categoryName: entry.name,
+                    category: entry.id,
+                    categoryKey: entry.key,
+                    key: ""));
+          },
+          label: const Text("Add"),
+          icon: const Icon(
+            Icons.add,
+            size: 25,
+            color: Colors.white,
+          )),
+    );
   }
 }

@@ -38,6 +38,16 @@ class Entry {
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key, "category_id": category, "value": value};
   }
+
+  Map<String, dynamic> toMapAll() {
+    return {
+      "name": name,
+      "key": key,
+      "category_id": category,
+      "value": value,
+      "id": id
+    };
+  }
 }
 
 class ValueEntry {

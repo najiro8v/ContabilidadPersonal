@@ -8,10 +8,11 @@ class SubCategoryAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<DbProvider>(context, listen: false);
+    final categoryProvider = Provider.of<DbProvider>(context);
     Entry categoryEdit = ModalRoute.of(context)!.settings.arguments != null
         ? ModalRoute.of(context)!.settings.arguments as Entry
         : Entry(name: "", value: 0, key: "", category: 0);
+    final bool edit = categoryEdit.key == "" ? false : true;
     categoryProvider.entry = categoryEdit;
     return Scaffold(
         appBar: AppBar(title: const Center(child: Text("Mis Categoria"))),
@@ -39,12 +40,18 @@ class SubCategoryAdd extends StatelessWidget {
                 }),
             TextButton(
                 onPressed: () async {
-                  var categoP = Provider.of<DbProvider>(context, listen: false);
-
-                  await categoP.saveSubCategory(
+                  bool saved = await categoryProvider.saveSubCategory(
                       categoryProvider.entry!, categoryEdit.categoryKey!);
+                  if (saved) {
+                    categoryProvider.entry?.name = "";
+                    categoryProvider.entry?.key = "";
+                    categoryProvider.entry?.value = 0;
+                    categoryEdit.name = "";
+                    categoryEdit.key = "";
+                    categoryEdit.value = 0;
+                  }
                 },
-                child: Text(categoryEdit.key == "" ? "Guardar" : "Editar"))
+                child: Text(edit ? "Guardar" : "Editar"))
           ],
         ));
   }

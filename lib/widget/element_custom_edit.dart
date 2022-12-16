@@ -164,7 +164,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                             try {
                               int id = obj is Map ? obj!["id"] : obj.id;
                               await widget.delete(id, context);
-                              await widget.emitFunction;
+                              // await widget.emitFunction;
                             } catch (e) {
                               developer.log('log me', name: 'my.app.category');
                               msg = "Error en eliminación de registro";

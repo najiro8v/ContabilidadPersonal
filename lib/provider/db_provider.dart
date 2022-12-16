@@ -28,8 +28,8 @@ class DbProvider extends ChangeNotifier {
     return categorias;
   }
 
-  getSubCategorias(String key) async {
-    if (!subCategory.containsKey(key)) {
+  getSubCategorias(String key, {bool forceUpdate = false}) async {
+    if (!subCategory.containsKey(key) || forceUpdate) {
       int idCategory =
           await CategoryController.getId(Category(key: key, name: ""));
       final List<dynamic> listado = await EntryController.getBy(
@@ -55,16 +55,24 @@ class DbProvider extends ChangeNotifier {
   saveSubCategory(Entry entry, String keyCategory) async {
     int wasInsert = await EntryController.insert(entry);
     if (wasInsert > 0) {
-      subCategory[keyCategory]?.add(entry.toMap());
+      final newEntry = Entry(
+          key: entry.key,
+          value: entry.value,
+          category: entry.category,
+          name: entry.name,
+          id: wasInsert);
+      subCategory[keyCategory]?.add(newEntry.toMapAll());
     }
+
     notifyListeners();
+    return wasInsert > 0 ? true : false;
   }
 
   deleteSubCategory(int id) async {
     int wasDelete = await EntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
-      notifyListeners();
+      await getSubCategorias(lastOpen, forceUpdate: true);
     }
   }
 
