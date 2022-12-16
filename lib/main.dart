@@ -20,14 +20,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => CategoryFilterProvider(initialDate: DateTime.now()),
-        ),
-        ChangeNotifierProvider(
           create: (_) => DbProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => CategoryProvider(),
-        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

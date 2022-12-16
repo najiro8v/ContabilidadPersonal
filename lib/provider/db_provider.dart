@@ -10,6 +10,12 @@ class DbProvider extends ChangeNotifier {
   List<Entry>? registros = [];
   String lastOpen = "";
   Map<String, List<dynamic>> subCategory = {};
+  Entry? entry;
+  DateTime? initialDate;
+  DateTime? endDate;
+  double? precio;
+  double? cantidad;
+  String? descr;
   DbProvider();
 
   getCategorias<Category>() async {

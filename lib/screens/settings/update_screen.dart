@@ -74,93 +74,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
             children: bd.categorias!.isEmpty
                 ? []
                 : bd.categorias!
-                    .map((e) => ExpansionPanelRadio(
-                          canTapOnHeader: true,
-                          value: e.key.toString(),
-                          headerBuilder: (context, isExpanded) {
-                            if (isExpanded) {
-                              bd.getSubCategorias(e.key!);
-                            }
-                            return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Text("${e.name}")),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                              context, 'categoryScreen',
-                                              arguments: e);
-                                        },
-                                        icon: const Icon(Icons.edit),
-                                        color: Colors.blue,
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon:
-                                              const Icon(Icons.delete_forever),
-                                          color: Colors.red)
-                                    ],
-                                  )
-                                ]);
-                          },
-                          body: SingleChildScrollView(
-                            child: ListView(
-                              primary: false,
-                              shrinkWrap: true,
-                              children: bd.subCategory.isEmpty
-                                  ? []
-                                  : bd.subCategory[e.key.toString()] != null
-                                      ? [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 5, top: 5, bottom: 10),
-                                            alignment: Alignment.bottomRight,
-                                            child: TextButton.icon(
-                                                onPressed: () {
-                                                  Navigator.pushNamed(context,
-                                                      'subcategoryScreen',
-                                                      arguments: Entry(
-                                                          name: "",
-                                                          value: 0,
-                                                          categoryName: e.name,
-                                                          category: e.id,
-                                                          categoryKey: e.key,
-                                                          key: ""));
-                                                },
-                                                label: const Text("Add"),
-                                                icon: const Icon(
-                                                  Icons.add,
-                                                  size: 25,
-                                                  color: Colors.white,
-                                                )),
-                                          ),
-                                          ...bd.subCategory[e.key.toString()]!
-                                              .map((obj) => Container(
-                                                  margin:
-                                                      const EdgeInsets.all(10),
-                                                  child: ElementCustomEdit(
-                                                    emitFunction: getSubList(
-                                                        e.key.toString()),
-                                                    deleteFunction:
-                                                        deleteFunction,
-                                                    updateFunction:
-                                                        updateFunction,
-                                                    label: "",
-                                                    obj: obj,
-                                                    padding: 10,
-                                                  )))
-                                              .toList(),
-                                        ]
-                                      : [],
-                            ),
-                          ),
-                        ))
+                    .map((e) => _panelRadio(e: e, context: context)
+                        .expansionPanelRadio())
                     .toList()),
       ),
       floatingActionButton: FloatingActionButton(
@@ -175,5 +90,101 @@ class _UpdateScreenState extends State<UpdateScreen> {
         ),
       ),
     ));
+  }
+}
+
+class _panelRadio {
+  Category e;
+  BuildContext context;
+  _panelRadio({required this.e, required this.context});
+  Future<dynamic> updateFunction(obj, id, formValues) async {
+    final updateEntry = Entry(
+        key: obj["key"],
+        name: formValues["desc"],
+        value: double.parse(formValues["value"]),
+        category: obj["category_id"]);
+    return await EntryController.update(updateEntry, id);
+  }
+
+  ExpansionPanelRadio expansionPanelRadio() {
+    final bd = Provider.of<DbProvider>(context);
+    return ExpansionPanelRadio(
+      canTapOnHeader: true,
+      value: e.key.toString(),
+      headerBuilder: (context, isExpanded) {
+        if (isExpanded) {
+          bd.getSubCategorias(e.key!);
+        }
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text("${e.name}")),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'categoryScreen',
+                          arguments: e);
+                    },
+                    icon: const Icon(Icons.edit),
+                    color: Colors.blue,
+                  ),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.delete_forever),
+                      color: Colors.red)
+                ],
+              )
+            ]);
+      },
+      body: SingleChildScrollView(
+        child: ListView(
+          primary: false,
+          shrinkWrap: true,
+          children: bd.subCategory.isEmpty
+              ? []
+              : bd.subCategory[e.key.toString()] != null
+                  ? [
+                      Container(
+                        margin:
+                            const EdgeInsets.only(right: 5, top: 5, bottom: 10),
+                        alignment: Alignment.bottomRight,
+                        child: TextButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'subcategoryScreen',
+                                  arguments: Entry(
+                                      name: "",
+                                      value: 0,
+                                      categoryName: e.name,
+                                      category: e.id,
+                                      categoryKey: e.key,
+                                      key: ""));
+                            },
+                            label: const Text("Add"),
+                            icon: const Icon(
+                              Icons.add,
+                              size: 25,
+                              color: Colors.white,
+                            )),
+                      ),
+                      ...bd.subCategory[e.key.toString()]!
+                          .map((obj) => Container(
+                              margin: const EdgeInsets.all(10),
+                              child: ElementCustomEdit(
+                                emitFunction: bd.getSubCategorias(e.key!),
+                                deleteFunction: updateFunction,
+                                updateFunction: updateFunction,
+                                label: "",
+                                obj: obj,
+                                padding: 10,
+                              )))
+                          .toList(),
+                    ]
+                  : [],
+        ),
+      ),
+    );
   }
 }

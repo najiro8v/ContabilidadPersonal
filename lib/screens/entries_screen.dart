@@ -73,10 +73,10 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateI = Provider.of<CategoryFilterProvider>(
+    final dateI = Provider.of<DbProvider>(
       context,
-    ).getInitialDate();
-    formDate["dateI"] = dateI;
+    ).initialDate;
+    formDate["dateI"] = dateI ?? DateTime.now();
     setState(() {});
     return Scaffold(
         appBar: AppBar(title: const Text("Mis Registros")),

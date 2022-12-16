@@ -8,7 +8,7 @@ class SubCategoryAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<CategoryProvider>(
+    final categoryProvider = Provider.of<DbProvider>(
       context,
     );
     Entry categoryEdit = ModalRoute.of(context)!.settings.arguments != null
