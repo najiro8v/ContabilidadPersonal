@@ -50,7 +50,7 @@ class _InputsCustomDinamycState extends State<InputsCustomDinamyc> {
           initialValue: widget.isNumber != null &&
                   widget.isNumber! &&
                   widget.initialValue.isNotEmpty
-              ? double.parse(widget.initialValue).toString()
+              ? double.tryParse(widget.initialValue).toString()
               : widget.initialValue,
           inputFormatters: widget.isNumber!
               ? [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+.?[0-9]*$'))]

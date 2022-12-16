@@ -1,6 +1,7 @@
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/models/expenses_and_finance.dart';
 import 'package:contabilidad/models/query_option.dart';
+import 'package:contabilidad/widget/widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:contabilidad/provider/providers.dart';
@@ -109,64 +110,58 @@ class _PanelRadio {
   ExpansionPanelRadio expansionPanelRadio() {
     final bd = Provider.of<DbProvider>(context);
     return ExpansionPanelRadio(
-      canTapOnHeader: true,
-      value: e.key.toString(),
-      headerBuilder: (context, isExpanded) {
-        if (isExpanded) {
-          bd.getSubCategorias(e.key!);
-        }
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text("${e.name}")),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'categoryScreen',
-                          arguments: e);
-                    },
-                    icon: const Icon(Icons.edit),
-                    color: Colors.blue,
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.delete_forever),
-                      color: Colors.red)
-                ],
-              )
-            ]);
-      },
-      body: SingleChildScrollView(
-        child: ListView.builder(
-          primary: false,
-          shrinkWrap: true,
-          itemCount: 3,
-          itemBuilder: (context, index) => Container(
-            margin: const EdgeInsets.only(right: 5, top: 5, bottom: 10),
-            alignment: Alignment.bottomRight,
-            child: TextButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(context, 'subcategoryScreen',
-                      arguments: Entry(
-                          name: "",
-                          value: 0,
-                          categoryName: e.name,
-                          category: e.id,
-                          categoryKey: e.key,
-                          key: ""));
-                },
-                label: const Text("Add"),
-                icon: const Icon(
-                  Icons.add,
-                  size: 25,
-                  color: Colors.white,
-                )),
-          ),
-        ),
-      ),
-    );
+        canTapOnHeader: true,
+        value: e.key.toString(),
+        headerBuilder: (context, isExpanded) {
+          if (isExpanded) {
+            bd.getSubCategorias(e.key!);
+          }
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text("${e.name}")),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, 'categoryScreen',
+                            arguments: e);
+                      },
+                      icon: const Icon(Icons.edit),
+                      color: Colors.blue,
+                    ),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.delete_forever),
+                        color: Colors.red)
+                  ],
+                )
+              ]);
+        },
+        body: SingleChildScrollView(
+          child: ListView.builder(
+              primary: false,
+              shrinkWrap: true,
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                index;
+                if (bd.subCategory[e.key] == null) {
+                  return Container();
+                }
+                var entry = bd.subCategory[e.key]![index];
+                return Container(
+                    margin: const EdgeInsets.all(10),
+                    child: ElementCustomEdit(
+                      emitFunction: bd.getSubCategorias(e.key!),
+                      deleteFunction: updateFunction,
+                      updateFunction: updateFunction,
+                      label: "",
+                      obj: entry,
+                      padding: 10,
+                    ));
+              }),
+        ));
   }
 }
