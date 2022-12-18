@@ -80,7 +80,8 @@ class DbProvider extends ChangeNotifier {
   saveCategory(Category category) async {
     int wasInsert = await CategoryController.insert(category);
     if (wasInsert > 0) {
-      Category newCategory = Category(name: category.name, key: category.key);
+      Category newCategory =
+          Category(name: category.name, key: category.key, enable: true);
       categorias!.add(newCategory);
       notifyListeners();
       return true;
