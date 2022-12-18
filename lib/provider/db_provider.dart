@@ -82,9 +82,23 @@ class DbProvider extends ChangeNotifier {
     if (wasInsert > 0) {
       Category newCategory = Category(name: category.name, key: category.key);
       categorias!.add(newCategory);
+      notifyListeners();
+      return true;
     }
 
-    notifyListeners();
-    return wasInsert > 0 ? true : false;
+    return false;
+  }
+
+  disableCategory(Category category) async {
+    category.enable = !category.enable!;
+    int wasUpdate = await CategoryController.updateCategory(category);
+    if (wasUpdate > 0) {
+      categorias!.firstWhere((element) => element.id == category.id).enable =
+          category.enable;
+      notifyListeners();
+      return true;
+    }
+
+    return false;
   }
 }

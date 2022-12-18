@@ -1,15 +1,21 @@
 class Category {
   String? name;
   String? key;
+  bool? enable;
   final int? id;
-  Category({required this.name, required this.key, this.id});
+  Category({required this.name, required this.key, this.id, this.enable});
 
   Map<String, dynamic> toMap() {
-    return {"name": name, "key": key};
+    return {"name": name, "key": key, "enable": enable == true ? 1 : 0};
   }
 
   Map<String, dynamic> toMapAll() {
-    return {"name": name, "key": key, "id": id};
+    return {
+      "name": name,
+      "key": key,
+      "id": id,
+      "enable": enable == true ? 1 : 0
+    };
   }
 }
 

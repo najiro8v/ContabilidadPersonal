@@ -59,7 +59,7 @@ class ValueEntryController {
     await DatabaseSQL.delete(dbName, id: id, idName: "Id_Value_Entry");
   }
 
-  static Future<void> update(ValueEntry value, int id) async {
+  static Future<int> update(ValueEntry value, int id) async {
     return await DatabaseSQL.update(dbName, value,
         id: id, idName: "Id_Value_Entry");
   }

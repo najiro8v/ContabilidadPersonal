@@ -8,7 +8,6 @@ import 'package:contabilidad/models/finance_option.dart';
 import "package:contabilidad/widget/widget.dart";
 import 'package:contabilidad/models/models.dart';
 import 'package:provider/provider.dart';
-
 import "./registries/registries_filter.screen.dart";
 
 class FinancesScreen extends StatefulWidget {
@@ -109,73 +108,42 @@ class _FinancesScreenState extends State<FinancesScreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
             const _TitleFilter(),
-            DropdownButtonFormField(
-                value: keyOption,
-                items: [
-                  ...dropdownOptions.entries
-                      .map((value) => DropdownMenuItem(
-                            value: value.key,
-                            child: Text(value.value),
-                          ))
-                      .toList()
-                ],
-                onChanged: setList),
-            DropdownButtonFormField(
-                value: subKeyOption ?? "",
-                items: lista,
-                onChanged: lista.isEmpty
-                    ? null
-                    : (value) {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        final subOption = subDropdownOption[
-                            formValues["categoryKey"]]![value];
-                        formValues["desc"] = subOption!.name;
-                        formValues["value"] = subOption.value;
-                        formValues["entryKey"] = value.toString();
-                        setState(() {});
-                      }),
-            const SizedBox(
-              height: 15,
-            ),
-            if (subKeyOption != null && subKeyOption!.isNotEmpty)
-              SwitchListTile(
-                  title: Text("Entrada de tipo $type"),
-                  value: formValues["D&C"],
-                  onChanged: ((value) {
-                    type = type.compareTo("Debito") == 0 ? "Credito" : "Debito";
-                    formValues["D&C"] = !formValues["D&C"];
-                    setState(() {});
-                  })),
+            SwitchListTile(
+                title: Text("Entrada de tipo $type"),
+                value: formValues["D&C"],
+                onChanged: ((value) {
+                  type = type.compareTo("Debito") == 0 ? "Credito" : "Debito";
+                  formValues["D&C"] = !formValues["D&C"];
+                  setState(() {});
+                })),
             const SizedBox(
               height: 8,
             ),
-            if (subKeyOption != null && subKeyOption!.isNotEmpty)
-              InputsCustomFinances(
-                initialValue: formValues["desc"]!,
-                formProprety: "desc",
-                formValues: formValues,
-                labelText: "descripción",
-                padding: 10,
-              ),
-            if (subKeyOption != null && subKeyOption!.isNotEmpty)
-              InputsCustomFinances(
-                formProprety: "value",
-                formValues: formValues,
-                initialValue: formValues["value"]!,
-                isNumber: true,
-                labelText: "valor",
-                padding: 10,
-                keyboardType: TextInputType.number,
-                onValueChanges: (value) {
-                  String valor = value.toString();
-                  if (valor.isEmpty) return;
-                  valor.replaceAll(" ", "");
-                  if (valor.contains(",")) valor = valor.replaceAll(",", ".");
-                  formValues["value"] = valor.isEmpty
-                      ? 0.toString()
-                      : double.parse(valor).toString();
-                },
-              ),
+            InputsCustomFinances(
+              initialValue: formValues["desc"]!,
+              formProprety: "desc",
+              formValues: formValues,
+              labelText: "descripción",
+              padding: 10,
+            ),
+            InputsCustomFinances(
+              formProprety: "value",
+              formValues: formValues,
+              initialValue: formValues["value"]!,
+              isNumber: true,
+              labelText: "valor",
+              padding: 10,
+              keyboardType: TextInputType.number,
+              onValueChanges: (value) {
+                String valor = value.toString();
+                if (valor.isEmpty) return;
+                valor.replaceAll(" ", "");
+                if (valor.contains(",")) valor = valor.replaceAll(",", ".");
+                formValues["value"] = valor.isEmpty
+                    ? 0.toString()
+                    : double.parse(valor).toString();
+              },
+            ),
             TextButton(
                 onPressed: () async {
                   myFormKey.currentState!.validate();
@@ -246,8 +214,9 @@ class _TitleFilter extends StatelessWidget {
                       )
                     ]*/
                         categoP.categorias != null
-                            ? categoP.categorias
-                                ?.map((Category e) => DropdownMenuItem(
+                            ? categoP.categorias!
+                                .where((element) => element.enable!)
+                                .map((Category e) => DropdownMenuItem(
                                       value: e.id,
                                       child: Text(e.name!),
                                     ))

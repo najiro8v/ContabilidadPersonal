@@ -72,9 +72,12 @@ class _PanelRadio {
                       color: Colors.blue,
                     ),
                     IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.delete_forever),
-                        color: Colors.red)
+                        onPressed: () {
+                          bd.disableCategory(e);
+                        },
+                        icon: Icon(
+                            e.enable! ? Icons.lock_open : Icons.lock_outline),
+                        color: e.enable! ? Colors.green : Colors.red)
                   ],
                 )
               ]);

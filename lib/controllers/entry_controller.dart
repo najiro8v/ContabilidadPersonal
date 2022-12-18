@@ -68,7 +68,7 @@ class EntryController {
     return listado.first.row[0];
   }
 
-  static Future<void> update(Entry value, int id) async {
+  static Future<int> update(Entry value, int id) async {
     return await DatabaseSQL.update(dbName, value, id: id, idName: "Id_Entry");
   }
 

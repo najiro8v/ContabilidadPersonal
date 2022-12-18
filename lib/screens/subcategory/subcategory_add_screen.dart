@@ -25,6 +25,7 @@ class SubCategoryAdd extends StatelessWidget {
               enabled: false,
             ),
             TextFormField(
+                autofocus: true,
                 decoration: const InputDecoration(labelText: "Nombre"),
                 initialValue: categoryEdit.name ?? "",
                 onChanged: (value) {

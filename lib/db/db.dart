@@ -18,10 +18,10 @@ class DatabaseSQL {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path,
-        version: 5, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 1, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
-  static Future<void> deleteDatabase(String path) =>
+  static Future<void> deleteDatabase() =>
       databaseFactory.deleteDatabase('finance.db');
 
   _createDB(Database db, int version) async {
@@ -29,14 +29,17 @@ class DatabaseSQL {
     String categoryTB = "CREATE TABLE IF NOT EXISTS Category (";
     categoryTB += "Id_Category INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
     categoryTB += "name TEXT NOT NULL,";
-    categoryTB += "key TEXT NOT NULL UNIQUE";
+    categoryTB += "key TEXT NOT NULL UNIQUE,";
+    categoryTB += "enable BOOLEAN NOT NULL CHECK (enable IN (0, 1))";
     categoryTB += ")";
     await db.execute(categoryTB);
     /**Values default */
-    await db.execute("INSERT INTO Category(name,key) values('Gastos','gto')");
-    await db.execute("INSERT INTO Category(name,key) values('Ingresos','ing')");
-    await db
-        .execute("INSERT INTO Category(name,key) values('Transporte','trans')");
+    await db.execute(
+        "INSERT INTO Category(name,key,enable) values('Gastos','gto',1)");
+    await db.execute(
+        "INSERT INTO Category(name,key,enable) values('Ingresos','ing',1)");
+    await db.execute(
+        "INSERT INTO Category(name,key,enable) values('Transporte','trans',1)");
 
     /*** */
 
@@ -63,18 +66,12 @@ class DatabaseSQL {
     await db.execute(entryTB);
     /**Values default */
     await db.execute(
-        "INSERT INTO Entry(category_id,name,key,value) values(1,'','gto0',0)");
-    await db.execute(
         "INSERT INTO Entry(category_id,name,key,value) values(1,'Gatos diarios','gto1',0)");
 
     //
     await db.execute(
-        "INSERT INTO Entry(category_id,name,key,value) values(2,'','ing0',0)");
-    await db.execute(
         "INSERT INTO Entry(category_id,name,key,value) values(2,'Ingresos diarios','ing1',0)");
     //
-    await db.execute(
-        "INSERT INTO Entry(category_id,name,key,value) values(3,'','trans0',395)");
     await db.execute(
         "INSERT INTO Entry(category_id,name,key,value) values(3,'Bus Lomas','trans1',395)");
     /*** */
@@ -107,17 +104,10 @@ class DatabaseSQL {
       String categoryTB = "CREATE TABLE IF NOT EXISTS Category (";
       categoryTB += "Id_Category INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       categoryTB += "name TEXT NOT NULL,";
-      categoryTB += "key TEXT NOT NULL UNIQUE";
+      categoryTB += "key TEXT NOT NULL UNIQUE,";
+      categoryTB += "enable BOOLEAN NOT NULL CHECK (enable IN (0, 1))";
       categoryTB += ")";
       await db.execute(categoryTB);
-      /**Values default */
-      /*await db.execute("INSERT INTO Category(name,key) values('Gastos','gto')");
-      await db
-          .execute("INSERT INTO Category(name,key) values('Ingresos','ing')");
-      await db.execute(
-          "INSERT INTO Category(name,key) values('Transporte','trans')");
-
-      ** */
 
       /*Type Table */
       String typeTB = "CREATE TABLE IF NOT EXISTS Type (";
@@ -125,11 +115,7 @@ class DatabaseSQL {
       typeTB += "name TEXT NOT NULL";
       typeTB += ")";
       await db.execute(typeTB);
-      /**Values default */
-      /* await db.execute("INSERT INTO Type (name) values('Debito')");
-      await db.execute("INSERT INTO Type (name) values('Crédito')");
-      ** */
-      /*Entry Table */
+
       String entryTB = "CREATE TABLE IF NOT EXISTS Entry (";
       entryTB += "Id_Entry INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,";
       entryTB += "category_id INTEGER ,";
@@ -140,15 +126,6 @@ class DatabaseSQL {
           "FOREIGN KEY (category_id) REFERENCES Category (Id_Category) ON DELETE SET NULL ON UPDATE NO ACTION";
       entryTB += ")";
       await db.execute(entryTB);
-
-      /**Values default */
-      /*await db.execute(
-          "INSERT INTO Entry(category_id,name,key,value) values(1,'Gatos diarios','gto1',0)");
-      await db.execute(
-          "INSERT INTO Entry(category_id,name,key,value) values(2,'Ingresos diarios','ing1',0)");
-      await db.execute(
-          "INSERT INTO Entry(category_id,name,key,value) values(3,'Bus Lomas','trans1',395)");
-      * */
 
       /*ValueEntry Table */
       String valueEntryTB = "CREATE TABLE IF NOT EXISTS Value_Entry (";
@@ -189,10 +166,10 @@ class DatabaseSQL {
     return await database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
   }
 
-  static Future<void> update(String dbName, dynamic model,
+  static Future<int> update(String dbName, dynamic model,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    await database
+    return await database
         .update(dbName, model.toMap(), where: "$idName = ?", whereArgs: [id]);
   }
 
