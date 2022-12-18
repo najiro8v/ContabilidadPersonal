@@ -43,12 +43,8 @@ class SubCategoryAdd extends StatelessWidget {
                   bool saved = await categoryProvider.saveSubCategory(
                       categoryProvider.entry!, categoryEdit.categoryKey!);
                   if (saved) {
-                    categoryProvider.entry?.name = "";
-                    categoryProvider.entry?.key = "";
-                    categoryProvider.entry?.value = 0;
-                    categoryEdit.name = "";
-                    categoryEdit.key = "";
-                    categoryEdit.value = 0;
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
                   }
                 },
                 child: Text(edit ? "Guardar" : "Editar"))

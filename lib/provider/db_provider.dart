@@ -72,7 +72,7 @@ class DbProvider extends ChangeNotifier {
     int wasDelete = await EntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
-      await getSubCategorias(lastOpen, forceUpdate: true);
+      notifyListeners();
     }
   }
 

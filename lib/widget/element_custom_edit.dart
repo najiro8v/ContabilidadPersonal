@@ -171,7 +171,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                               isError = true;
                             } finally {
                               _showToast(context, msg, isError: isError);
-                              setState(() {});
+                              //setState(() {});
                             }
                           },
                           child: const Icon(Icons.delete, size: 25),
