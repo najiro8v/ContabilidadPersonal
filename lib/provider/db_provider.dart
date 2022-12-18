@@ -11,6 +11,7 @@ class DbProvider extends ChangeNotifier {
   String lastOpen = "";
   Map<String, List<dynamic>> subCategory = {};
   Entry? entry;
+  Category? category;
   DateTime? initialDate;
   DateTime? endDate;
   double? precio;
@@ -76,9 +77,14 @@ class DbProvider extends ChangeNotifier {
     }
   }
 
-  deleteEntry(int id) async {
-    await EntryController.delete(id);
-    subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
+  saveCategory(Category category) async {
+    int wasInsert = await CategoryController.insert(category);
+    if (wasInsert > 0) {
+      Category newCategory = Category(name: category.name, key: category.key);
+      categorias!.add(newCategory);
+    }
+
     notifyListeners();
+    return wasInsert > 0 ? true : false;
   }
 }
