@@ -54,13 +54,16 @@ class _FinancesScreenState extends State<FinancesScreen> {
             if (entryValue.entrya != null && entryValue.entrya!.id != null)
               InputsCustom(
                 initialValue: entryValue.entrya!.name!,
+                propiedad: "desc",
                 labelText: "descripción",
                 padding: 10,
+                isNumber: false,
               ),
             if (entryValue.entrya != null && entryValue.entrya!.id != null)
               InputsCustom(
                 initialValue: entryValue.entrya!.value!.toString(),
                 isNumber: true,
+                propiedad: "value",
                 labelText: "valor",
                 padding: 10,
                 keyboardType: TextInputType.number,

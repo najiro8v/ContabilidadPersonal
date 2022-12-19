@@ -9,6 +9,8 @@ class InputsCustom extends StatelessWidget {
   final String? hintText;
   final String? labelText;
   final String? helperText;
+  final String? propiedad;
+  final String? respaldo;
   final bool? isNumber;
   final bool? enable;
   final IconData? icon;
@@ -25,6 +27,8 @@ class InputsCustom extends StatelessWidget {
   InputsCustom(
       {super.key,
       this.initialValue = "",
+      this.propiedad = "",
+      this.respaldo,
       this.isNumber = false,
       this.hintText,
       this.labelText,
@@ -39,15 +43,15 @@ class InputsCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bd = Provider.of<DbProvider>(context, listen: false);
-    var valueEntry = bd.valueEntry as Map;
+    var valueEntry = bd.valueEntry!.toMap();
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: padding!),
       child: (TextFormField(
           controller: TextEditingController(
               text: isNumber != null && isNumber!
-                  ? double.parse(valueEntry["value"]).toString()
-                  : valueEntry["value"]),
+                  ? valueEntry[propiedad!].toString()
+                  : valueEntry[propiedad!].toString()),
           inputFormatters: isNumber!
               ? [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+.?[0-9]*$'))]
               : [],
@@ -69,7 +73,7 @@ class InputsCustom extends StatelessWidget {
           onChanged: onValueChanges ??
               (isNumber != null && isNumber != true
                   ? (value) {
-                      valueEntry["value"] = value;
+                      valueEntry[propiedad!] = value;
                       text = value;
                     }
                   : (value) {
@@ -79,9 +83,8 @@ class InputsCustom extends StatelessWidget {
                       if (valor.contains(",")) {
                         valor = valor.replaceAll(",", ".");
                       }
-                      valueEntry["value"] = valor.isEmpty
-                          ? 0.toString()
-                          : double.parse(valor).toString();
+                      valueEntry[propiedad!] =
+                          valor.isEmpty ? 0 : double.parse(valor);
                     }))),
     );
   }
