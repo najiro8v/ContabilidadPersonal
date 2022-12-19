@@ -10,7 +10,6 @@ class ElementCustomEdit extends StatefulWidget {
   final String label;
   final double? padding;
   final Object obj;
-  final Future emitFunction;
   Object getObj() {
     return obj;
   }
@@ -21,7 +20,6 @@ class ElementCustomEdit extends StatefulWidget {
     super.key,
     this.padding,
     required this.obj,
-    required this.emitFunction,
     required this.label,
     required deleteFunction,
     required updateFunction,
@@ -140,7 +138,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                               try {
                                 int id = obj is Map ? obj!["id"] : obj.id;
                                 await widget.update(obj, id, formValues);
-                                await widget.emitFunction;
+                                //await widget.emitFunction;
                               } catch (e) {
                                 // print(e);
                                 msg = "Error en actualización de registro";

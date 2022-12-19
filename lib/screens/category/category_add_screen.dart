@@ -39,7 +39,7 @@ class CategoryAdd extends StatelessWidget {
                       .saveCategory(categoryProvider.category!);
                   if (saved) {
                     // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
+                    Navigator.of(context, rootNavigator: true).pop();
                   }
                 },
                 child: Text(categoryEdit.key == null ? "Guardar" : "Editar"))

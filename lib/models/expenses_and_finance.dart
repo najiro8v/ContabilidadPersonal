@@ -62,15 +62,15 @@ class Entry {
 
 class ValueEntry {
   final int? id;
-  final String? desc;
-  final double? value;
-  final int? date;
-  final double? latitud;
+  String? desc;
+  double? value;
+  int? date;
+  double? latitud;
   final double? length;
-  final int? type;
-  final int? entry;
-  final String? entryName;
-  final String? categoryName;
+  int? type;
+  int? entry;
+  String? entryName;
+  String? categoryName;
 
   ValueEntry(
       {required this.desc,

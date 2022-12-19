@@ -45,7 +45,7 @@ class SubCategoryAdd extends StatelessWidget {
                       categoryProvider.entry!, categoryEdit.categoryKey!);
                   if (saved) {
                     // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
+                    Navigator.of(context, rootNavigator: true).pop();
                   }
                 },
                 child: Text(edit ? "Guardar" : "Editar"))

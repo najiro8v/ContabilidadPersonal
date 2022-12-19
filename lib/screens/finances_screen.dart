@@ -4,11 +4,11 @@ import 'package:contabilidad/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contabilidad/controllers/controller.dart';
-import 'package:contabilidad/models/finance_option.dart';
 import "package:contabilidad/widget/widget.dart";
 import 'package:contabilidad/models/models.dart';
 import 'package:provider/provider.dart';
-import "./registries/registries_filter.screen.dart";
+
+import 'registries/registries_filter.screen.dart';
 
 class FinancesScreen extends StatefulWidget {
   const FinancesScreen({Key? key}) : super(key: key);
@@ -18,69 +18,7 @@ class FinancesScreen extends StatefulWidget {
 }
 
 class _FinancesScreenState extends State<FinancesScreen> {
-  String? keyOption;
-  String? subKeyOption;
-  String type = "";
-  List<DropdownMenuItem<String>> lista = [];
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-  final Map<String, dynamic> formValues = {
-    "category": "",
-    "categoryKey": "",
-    "entryKey": "",
-    "desc": "",
-    "value": "",
-    "D&C": false,
-  };
-
-  final Map<String, Map<String, SubOption>> subDropdownOption = {
-    "": {"": SubOption(name: "", value: "")}
-  };
-  Map<String, String> dropdownOptions = {
-    "": "",
-  };
-
-  void setList(value) {
-    FocusScope.of(context).requestFocus(FocusNode());
-    type = value.toString().contains("ing") ? "Debito" : "Credito";
-    dynamic subKey = subDropdownOption[value]!.entries.firstWhere(
-        (element) => element.value.name.isEmpty,
-        orElse: () => subDropdownOption[value]!.entries.first);
-    subKeyOption = subKey.key;
-    lista = subDropdownOption[value]!
-        .entries
-        .map((e) => DropdownMenuItem(
-              value: e.key,
-              child: Text(e.value.name),
-            ))
-        .toList();
-    formValues["categoryKey"] = value;
-    formValues["desc"] = subDropdownOption[value]![subKey.key]!.name;
-    formValues["value"] = "0";
-    setState(() {});
-  }
-
-  listCategories() async {
-    List<Category> listado = await CategoryController.get();
-    for (var e in listado) {
-      dropdownOptions.addAll({"${e.key}": "${e.name}"});
-    }
-    setState(() {});
-  }
-
-  listEntries() async {
-    List<Entry> listado = await EntryController.get();
-    for (var e in listado) {
-      subDropdownOption.containsKey(e.categoryKey)
-          ? subDropdownOption[e.categoryKey]!.addAll({
-              e.key: SubOption(name: "${e.name}", value: "${e.value}"),
-            })
-          : subDropdownOption.addAll({
-              "${e.categoryKey}": {
-                e.key: SubOption(name: "${e.name}", value: "${e.value}"),
-              }
-            });
-    }
-  }
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -93,14 +31,8 @@ class _FinancesScreenState extends State<FinancesScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    listCategories();
-    listEntries();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var entryValue = Provider.of<DbProvider>(context);
     return Scaffold(
       body: Form(
         key: myFormKey,
@@ -108,72 +40,66 @@ class _FinancesScreenState extends State<FinancesScreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
             const _TitleFilter(),
-            SwitchListTile(
-                title: Text("Entrada de tipo $type"),
-                value: formValues["D&C"],
-                onChanged: ((value) {
-                  type = type.compareTo("Debito") == 0 ? "Credito" : "Debito";
-                  formValues["D&C"] = !formValues["D&C"];
-                  setState(() {});
-                })),
+            if (entryValue.entrya != null && entryValue.entrya!.id != null)
+              SwitchListTile(
+                  title: Text(
+                      "Entrada de tipo ${entryValue.valueEntry!.type == 1 ? "Credito" : "Debito"} "),
+                  value: entryValue.valueEntry!.type == 1 ? true : false,
+                  onChanged: ((value) {
+                    entryValue.valueEntry!.type = value == true ? 1 : 2;
+                  })),
             const SizedBox(
               height: 8,
             ),
-            InputsCustomFinances(
-              initialValue: formValues["desc"]!,
-              formProprety: "desc",
-              formValues: formValues,
-              labelText: "descripción",
-              padding: 10,
-            ),
-            InputsCustomFinances(
-              formProprety: "value",
-              formValues: formValues,
-              initialValue: formValues["value"]!,
-              isNumber: true,
-              labelText: "valor",
-              padding: 10,
-              keyboardType: TextInputType.number,
-              onValueChanges: (value) {
-                String valor = value.toString();
-                if (valor.isEmpty) return;
-                valor.replaceAll(" ", "");
-                if (valor.contains(",")) valor = valor.replaceAll(",", ".");
-                formValues["value"] = valor.isEmpty
-                    ? 0.toString()
-                    : double.parse(valor).toString();
-              },
-            ),
-            TextButton(
-                onPressed: () async {
-                  myFormKey.currentState!.validate();
-                  if (!myFormKey.currentState!.validate()) {
-                    return;
-                  }
-                  if (formValues["entryKey"]!.isEmpty) return;
-                  int idEntry = await EntryController.getId(Entry(
-                      category: 0,
-                      key: formValues["entryKey"]!,
-                      name: "",
-                      value: 0));
-                  final ValueEntry newEntry = ValueEntry(
-                      desc: formValues["desc"],
-                      value: double.tryParse(formValues["value"]!) ?? 0,
-                      date: DateTime.now().toUtc().millisecondsSinceEpoch,
-                      latitud: 1,
-                      length: 1,
-                      type: type.compareTo("Debito") == 0 ? 1 : 2,
-                      entry: idEntry);
-                  ValueEntryController.insert(newEntry);
-                  myFormKey.currentState!.reset();
-
-                  subKeyOption = "";
-                  lista = [];
-                  keyOption = "";
-                  _showToast(context);
-                  setState(() {});
+            if (entryValue.entrya != null && entryValue.entrya!.id != null)
+              InputsCustom(
+                initialValue: entryValue.entrya!.name!,
+                labelText: "descripción",
+                padding: 10,
+              ),
+            if (entryValue.entrya != null && entryValue.entrya!.id != null)
+              InputsCustom(
+                initialValue: entryValue.entrya!.value!.toString(),
+                isNumber: true,
+                labelText: "valor",
+                padding: 10,
+                keyboardType: TextInputType.number,
+                onValueChanges: (value) {
+                  String valor = value;
+                  if (valor.isEmpty) return;
+                  valor.replaceAll(" ", "");
+                  if (valor.contains(",")) valor = valor.replaceAll(",", ".");
+                  entryValue.valueEntry!.value = double.tryParse(valor);
                 },
-                child: const Text("Agregar Entrada")),
+              ),
+            if (entryValue.entrya != null && entryValue.entrya!.id != null)
+              TextButton(
+                  onPressed: () async {
+                    myFormKey.currentState!.validate();
+                    if (!myFormKey.currentState!.validate()) {
+                      return;
+                    }
+                    if (entryValue.entrya != null) return;
+                    int idEntry = await EntryController.getId(Entry(
+                        category: 0,
+                        key: entryValue.entrya!.key,
+                        name: "",
+                        value: 0));
+                    final ValueEntry newEntry = ValueEntry(
+                        desc: entryValue.valueEntry!.desc,
+                        value: entryValue.valueEntry!.value,
+                        date: DateTime.now().toUtc().millisecondsSinceEpoch,
+                        latitud: 1,
+                        length: 1,
+                        type: entryValue.valueEntry!.type == 0 ? 1 : 2,
+                        entry: idEntry);
+                    ValueEntryController.insert(newEntry);
+                    myFormKey.currentState!.reset();
+
+                    _showToast(context);
+                    setState(() {});
+                  },
+                  child: const Text("Agregar Entrada")),
           ]),
         ),
       ),
@@ -190,7 +116,6 @@ class _TitleFilter extends StatelessWidget {
   const _TitleFilter({
     Key? key,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     var categoP = Provider.of<DbProvider>(context);
@@ -202,37 +127,28 @@ class _TitleFilter extends StatelessWidget {
           children: [
             Expanded(
                 child: DropdownButtonFormField(
+                    key: categoP.keyFormFieldDrop,
                     decoration: const InputDecoration(labelText: "Categorias"),
-                    items: /* [
-                      DropdownMenuItem(
-                        value: 0,
-                        child: Icon(Icons.abc),
-                      ),
-                      const DropdownMenuItem(
-                        value: 1,
-                        child: Text("b"),
-                      )
-                    ]*/
-                        categoP.categorias != null
-                            ? categoP.categorias!
-                                .where((element) => element.enable!)
-                                .map((Category e) => DropdownMenuItem(
-                                      value: e.id,
-                                      child: Text(e.name!),
-                                    ))
-                                .toList()
-                            : const [
-                                DropdownMenuItem(
-                                  value: 0,
-                                  child: Icon(Icons.abc),
-                                ),
-                                DropdownMenuItem(
-                                  value: 1,
-                                  child: Text("b"),
-                                )
-                              ],
-                    onChanged: (value) {
-                      categoP.setSubCategorias(value.toString());
+                    items: categoP.categorias != null
+                        ? categoP.categorias!
+                            .where((element) => element.enable!)
+                            .map((Category e) => DropdownMenuItem(
+                                  value: e.id,
+                                  child: Text(e.name!),
+                                ))
+                            .toList()
+                        : const [
+                            DropdownMenuItem(
+                              value: "1",
+                              child: Text("Sin cargas"),
+                            ),
+                            DropdownMenuItem(
+                              value: "1",
+                              child: Text("Sin cargas"),
+                            )
+                          ],
+                    onChanged: (value) async {
+                      await categoP.setSubCategorias(value.toString());
                     })),
             const SizedBox(
               width: 10,
@@ -256,7 +172,17 @@ class _TitleFilter extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    categoP.entrya = register;
+                    categoP.setValueEntry(ValueEntry(
+                        desc: register.name,
+                        value: register.value,
+                        date: DateTime.now().toUtc().millisecondsSinceEpoch,
+                        latitud: 1,
+                        length: 1,
+                        type: 1,
+                        entry: register.id));
+                  },
                   icon: const Icon(Icons.access_time_filled),
                   label: Text(register.name!),
                 ),

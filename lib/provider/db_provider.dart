@@ -8,48 +8,60 @@ import 'package:contabilidad/models/query_option.dart';
 class DbProvider extends ChangeNotifier {
   List<Category>? categorias = [];
   List<Entry>? registros = [];
+  List<ValueEntry>? valueEntrys = [];
   String lastOpen = "";
   Map<String, List<dynamic>> subCategory = {};
   Entry? entry;
+  Entry? entrya;
+  Category? categorya;
   Category? category;
+  ValueEntry? valueEntry;
   DateTime? initialDate;
   DateTime? endDate;
   double? precio;
   double? cantidad;
   String? descr;
+  GlobalKey<FormFieldState>? keyFormFieldDrop = GlobalKey<FormFieldState>();
   DbProvider();
 
   getCategorias<Category>() async {
     categorias = await CategoryController.get();
-    return categorias;
+    notifyListeners();
   }
 
   getEntry<Entry>() async {
     registros = await EntryController.get();
-    return categorias;
+    notifyListeners();
+  }
+
+  setValueEntry(ValueEntry valueE) {
+    valueEntry = valueE;
+    notifyListeners();
   }
 
   getSubCategorias(String key, {bool forceUpdate = false}) async {
-    if (!subCategory.containsKey(key) || forceUpdate) {
-      int idCategory =
-          await CategoryController.getId(Category(key: key, name: ""));
-      final List<dynamic> listado = await EntryController.getBy(
-          queryOption: QueryOption(
-              columns: ["name", "key", "value", "Id_Entry", "category_id"],
-              where: "category_id = ? and name <> '' ",
-              whereArgs: [idCategory],
-              orderBy: "name"));
-
-      subCategory.addAll({key: listado});
-      notifyListeners();
-    }
     if (lastOpen != key) {
       lastOpen = key;
+      if (!subCategory.containsKey(key) || forceUpdate) {
+        int idCategory =
+            await CategoryController.getId(Category(key: key, name: ""));
+        final List<dynamic> listado = await EntryController.getBy(
+            queryOption: QueryOption(
+                columns: ["name", "key", "value", "Id_Entry", "category_id"],
+                where: "category_id = ? and name <> '' ",
+                whereArgs: [idCategory],
+                orderBy: "name"));
+
+        subCategory.addAll({key: listado});
+      }
+      notifyListeners();
     }
   }
 
   setSubCategorias(String idCategory) async {
     registros = await EntryController.getByCategory(idCategory);
+    categorya =
+        categorias!.firstWhere((cat) => cat.id.toString() == idCategory);
     notifyListeners();
   }
 
@@ -63,9 +75,10 @@ class DbProvider extends ChangeNotifier {
           name: entry.name,
           id: wasInsert);
       subCategory[keyCategory]?.add(newEntry.toMapAll());
+
+      notifyListeners();
     }
 
-    notifyListeners();
     return wasInsert > 0 ? true : false;
   }
 
@@ -73,6 +86,7 @@ class DbProvider extends ChangeNotifier {
     int wasDelete = await EntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
+
       notifyListeners();
     }
   }
@@ -94,8 +108,15 @@ class DbProvider extends ChangeNotifier {
     category.enable = !category.enable!;
     int wasUpdate = await CategoryController.updateCategory(category);
     if (wasUpdate > 0) {
+      var entryUpdate =
+          categorias!.firstWhere((element) => element.id == category.id);
       categorias!.firstWhere((element) => element.id == category.id).enable =
           category.enable;
+      if (categorya != null && categorya!.id == entryUpdate.id) {
+        keyFormFieldDrop!.currentState!.reset();
+        registros = [];
+      }
+
       notifyListeners();
       return true;
     }

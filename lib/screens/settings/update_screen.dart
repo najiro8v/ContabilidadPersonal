@@ -11,7 +11,7 @@ class UpdateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bd = Provider.of<DbProvider>(context, listen: false);
+    final bd = Provider.of<DbProvider>(context);
     bd.getCategorias();
 
     return (Scaffold(
@@ -118,10 +118,9 @@ class _ListViewEntry extends StatelessWidget {
         itemBuilder: (context, index) {
           var entry = bd.subCategory[e.key]![index];
           return Container(
-              key: UniqueKey(),
+              key: Key(entry["id"].toString()),
               margin: const EdgeInsets.all(10),
               child: ElementCustomEdit(
-                emitFunction: bd.getSubCategorias(e.key!),
                 deleteFunction: deleteFunction,
                 updateFunction: updateFunction,
                 label: "",

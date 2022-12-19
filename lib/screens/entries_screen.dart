@@ -97,7 +97,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
                           shrinkWrap: true,
                           itemBuilder: (_, index) {
                             return ElementCustomEdit(
-                                emitFunction: getEntrys(),
                                 padding: 10,
                                 label: "lolo",
                                 obj: listado[index],
