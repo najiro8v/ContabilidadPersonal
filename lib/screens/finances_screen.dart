@@ -82,12 +82,8 @@ class _FinancesScreenState extends State<FinancesScreen> {
                     if (!myFormKey.currentState!.validate()) {
                       return;
                     }
-                    if (entryValue.entrya != null) return;
-                    int idEntry = await EntryController.getId(Entry(
-                        category: 0,
-                        key: entryValue.entrya!.key,
-                        name: "",
-                        value: 0));
+                    if (entryValue.entrya == null) return;
+
                     final ValueEntry newEntry = ValueEntry(
                         desc: entryValue.valueEntry!.desc,
                         value: entryValue.valueEntry!.value,
@@ -95,7 +91,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                         latitud: 1,
                         length: 1,
                         type: entryValue.valueEntry!.type == 0 ? 1 : 2,
-                        entry: idEntry);
+                        entry: entryValue.valueEntry!.entry);
                     ValueEntryController.insert(newEntry);
                     myFormKey.currentState!.reset();
 

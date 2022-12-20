@@ -8,7 +8,7 @@ class CategoryAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<DbProvider>(context);
+    final categoryProvider = Provider.of<DbProvider>(context, listen: false);
     Category categoryEdit = ModalRoute.of(context)!.settings.arguments != null
         ? ModalRoute.of(context)!.settings.arguments as Category
         : Category(name: "", key: null);
