@@ -41,19 +41,15 @@ class InputsCustom extends StatefulWidget {
 }
 
 class _InputsCustomState extends State<InputsCustom> {
-  TextEditingController? _controller;
+  //TextEditingController? _controller;
   @override
   void initState() {
-    final bd = Provider.of<DbProvider>(context, listen: false);
-    var valueEntry = bd.valueEntry!.toMap();
     super.initState();
-    _controller =
-        TextEditingController(text: valueEntry[widget.propiedad!].toString());
   }
 
   @override
   void dispose() {
-    _controller!.dispose();
+    // _controller!.dispose();
     super.dispose();
   }
 
@@ -61,11 +57,13 @@ class _InputsCustomState extends State<InputsCustom> {
   Widget build(BuildContext context) {
     final bd = Provider.of<DbProvider>(context, listen: false);
     var valueEntry = bd.valueEntry!.toMap();
+    TextEditingController? controller =
+        widget.propiedad == "desc" ? bd.controllerDesc : bd.controllerValue;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: widget.padding!),
       child: (TextFormField(
-          controller: _controller,
+          controller: controller,
           inputFormatters: widget.isNumber!
               ? [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+.?[0-9]*$'))]
               : [],

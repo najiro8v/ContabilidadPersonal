@@ -92,11 +92,18 @@ class _FinancesScreenState extends State<FinancesScreen> {
                         length: 1,
                         type: entryValue.valueEntry!.type == 0 ? 1 : 2,
                         entry: entryValue.valueEntry!.entry);
-                    ValueEntryController.insert(newEntry);
+                    int insert = await ValueEntryController.insert(newEntry);
+
                     myFormKey.currentState!.reset();
 
                     _showToast(context);
                     setState(() {});
+                    if (insert > 0) {
+                      entryValue.controllerDesc =
+                          TextEditingController(text: "");
+                      entryValue.controllerValue =
+                          TextEditingController(text: "");
+                    }
                   },
                   child: const Text("Agregar Entrada")),
           ]),
@@ -173,6 +180,10 @@ class _TitleFilter extends StatelessWidget {
                 child: TextButton.icon(
                   onPressed: () {
                     categoP.entrya = register;
+                    categoP.controllerDesc =
+                        TextEditingController(text: register.name);
+                    categoP.controllerValue =
+                        TextEditingController(text: register.value.toString());
                     categoP.setValueEntry(ValueEntry(
                         desc: register.name,
                         value: register.value,

@@ -23,6 +23,8 @@ class DbProvider extends ChangeNotifier {
   String? descr;
   GlobalKey<FormFieldState>? keyFormFieldDrop = GlobalKey<FormFieldState>();
   DbProvider();
+  TextEditingController? controllerDesc;
+  TextEditingController? controllerValue;
 
   getCategorias<Category>() async {
     categorias = await CategoryController.get();
