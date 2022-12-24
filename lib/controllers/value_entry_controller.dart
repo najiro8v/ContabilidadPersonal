@@ -1,5 +1,6 @@
 import 'package:contabilidad/models/models.dart' show ValueEntry;
 import "package:contabilidad/db/db.dart";
+import '../models/query_option.dart';
 import 'category_controller.dart';
 import 'entry_controller.dart';
 
@@ -62,5 +63,27 @@ class ValueEntryController {
   static Future<int> update(ValueEntry value, int id) async {
     return await DatabaseSQL.update(dbName, value,
         id: id, idName: "Id_Value_Entry");
+  }
+
+  static Future<List<dynamic>> getBy({required QueryOption queryOption}) async {
+    List<dynamic> listado =
+        await DatabaseSQL.get(dbName, queryOption: queryOption);
+    var data = List.generate(listado.length, (i) {
+      var temp = {};
+
+      for (var element in queryOption.columns!) {
+        for (var key in listado[i].keys) {
+          if (element == key) {
+            if (element == "Id_Value_Entry") {
+              temp["id"] = listado[i][key];
+            } else {
+              temp[element] = listado[i][key];
+            }
+          }
+        }
+      }
+      return temp;
+    });
+    return data;
   }
 }

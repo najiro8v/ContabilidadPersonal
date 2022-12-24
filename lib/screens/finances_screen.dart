@@ -169,39 +169,43 @@ class _TitleFilter extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        SizedBox(
-          height: 50,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: ((context, index) {
-              Entry register = categoP.registros![index];
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: TextButton.icon(
-                  onPressed: () {
-                    categoP.entrya = register;
-                    categoP.controllerDesc =
-                        TextEditingController(text: register.name);
-                    categoP.controllerValue =
-                        TextEditingController(text: register.value.toString());
-                    categoP.setValueEntry(ValueEntry(
-                        desc: register.name,
-                        value: register.value,
-                        date: DateTime.now().toUtc().millisecondsSinceEpoch,
-                        latitud: 1,
-                        length: 1,
-                        type: 1,
-                        entry: register.id));
-                  },
-                  icon: const Icon(Icons.access_time_filled),
-                  label: Text(register.name!),
-                ),
-              );
-            }),
-            shrinkWrap: true,
-            itemCount: categoP.registros!.length,
+        if (categoP.categorya != null)
+          SizedBox(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: ((context, index) {
+                Entry register = categoP.registros![index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: TextButton.icon(
+                    onPressed: () {
+                      categoP.entrya = register;
+                      categoP.controllerDesc =
+                          TextEditingController(text: register.name);
+                      categoP.controllerValue = TextEditingController(
+                          text: register.value.toString());
+                      categoP.setValueEntry(ValueEntry(
+                          desc: register.name,
+                          value: register.value,
+                          date: DateTime.now().toUtc().millisecondsSinceEpoch,
+                          latitud: 1,
+                          length: 1,
+                          type: 1,
+                          entry: register.id));
+                    },
+                    icon: const Icon(Icons.access_time_filled),
+                    label: Text(
+                      register.name!,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                );
+              }),
+              shrinkWrap: true,
+              itemCount: categoP.registros!.length,
+            ),
           ),
-        ),
         const SizedBox(
           height: 10,
         ),

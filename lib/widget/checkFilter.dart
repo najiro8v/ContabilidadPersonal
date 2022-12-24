@@ -1,5 +1,8 @@
-import 'package:contabilidad/models/models.dart';
+import 'package:contabilidad/models/models.dart' show Entry;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/db_provider.dart';
 
 class CheckFilter extends StatefulWidget {
   final Entry filter;
@@ -11,8 +14,22 @@ class CheckFilter extends StatefulWidget {
 
 class _CheckFilterState extends State<CheckFilter> {
   bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<DbProvider>(context);
+    checkFun() async {
+      if ((!isChecked) == true) {
+        await provider.addFilter(widget.filter.id.toString());
+        await provider.getValueEntries();
+      } else {
+        await provider.removeFilter(widget.filter.id.toString());
+      }
+      setState(() {
+        isChecked = !isChecked;
+      });
+    }
+
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -22,23 +39,32 @@ class _CheckFilterState extends State<CheckFilter> {
       if (states.any(interactiveStates.contains)) {
         return Colors.blue;
       }
-      return Colors.red;
+      return Colors.indigo;
     }
 
-    return Column(
-      children: [
-        Text(widget.filter.name!),
-        Checkbox(
-          checkColor: Colors.white,
-          fillColor: MaterialStateProperty.resolveWith(getColor),
-          value: isChecked,
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked = value!;
-            });
-          },
-        ),
-      ],
+    return InkWell(
+      onTap: checkFun,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            checkColor: Colors.white,
+            fillColor: MaterialStateProperty.resolveWith(getColor),
+            value: isChecked,
+            onChanged: (value) async {
+              await checkFun();
+            },
+          ),
+          TextButton(
+              onPressed: checkFun,
+              child: Text(
+                widget.filter.name!,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ],
+      ),
     );
   }
 }

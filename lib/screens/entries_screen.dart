@@ -76,16 +76,27 @@ class _EntriesScreenState extends State<EntriesScreen> {
     final dateI = Provider.of<DbProvider>(
       context,
     ).initialDate;
+    final provider = Provider.of<DbProvider>(context);
     formDate["dateI"] = dateI ?? DateTime.now();
     setState(() {});
     return Scaffold(
         appBar: AppBar(title: const Text("Mis Registros")),
+        floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.filter_alt_off_outlined),
+            onPressed: () async {
+              if (provider.keyFormFieldDropE!.currentState != null) {
+                provider.keyFormFieldDropE!.currentState!.reset();
+              }
+
+              provider.categorya = null;
+              await provider.getEntry();
+            }),
         body: Column(children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: _TitleFilter(),
           ),
-          listado.isEmpty
+          provider.valueEntrysD2!.isEmpty
               ? const _NotList()
               : Expanded(
                   child: ListView(
@@ -99,11 +110,13 @@ class _EntriesScreenState extends State<EntriesScreen> {
                             return ElementCustomEdit(
                                 padding: 10,
                                 label: "lolo",
-                                obj: listado[index],
+                                obj: provider.valueEntrysD2![index],
                                 deleteFunction: deleteFunction,
                                 updateFunction: updateFunction);
                           },
-                          itemCount: listado.isEmpty ? 1 : listado.length,
+                          itemCount: provider.valueEntrysD2!.isEmpty
+                              ? 1
+                              : provider.valueEntrysD2!.length,
                         ),
                       ]),
                 ),
@@ -118,25 +131,38 @@ class _TitleFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<DbProvider>(context);
+    provider.getEntry();
+    provider.getCategorias();
     return Column(
       children: [
         Row(
           children: [
             Expanded(
                 child: DropdownButtonFormField(
+                    key: provider.keyFormFieldDropE,
                     decoration: const InputDecoration(labelText: "Categorias"),
-                    value: 0,
-                    items: const [
-                      DropdownMenuItem(
-                        value: 0,
-                        child: Icon(Icons.abc),
-                      ),
-                      DropdownMenuItem(
-                        value: 1,
-                        child: Text("b"),
-                      )
-                    ],
-                    onChanged: (value) {})),
+                    items: provider.categorias != null
+                        ? provider.categorias!
+                            .where((element) => element.enable!)
+                            .map((Category e) => DropdownMenuItem(
+                                  value: e.id,
+                                  child: Text(e.name!),
+                                ))
+                            .toList()
+                        : const [
+                            DropdownMenuItem(
+                              value: 0,
+                              child: Text("1"),
+                            ),
+                            DropdownMenuItem(
+                              value: 1,
+                              child: Text("2"),
+                            )
+                          ],
+                    onChanged: (value) async {
+                      await provider.setSubCategorias(value.toString());
+                    })),
             const SizedBox(
               width: 10,
             ),
@@ -155,13 +181,22 @@ class _TitleFilter extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemBuilder: ((context, index) {
-              return CheckFilter(
-                filter: Entry(
-                    key: "", name: index.toString(), value: 0, category: 1),
+              Entry entry = provider.categorya != null
+                  ? provider.registros![index]
+                  : provider.registrosAll![index];
+              return Container(
+                width: 100,
+                key: Key(entry.key.toString()),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                child: CheckFilter(
+                  filter: entry,
+                ),
               );
             }),
             shrinkWrap: true,
-            itemCount: 25,
+            itemCount: provider.categorya != null
+                ? provider.registros!.length
+                : provider.registrosAll!.length,
           ),
         ),
         const SizedBox(
@@ -177,6 +212,8 @@ class _TitleFilter extends StatelessWidget {
             TextButton(
                 onPressed: () async {
                   // await _openDatePicker();
+                  await provider.getValueEntries();
+                  await provider.setNewList();
                 },
                 child: const Text("..."))
           ],
@@ -185,34 +222,6 @@ class _TitleFilter extends StatelessWidget {
           height: 10,
         ),
       ],
-    );
-  }
-}
-
-class _CheckFilter extends StatelessWidget {
-  const _CheckFilter({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Color getColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
-      };
-      if (states.any(interactiveStates.contains)) {
-        return Colors.blue;
-      }
-      return Colors.red;
-    }
-
-    return Checkbox(
-      checkColor: Colors.white,
-      fillColor: MaterialStateProperty.resolveWith(getColor),
-      value: true,
-      onChanged: (v) {},
     );
   }
 }

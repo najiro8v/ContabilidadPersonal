@@ -2,13 +2,18 @@ import 'package:contabilidad/models/expenses_and_finance.dart';
 import 'package:contabilidad/models/models.dart';
 import 'package:flutter/material.dart';
 import "../controllers/category_controller.dart";
+import "../controllers/value_entry_controller.dart";
 import "../controllers/entry_controller.dart";
 import 'package:contabilidad/models/query_option.dart';
 
 class DbProvider extends ChangeNotifier {
   List<Category>? categorias = [];
   List<Entry>? registros = [];
+  List<Entry>? registrosAll = [];
+  List<String>? filterEntries = [];
   List<ValueEntry>? valueEntrys = [];
+  List<dynamic>? valueEntrysD = [];
+  List<dynamic>? valueEntrysD2 = [];
   String lastOpen = "";
   Map<String, List<dynamic>> subCategory = {};
   Entry? entry;
@@ -22,6 +27,7 @@ class DbProvider extends ChangeNotifier {
   double? cantidad;
   String? descr;
   GlobalKey<FormFieldState>? keyFormFieldDrop = GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>? keyFormFieldDropE = GlobalKey<FormFieldState>();
   DbProvider();
   TextEditingController? controllerDesc;
   TextEditingController? controllerValue;
@@ -31,8 +37,36 @@ class DbProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  addFilter(String value) async {
+    filterEntries!.add(value);
+
+    notifyListeners();
+  }
+
+  setNewList() {
+    valueEntrysD2 = valueEntrysD!;
+    notifyListeners();
+  }
+
+  getValueEntries() async {
+    valueEntrysD = await ValueEntryController.getBy(
+        queryOption: QueryOption(
+            columns: ["desc", "value", "Id_Value_Entry", "entry_id"],
+            where:
+                "entry_id in (${List.filled(filterEntries!.length, '?').join(',')})  ",
+            whereArgs: filterEntries,
+            orderBy: "desc"));
+    notifyListeners();
+  }
+
+  removeFilter(String value) {
+    filterEntries!.removeWhere((item) => item == value);
+    notifyListeners();
+  }
+
   getEntry<Entry>() async {
-    registros = await EntryController.get();
+    //registros = await EntryController.get();
+    registrosAll = await EntryController.get();
     notifyListeners();
   }
 
@@ -89,7 +123,6 @@ class DbProvider extends ChangeNotifier {
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
       if (entrya != null && entrya!.id == id) {
-        registros = [];
         entrya = null;
       }
       notifyListeners();
@@ -119,7 +152,7 @@ class DbProvider extends ChangeNotifier {
           category.enable;
       if (categorya != null && categorya!.id == entryUpdate.id) {
         keyFormFieldDrop!.currentState!.reset();
-        registros = [];
+
         categorya = null;
         entrya = null;
       }
