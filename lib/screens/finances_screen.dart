@@ -94,7 +94,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
                         entry: entryValue.valueEntry!.entry);
                     int insert = await ValueEntryController.insert(newEntry);
 
-                    myFormKey.currentState!.reset();
+                    //myFormKey.currentState!.reset();
 
                     _showToast(context);
                     setState(() {});

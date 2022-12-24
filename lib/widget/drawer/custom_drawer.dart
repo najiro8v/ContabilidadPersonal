@@ -1,3 +1,4 @@
+import 'package:contabilidad/db/db.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -32,8 +33,11 @@ class CustomDrawer extends StatelessWidget {
             icon: Icons.people_outline,
           ),
           space,
-          const _OptionConfig(
+          _OptionConfig(
             text: "Cerrar Sesión",
+            event: () async {
+              await DatabaseSQL.deleteDatabase();
+            },
             icon: Icons.people_outline,
           ),
         ],

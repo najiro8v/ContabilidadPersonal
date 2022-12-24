@@ -155,8 +155,10 @@ class _TitleFilter extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemBuilder: ((context, index) {
-              return IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.access_time_filled));
+              return CheckFilter(
+                filter: Entry(
+                    key: "", name: index.toString(), value: 0, category: 1),
+              );
             }),
             shrinkWrap: true,
             itemCount: 25,
@@ -183,6 +185,34 @@ class _TitleFilter extends StatelessWidget {
           height: 10,
         ),
       ],
+    );
+  }
+}
+
+class _CheckFilter extends StatelessWidget {
+  const _CheckFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.red;
+    }
+
+    return Checkbox(
+      checkColor: Colors.white,
+      fillColor: MaterialStateProperty.resolveWith(getColor),
+      value: true,
+      onChanged: (v) {},
     );
   }
 }

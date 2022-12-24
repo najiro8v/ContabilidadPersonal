@@ -21,8 +21,8 @@ class DatabaseSQL {
         version: 1, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
-  static Future<void> deleteDatabase() =>
-      databaseFactory.deleteDatabase('finance.db');
+  static Future<void> deleteDatabase() async =>
+      await databaseFactory.deleteDatabase('finance.db');
 
   _createDB(Database db, int version) async {
     /*Catetory Table */

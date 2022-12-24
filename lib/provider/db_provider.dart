@@ -88,7 +88,10 @@ class DbProvider extends ChangeNotifier {
     int wasDelete = await EntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
-
+      if (entrya != null && entrya!.id == id) {
+        registros = [];
+        entrya = null;
+      }
       notifyListeners();
     }
   }
@@ -117,6 +120,8 @@ class DbProvider extends ChangeNotifier {
       if (categorya != null && categorya!.id == entryUpdate.id) {
         keyFormFieldDrop!.currentState!.reset();
         registros = [];
+        categorya = null;
+        entrya = null;
       }
 
       notifyListeners();
