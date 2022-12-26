@@ -23,23 +23,33 @@ class CategoryAdd extends StatelessWidget {
                 autofocus: true,
                 decoration:
                     const InputDecoration(labelText: "Código de Categoria"),
-                initialValue: categoryEdit.name ?? "",
+                initialValue: categoryEdit.key ?? "",
+                enabled: categoryEdit.key != null ? false : true,
                 onChanged: (value) {
                   categoryProvider.category?.key = value;
                 }),
             TextFormField(
                 decoration: const InputDecoration(labelText: "Descripción"),
-                initialValue: categoryEdit.key ?? "",
+                initialValue: categoryEdit.name ?? "",
                 onChanged: (value) {
                   categoryProvider.category?.name = value;
                 }),
             TextButton(
                 onPressed: () async {
-                  bool saved = await categoryProvider
-                      .saveCategory(categoryProvider.category!);
-                  if (saved) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context, rootNavigator: true).pop();
+                  if (categoryEdit.key == null) {
+                    bool saved = await categoryProvider
+                        .saveCategory(categoryProvider.category!);
+                    if (saved) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
+                  } else {
+                    bool saved = await categoryProvider
+                        .updateCategory(categoryProvider.category!);
+                    if (saved) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
                   }
                 },
                 child: Text(categoryEdit.key == null ? "Guardar" : "Editar"))

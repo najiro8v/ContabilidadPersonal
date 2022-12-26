@@ -21,6 +21,7 @@ class DbProvider extends ChangeNotifier {
   Category? categorya;
   Category? category;
   ValueEntry? valueEntry;
+  ValueEntry? valueEntryEdit;
   DateTime? initialDate;
   DateTime? endDate;
   double? precio;
@@ -29,6 +30,11 @@ class DbProvider extends ChangeNotifier {
   GlobalKey<FormFieldState>? keyFormFieldDrop = GlobalKey<FormFieldState>();
   GlobalKey<FormFieldState>? keyFormFieldDropE = GlobalKey<FormFieldState>();
   DbProvider();
+  Map<String, TextEditingController?> controllerCategory = {
+    "desc": TextEditingController(),
+    "value": TextEditingController(),
+  };
+  Map<String, Map<String, TextEditingController?>> controllerEntryList = {};
   TextEditingController? controllerDesc;
   TextEditingController? controllerValue;
 
@@ -135,6 +141,34 @@ class DbProvider extends ChangeNotifier {
       Category newCategory =
           Category(name: category.name, key: category.key, enable: true);
       categorias!.add(newCategory);
+      notifyListeners();
+      return true;
+    }
+
+    return false;
+  }
+
+  updateCategory(Category category) async {
+    int wasUpdate = await CategoryController.updateCategory(category);
+    if (wasUpdate > 0) {
+      Category newCategory =
+          Category(name: category.name, key: category.key, enable: true);
+      categorias!.add(newCategory);
+      notifyListeners();
+      return true;
+    }
+
+    return false;
+  }
+
+  updateSubCategory(Entry entry) async {
+    int wasUpdate = await EntryController.update(entry, entry.id!);
+    if (wasUpdate > 0) {
+      subCategory[lastOpen]!
+          .firstWhere((item) => item["id"] == entry.id)["name"] = entry.name;
+      subCategory[lastOpen]!
+          .firstWhere((item) => item["id"] == entry.id)["value"] = entry.name;
+
       notifyListeners();
       return true;
     }

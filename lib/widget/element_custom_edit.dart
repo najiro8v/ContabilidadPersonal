@@ -1,18 +1,18 @@
 // ignore_for_file: no_logic_in_create_state
 
-import 'package:contabilidad/widget/inputs_custom_dinamyc.dart';
+import 'package:contabilidad/provider/db_provider.dart';
+import 'package:contabilidad/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+
+import 'package:provider/provider.dart';
 //import 'package:contabilidad/models/models.dart';
 
 // ignore: must_be_immutable
 class ElementCustomEdit extends StatefulWidget {
   final String label;
   final double? padding;
-  final Object obj;
-  Object getObj() {
-    return obj;
-  }
+  final dynamic obj;
 
   Function update = () => {};
   Function delete = () => {};
@@ -34,7 +34,6 @@ class ElementCustomEdit extends StatefulWidget {
 
 class _ElementCustomEditState extends State<ElementCustomEdit> {
   bool isEnable = false;
-  dynamic obj;
 
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
   void _showToast(BuildContext context, String message, {isError = false}) {
@@ -48,25 +47,23 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
     );
   }
 
-  Map<String, String> formValues = {
-    "key": "",
-    "value": "",
-    "desc": "",
-  };
-
   @override
-  void initState() {
-    super.initState();
-    obj = widget.getObj();
-    formValues = {
-      "key": "${obj is! Map ? obj!.categoryName : obj!["key"]}",
-      "value": "${obj is! Map ? obj!.value : obj!["value"]}",
-      "desc": "${obj is! Map ? obj!.desc : obj!["name"]}",
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<DbProvider>(context);
+    final idObj = widget.obj["id"].toString();
+    final obj = widget.obj;
+    if (provider.controllerEntryList.containsKey(idObj) == false) {
+      var controllerDesc = TextEditingController(text: obj["name"]);
+      var controllerValue =
+          TextEditingController(text: obj["value"].toString());
+
+      TextEditingController(text: obj["value"].toString());
+      Map<String, Map<String, TextEditingController?>> mapa = {
+        idObj: {"value": controllerValue, "name": controllerDesc}
+      };
+      provider.controllerEntryList.addAll(mapa);
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Form(
@@ -76,10 +73,10 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
             Row(
               children: [
                 Expanded(
-                    child: InputsCustomDinamyc(
-                  initialValue: formValues["key"]!,
-                  formValues: formValues,
-                  formProprety: "key",
+                    child: InputsCustomEntry(
+                  idMap: idObj,
+                  propiedad: "key",
+                  initialValue: obj["key"],
                   labelText: "Llave",
                   enable: false,
                 )),
@@ -87,12 +84,11 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                   width: 10,
                 ),
                 Expanded(
-                    child: InputsCustomDinamyc(
-                  initialValue: formValues["value"]!,
-                  formValues: formValues,
-                  formProprety: "value",
+                    child: InputsCustomEntry(
+                  idMap: idObj,
                   labelText: "Valor",
                   enable: isEnable,
+                  propiedad: "value",
                   isNumber: true,
                   keyboardType: TextInputType.number,
                 )),
@@ -104,10 +100,9 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
               children: [
                 Expanded(
                     flex: 4,
-                    child: InputsCustomDinamyc(
-                      initialValue: formValues["desc"]!,
-                      formValues: formValues,
-                      formProprety: "desc",
+                    child: InputsCustomEntry(
+                      idMap: idObj,
+                      propiedad: "name",
                       labelText: "Descrición",
                       enable: isEnable,
                     )),
@@ -136,9 +131,10 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                               String msg = "Registro actualizado con Exito";
                               bool isError = false;
                               try {
-                                int id = obj is Map ? obj!["id"] : obj.id;
-                                await widget.update(obj, id, formValues);
+                                //int id = widget.obj is Map ? obj["id"] : obj.id;
+                                await widget.update(obj, context);
                                 //await widget.emitFunction;
+
                               } catch (e) {
                                 // print(e);
                                 msg = "Error en actualización de registro";
@@ -160,7 +156,7 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                             String msg = "Registro eliminado con Exito";
                             bool isError = false;
                             try {
-                              int id = obj is Map ? obj!["id"] : obj.id;
+                              int id = obj is Map ? obj["id"] : obj.id;
                               await widget.delete(id, context);
                               // await widget.emitFunction;
                             } catch (e) {

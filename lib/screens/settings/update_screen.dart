@@ -62,7 +62,7 @@ class _PanelRadio {
                     child: Text("${e.name}")),
                 Row(
                   children: [
-                    _AddWidget(entry: e),
+                    _AddWidget(category: e),
                     IconButton(
                       onPressed: () {
                         Navigator.pushNamed(context, 'categoryScreen',
@@ -92,13 +92,18 @@ class _ListViewEntry extends StatelessWidget {
   _ListViewEntry({required this.e});
 
   Map<String, List<dynamic>> subCategoryI = {};
-  Future<dynamic> updateFunction(obj, id, formValues) async {
-    final updateEntry = Entry(
-        key: obj["key"],
-        name: formValues["desc"],
-        value: double.parse(formValues["value"]),
-        category: obj["category_id"]);
-    return await EntryController.update(updateEntry, id);
+  Future<dynamic> updateFunction(obj, context) async {
+    var id = obj["id"].toString();
+    final dbP = Provider.of<DbProvider>(context, listen: false);
+
+    Entry newEntry = Entry(
+      name: dbP.controllerEntryList[id]!["name"]!.text,
+      value: double.tryParse(dbP.controllerEntryList[id]!["value"]!.text),
+      key: obj["key"],
+      category: obj["category_id"],
+      id: obj["id"],
+    );
+    return await dbP.updateSubCategory(newEntry);
   }
 
   Future<dynamic> deleteFunction(id, context) async {
@@ -132,8 +137,8 @@ class _ListViewEntry extends StatelessWidget {
 }
 
 class _AddWidget extends StatelessWidget {
-  final Category entry;
-  const _AddWidget({required this.entry});
+  final Category category;
+  const _AddWidget({required this.category});
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -142,9 +147,9 @@ class _AddWidget extends StatelessWidget {
               arguments: Entry(
                   name: "",
                   value: 0,
-                  categoryName: entry.name,
-                  category: entry.id,
-                  categoryKey: entry.key,
+                  categoryName: category.name,
+                  category: category.id,
+                  categoryKey: category.key,
                   key: ""));
         },
         icon: Icon(

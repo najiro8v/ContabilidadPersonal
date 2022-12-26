@@ -1,8 +1,7 @@
-import 'package:contabilidad/models/models.dart' show Entry;
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:provider/provider.dart' show Provider;
 import '../provider/db_provider.dart';
+import 'package:flutter/material.dart';
+import '../models/models.dart' show Entry;
 
 class CheckFilter extends StatefulWidget {
   final Entry filter;

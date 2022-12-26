@@ -107,6 +107,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                         ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (_, index) {
+                            provider.valueEntrysD2![index];
                             return ElementCustomEdit(
                                 padding: 10,
                                 label: "lolo",

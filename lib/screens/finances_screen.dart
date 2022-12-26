@@ -99,9 +99,9 @@ class _FinancesScreenState extends State<FinancesScreen> {
                     _showToast(context);
                     setState(() {});
                     if (insert > 0) {
-                      entryValue.controllerDesc =
+                      entryValue.controllerCategory["desc"] =
                           TextEditingController(text: "");
-                      entryValue.controllerValue =
+                      entryValue.controllerCategory["value"] =
                           TextEditingController(text: "");
                     }
                   },
@@ -181,10 +181,11 @@ class _TitleFilter extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () {
                       categoP.entrya = register;
-                      categoP.controllerDesc =
+                      categoP.controllerCategory["desc"] =
                           TextEditingController(text: register.name);
-                      categoP.controllerValue = TextEditingController(
-                          text: register.value.toString());
+                      categoP.controllerCategory["value"] =
+                          TextEditingController(
+                              text: register.value.toString());
                       categoP.setValueEntry(ValueEntry(
                           desc: register.name,
                           value: register.value,
