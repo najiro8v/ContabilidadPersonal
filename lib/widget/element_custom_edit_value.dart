@@ -1,6 +1,6 @@
 import 'package:contabilidad/provider/db_provider.dart';
-import 'package:contabilidad/widget/inputs_custom_value_entry%20.dart';
-import 'package:contabilidad/widget/widget.dart';
+import 'package:contabilidad/widget/inputs_custom_value_entry.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
