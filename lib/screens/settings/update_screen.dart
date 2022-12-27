@@ -26,6 +26,7 @@ class UpdateScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          bd.editCat = false;
           Navigator.pushNamed(context, 'categoryScreen');
         },
         backgroundColor: Colors.indigo,
@@ -64,6 +65,7 @@ class _PanelRadio {
                     _AddWidget(category: e),
                     IconButton(
                       onPressed: () {
+                        bd.editCat = true;
                         Navigator.pushNamed(context, 'categoryScreen',
                             arguments: e);
                       },

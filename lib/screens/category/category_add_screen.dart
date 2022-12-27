@@ -36,23 +36,24 @@ class CategoryAdd extends StatelessWidget {
                 }),
             TextButton(
                 onPressed: () async {
-                  if (categoryEdit.key == null) {
+                  if (categoryProvider.editCat == false) {
                     bool saved = await categoryProvider
                         .saveCategory(categoryProvider.category!);
                     if (saved) {
                       // ignore: use_build_context_synchronously
-                      Navigator.of(context, rootNavigator: true).pop();
+                      Navigator.of(context).pop();
                     }
                   } else {
                     bool saved = await categoryProvider
                         .updateCategory(categoryProvider.category!);
                     if (saved) {
                       // ignore: use_build_context_synchronously
-                      Navigator.of(context, rootNavigator: true).pop();
+                      Navigator.of(context).pop();
                     }
                   }
                 },
-                child: Text(categoryEdit.key == null ? "Guardar" : "Editar"))
+                child: Text(
+                    categoryProvider.editCat == false ? "Guardar" : "Editar"))
           ],
         ));
   }

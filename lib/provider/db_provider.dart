@@ -15,6 +15,8 @@ class DbProvider extends ChangeNotifier {
   List<dynamic>? valueEntrysD = [];
   List<dynamic>? valueEntrysD2 = [];
   String lastOpen = "";
+  bool editCat = false;
+
   Map<String, List<dynamic>> subCategory = {};
   Entry? entry;
   Entry? entrya;
