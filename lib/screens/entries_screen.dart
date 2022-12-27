@@ -1,4 +1,5 @@
 import 'package:contabilidad/provider/providers.dart';
+import 'package:contabilidad/widget/element_custom_edit_value.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/widget/widget.dart';
@@ -38,21 +39,25 @@ class _EntriesScreenState extends State<EntriesScreen> {
     setState(() {});
   }
 
-  Future<dynamic> updateFunction(obj, id, formValues) async {
+  Future<dynamic> updateFunction(obj, context) async {
+    var id = obj["id"].toString();
+    final dbP = Provider.of<DbProvider>(context, listen: false);
     final updateValueEntry = ValueEntry(
-      desc: formValues["desc"],
-      value: double.parse(formValues["value"]),
-      date: obj.date,
-      entry: obj.entry,
-      latitud: obj.latitud,
-      length: obj.length,
-      type: obj.type,
+      id: obj["id"],
+      desc: dbP.controllerValueEntryList[id]!["desc"]!.text,
+      value: double.tryParse(dbP.controllerValueEntryList[id]!["value"]!.text),
+      date: obj["date"],
+      entry: obj["entry_id"],
+      latitud: 1,
+      length: 1,
+      type: obj["type_id"],
     );
-    return await ValueEntryController.update(updateValueEntry, id);
+    return await dbP.updateValueEntry(updateValueEntry);
   }
 
-  Future<dynamic> deleteFunction(id) async {
-    return await ValueEntryController.delete(id);
+  Future<dynamic> deleteFunction(id, context) async {
+    final dbP = Provider.of<DbProvider>(context, listen: false);
+    await dbP.deleteValueEntry(id);
   }
 
   submit() async {
@@ -108,7 +113,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                           shrinkWrap: true,
                           itemBuilder: (_, index) {
                             provider.valueEntrysD2![index];
-                            return ElementCustomEdit(
+                            return ElementCustomEditValueEntry(
                                 padding: 10,
                                 label: "lolo",
                                 obj: provider.valueEntrysD2![index],

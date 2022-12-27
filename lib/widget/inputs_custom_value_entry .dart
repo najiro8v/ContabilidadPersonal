@@ -5,10 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:contabilidad/provider/providers.dart';
 
 // ignore: must_be_immutable
-class InputsCustomEntry extends StatefulWidget {
+class InputsCustomValueEntry extends StatefulWidget {
   final String? hintText;
   final String? labelText;
-  final String? idMap;
   final String? helperText;
   final String? propiedad;
   final String? respaldo;
@@ -18,10 +17,11 @@ class InputsCustomEntry extends StatefulWidget {
   final IconData? iconSuffix;
   final TextInputType? keyboardType;
   String initialValue;
+  final String? idMap;
   final double? padding;
   final Function(String)? onValueChanges;
 
-  InputsCustomEntry(
+  InputsCustomValueEntry(
       {super.key,
       this.initialValue = "",
       this.propiedad = "",
@@ -39,11 +39,10 @@ class InputsCustomEntry extends StatefulWidget {
       this.idMap});
 
   @override
-  State<InputsCustomEntry> createState() => _InputsCustomState();
+  State<InputsCustomValueEntry> createState() => _InputsCustomState();
 }
 
-class _InputsCustomState extends State<InputsCustomEntry> {
-  //TextEditingController? _controller;
+class _InputsCustomState extends State<InputsCustomValueEntry> {
   @override
   void initState() {
     super.initState();
@@ -60,7 +59,7 @@ class _InputsCustomState extends State<InputsCustomEntry> {
     final provider = Provider.of<DbProvider>(context, listen: false);
 
     TextEditingController? controller =
-        provider.controllerEntryList[widget.idMap!]![widget.propiedad] ??
+        provider.controllerValueEntryList[widget.idMap!]![widget.propiedad] ??
             TextEditingController(text: widget.initialValue);
 
     return Padding(

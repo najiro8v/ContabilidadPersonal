@@ -88,14 +88,20 @@ class _InputsCustomState extends State<InputsCustomEntry> {
           enabled: widget.enable,
           onChanged: widget.onValueChanges ??
               (widget.isNumber != null && widget.isNumber != true
-                  ? (value) {}
+                  ? (value) {
+                      // var valueEntry = provider.valueEntry!.toMap();
+                      //valueEntry[widget.propiedad!] = value;
+                    }
                   : (value) {
+                      //var valueEntry = provider.valueEntry!.toMap();
                       String valor = value.toString();
                       if (valor.isEmpty) return;
                       valor.replaceAll(" ", "");
                       if (valor.contains(",")) {
                         valor = valor.replaceAll(",", ".");
                       }
+                      /* valueEntry[widget.propiedad!] =
+                          valor.isEmpty ? 0 : double.parse(valor);*/
                     }))),
     );
   }

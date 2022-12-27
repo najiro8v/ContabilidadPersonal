@@ -5,10 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:contabilidad/provider/providers.dart';
 
 // ignore: must_be_immutable
-class InputsCustomEntry extends StatefulWidget {
+class InputsCustom extends StatefulWidget {
   final String? hintText;
   final String? labelText;
-  final String? idMap;
   final String? helperText;
   final String? propiedad;
   final String? respaldo;
@@ -21,7 +20,7 @@ class InputsCustomEntry extends StatefulWidget {
   final double? padding;
   final Function(String)? onValueChanges;
 
-  InputsCustomEntry(
+  InputsCustom(
       {super.key,
       this.initialValue = "",
       this.propiedad = "",
@@ -35,15 +34,13 @@ class InputsCustomEntry extends StatefulWidget {
       this.keyboardType,
       this.onValueChanges,
       this.enable = true,
-      this.padding = 0,
-      this.idMap});
+      this.padding = 0});
 
   @override
-  State<InputsCustomEntry> createState() => _InputsCustomState();
+  State<InputsCustom> createState() => _InputsCustomState();
 }
 
-class _InputsCustomState extends State<InputsCustomEntry> {
-  //TextEditingController? _controller;
+class _InputsCustomState extends State<InputsCustom> {
   @override
   void initState() {
     super.initState();
@@ -57,11 +54,9 @@ class _InputsCustomState extends State<InputsCustomEntry> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
+    final bd = Provider.of<DbProvider>(context, listen: false);
 
-    TextEditingController? controller =
-        provider.controllerEntryList[widget.idMap!]![widget.propiedad] ??
-            TextEditingController(text: widget.initialValue);
+    TextEditingController? controller = bd.controllerCategory[widget.propiedad];
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: widget.padding!),
@@ -88,14 +83,20 @@ class _InputsCustomState extends State<InputsCustomEntry> {
           enabled: widget.enable,
           onChanged: widget.onValueChanges ??
               (widget.isNumber != null && widget.isNumber != true
-                  ? (value) {}
+                  ? (value) {
+                      var valueEntry = bd.valueEntry!.toMap();
+                      valueEntry[widget.propiedad!] = value;
+                    }
                   : (value) {
+                      var valueEntry = bd.valueEntry!.toMap();
                       String valor = value.toString();
                       if (valor.isEmpty) return;
                       valor.replaceAll(" ", "");
                       if (valor.contains(",")) {
                         valor = valor.replaceAll(",", ".");
                       }
+                      valueEntry[widget.propiedad!] =
+                          valor.isEmpty ? 0 : double.parse(valor);
                     }))),
     );
   }

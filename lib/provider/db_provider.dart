@@ -34,7 +34,10 @@ class DbProvider extends ChangeNotifier {
     "desc": TextEditingController(),
     "value": TextEditingController(),
   };
+
   Map<String, Map<String, TextEditingController?>> controllerEntryList = {};
+  Map<String, Map<String, TextEditingController?>> controllerValueEntryList =
+      {};
   TextEditingController? controllerDesc;
   TextEditingController? controllerValue;
 
@@ -57,7 +60,14 @@ class DbProvider extends ChangeNotifier {
   getValueEntries() async {
     valueEntrysD = await ValueEntryController.getBy(
         queryOption: QueryOption(
-            columns: ["desc", "value", "Id_Value_Entry", "entry_id"],
+            columns: [
+          "desc",
+          "value",
+          "Id_Value_Entry",
+          "entry_id",
+          "date",
+          "type_id"
+        ],
             where:
                 "entry_id in (${List.filled(filterEntries!.length, '?').join(',')})  ",
             whereArgs: filterEntries,
@@ -124,8 +134,19 @@ class DbProvider extends ChangeNotifier {
     return wasInsert > 0 ? true : false;
   }
 
+  deleteValueEntry(int id) async {
+    int wasDelete = await ValueEntryController.delete(id);
+    if (wasDelete > 0) {
+      valueEntrysD2!.removeWhere((item) => item["id"] == id);
+      /*if (entrya != null && entrya!.id == id) {
+        entrya = null;
+      }*/
+      notifyListeners();
+    }
+  }
+
   deleteSubCategory(int id) async {
-    int wasDelete = await EntryController.delete(id);
+    int wasDelete = await ValueEntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
       if (entrya != null && entrya!.id == id) {
@@ -167,7 +188,24 @@ class DbProvider extends ChangeNotifier {
       subCategory[lastOpen]!
           .firstWhere((item) => item["id"] == entry.id)["name"] = entry.name;
       subCategory[lastOpen]!
-          .firstWhere((item) => item["id"] == entry.id)["value"] = entry.name;
+          .firstWhere((item) => item["id"] == entry.id)["value"] = entry.value;
+
+      notifyListeners();
+      return true;
+    }
+
+    return false;
+  }
+
+  updateValueEntry(ValueEntry valueEntry) async {
+    int wasUpdate =
+        await ValueEntryController.update(valueEntry, valueEntry.id!);
+    if (wasUpdate > 0) {
+      valueEntrysD2!.firstWhere((item) => item["id"] == valueEntry.id)["desc"] =
+          valueEntry.desc;
+      valueEntrysD2!
+              .firstWhere((item) => item["id"] == valueEntry.id)["value"] =
+          valueEntry.value;
 
       notifyListeners();
       return true;
