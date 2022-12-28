@@ -9,6 +9,7 @@ import 'package:contabilidad/models/query_option.dart';
 class DbProvider extends ChangeNotifier {
   List<Category>? categorias = [];
   List<Entry>? registros = [];
+  List<Entry>? registrosEntries = [];
   List<Entry>? registrosAll = [];
   List<String>? filterEntries = [];
   List<ValueEntry>? valueEntrys = [];
@@ -21,6 +22,7 @@ class DbProvider extends ChangeNotifier {
   Entry? entry;
   Entry? entrya;
   Category? categorya;
+  Category? categoryEntries;
   Category? category;
   ValueEntry? valueEntry;
   ValueEntry? valueEntryEdit;
@@ -107,14 +109,21 @@ class DbProvider extends ChangeNotifier {
                 orderBy: "name"));
 
         subCategory.addAll({key: listado});
+        notifyListeners();
       }
-      notifyListeners();
     }
   }
 
   setSubCategorias(String idCategory) async {
     registros = await EntryController.getByCategory(idCategory);
     categorya =
+        categorias!.firstWhere((cat) => cat.id.toString() == idCategory);
+    notifyListeners();
+  }
+
+  setSubCategoriasFilter(String idCategory) async {
+    registrosEntries = await EntryController.getByCategory(idCategory);
+    categoryEntries =
         categorias!.firstWhere((cat) => cat.id.toString() == idCategory);
     notifyListeners();
   }
@@ -140,9 +149,7 @@ class DbProvider extends ChangeNotifier {
     int wasDelete = await ValueEntryController.delete(id);
     if (wasDelete > 0) {
       valueEntrysD2!.removeWhere((item) => item["id"] == id);
-      /*if (entrya != null && entrya!.id == id) {
-        entrya = null;
-      }*/
+
       notifyListeners();
     }
   }

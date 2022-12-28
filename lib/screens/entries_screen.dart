@@ -78,12 +78,12 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateI = Provider.of<DbProvider>(
-      context,
-    ).initialDate;
     final provider = Provider.of<DbProvider>(context);
-    formDate["dateI"] = dateI ?? DateTime.now();
-    setState(() {});
+    if (provider.categoryEntries != null) {
+      provider.keyFormFieldDropE!.currentState
+          // ignore: invalid_use_of_protected_member
+          ?.setValue(provider.categoryEntries!.id);
+    }
     return Scaffold(
         appBar: AppBar(title: const Text("Mis Registros")),
         floatingActionButton: FloatingActionButton(
@@ -91,6 +91,8 @@ class _EntriesScreenState extends State<EntriesScreen> {
             onPressed: () async {
               if (provider.keyFormFieldDropE!.currentState != null) {
                 provider.keyFormFieldDropE!.currentState!.reset();
+                provider.categoryEntries = null;
+                provider.filterEntries = [];
               }
 
               provider.categorya = null;
@@ -104,27 +106,24 @@ class _EntriesScreenState extends State<EntriesScreen> {
           provider.valueEntrysD2!.isEmpty
               ? const _NotList()
               : Expanded(
-                  child: ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemBuilder: (_, index) {
-                            provider.valueEntrysD2![index];
-                            return ElementCustomEditValueEntry(
-                                padding: 10,
-                                label: "lolo",
-                                obj: provider.valueEntrysD2![index],
-                                deleteFunction: deleteFunction,
-                                updateFunction: updateFunction);
-                          },
-                          itemCount: provider.valueEntrysD2!.isEmpty
-                              ? 1
-                              : provider.valueEntrysD2!.length,
-                        ),
-                      ]),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (_, index) {
+                      provider.valueEntrysD2![index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: ElementCustomEditValueEntry(
+                            padding: 10,
+                            label: "lolo",
+                            obj: provider.valueEntrysD2![index],
+                            deleteFunction: deleteFunction,
+                            updateFunction: updateFunction),
+                      );
+                    },
+                    itemCount: provider.valueEntrysD2!.isEmpty
+                        ? 1
+                        : provider.valueEntrysD2!.length,
+                  ),
                 ),
         ]));
   }
@@ -167,7 +166,7 @@ class _TitleFilter extends StatelessWidget {
                             )
                           ],
                     onChanged: (value) async {
-                      await provider.setSubCategorias(value.toString());
+                      await provider.setSubCategoriasFilter(value.toString());
                     })),
             const SizedBox(
               width: 10,
@@ -187,8 +186,8 @@ class _TitleFilter extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemBuilder: ((context, index) {
-              Entry entry = provider.categorya != null
-                  ? provider.registros![index]
+              Entry entry = provider.categoryEntries != null
+                  ? provider.registrosEntries![index]
                   : provider.registrosAll![index];
               return Container(
                 width: 100,
@@ -200,8 +199,8 @@ class _TitleFilter extends StatelessWidget {
               );
             }),
             shrinkWrap: true,
-            itemCount: provider.categorya != null
-                ? provider.registros!.length
+            itemCount: provider.categoryEntries != null
+                ? provider.registrosEntries!.length
                 : provider.registrosAll!.length,
           ),
         ),
@@ -221,7 +220,7 @@ class _TitleFilter extends StatelessWidget {
                   await provider.getValueEntries();
                   await provider.setNewList();
                 },
-                child: const Text("..."))
+                child: const Text("Buscar"))
           ],
         ),
         const SizedBox(
