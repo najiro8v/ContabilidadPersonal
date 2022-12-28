@@ -155,7 +155,7 @@ class DbProvider extends ChangeNotifier {
   }
 
   deleteSubCategory(int id) async {
-    int wasDelete = await ValueEntryController.delete(id);
+    int wasDelete = await EntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
       if (entrya != null && entrya!.id == id) {
