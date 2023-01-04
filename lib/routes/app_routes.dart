@@ -9,25 +9,43 @@ class AppRoutes {
   static const initalRoute = "home";
   static final menuOptions = <MenuOption>[
     MenuOption(
-        name: "Finanzas",
-        route: "finances",
-        icon: Icons.add_chart_sharp,
+        menuPrincipal: true,
+        name: "Registros",
+        route: "entries",
+        icon: Icons.monetization_on_outlined,
         screen: const FinancesScreen()),
     MenuOption(
-        name: "Depositos",
-        route: "deposit",
-        icon: Icons.monetization_on_outlined,
+        menuPrincipal: true,
+        name: "Inicio",
+        route: "finances",
+        icon: Icons.home,
         screen: const DataScreen()),
     MenuOption(
-        name: "Entradas",
-        route: "entries",
+        menuPrincipal: true,
+        name: "Configuración",
+        route: "configs",
+        icon: Icons.settings,
+        screen: const SettingsScreen()),
+    MenuOption(
+        name: "Categorias",
+        route: "category",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const UpdateScreen()),
+    MenuOption(
+        name: "Mis Registros",
+        route: "registries",
         icon: Icons.align_vertical_bottom_sharp,
         screen: const EntriesScreen()),
     MenuOption(
-        name: "Configuración",
-        route: "configs",
-        icon: Icons.add_card_outlined,
-        screen: const SettingsScreen())
+        name: "Mis Registros",
+        route: "categoryScreen",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const CategoryAdd()),
+    MenuOption(
+        name: "Mis Registros",
+        route: "subcategoryScreen",
+        icon: Icons.align_vertical_bottom_sharp,
+        screen: const SubCategoryAdd()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {
@@ -39,13 +57,20 @@ class AppRoutes {
     return appRoutes;
   }
 
-  static MenuOption getScreen(int index) {
-    return menuOptions[index];
+  static MenuOption getScreen(int index, {all = true}) {
+    return _actualMenu(all)[index];
   }
 
-  static List<NavigationDestination> getNavigationDestinyties() {
+  static List<MenuOption> _actualMenu(bool all) {
+    return all
+        ? menuOptions
+        : menuOptions.where((e) => e.menuPrincipal == true).toList();
+  }
+
+  static List<NavigationDestination> getNavigationDestinyties(
+      {bool all = true}) {
     List<NavigationDestination> iconAppRoutes = [];
-    for (final option in menuOptions) {
+    for (final option in _actualMenu(all)) {
       iconAppRoutes.addAll({
         NavigationDestination(
             icon: Icon(option.icon),

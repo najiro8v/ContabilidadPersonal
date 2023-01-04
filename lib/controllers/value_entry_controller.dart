@@ -1,5 +1,6 @@
 import 'package:contabilidad/models/models.dart' show ValueEntry;
 import "package:contabilidad/db/db.dart";
+import '../models/query_option.dart';
 import 'category_controller.dart';
 import 'entry_controller.dart';
 
@@ -30,16 +31,64 @@ class ValueEntryController {
             ));
   }
 
+  static Future<List<dynamic>> getChartCount() async {
+    String query =
+        'select t0.*, T1.name AS entryName, t2.name AS categoryName from $dbName as T0';
+
+    List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
+    return List.generate(
+        listado.length,
+        (i) => ValueEntry(
+              value: listado[i]['value'],
+              date: listado[i]['date'],
+              entryName: listado[i]['entryName'],
+              type: listado[i]['type_id'],
+              categoryName: listado[i]['categoryName'],
+              entry: listado[i]['entry_id'],
+              desc: listado[i]['desc'],
+              length: 1,
+              latitud: 1,
+              id: listado[i]['Id_Value_Entry'],
+            ));
+  }
+
   static Future<int> insert(ValueEntry value) async {
     return await DatabaseSQL.insert(dbName, value);
   }
 
-  static Future<void> delete(int id) async {
-    await DatabaseSQL.delete(dbName, id: id, idName: "Id_Value_Entry");
+  static Future<int> delete(int id) async {
+    int delete =
+        await DatabaseSQL.delete(dbName, id: id, idName: "Id_Value_Entry");
+    if (delete < 0) {
+      throw Error();
+    }
+    return delete;
   }
 
-  static Future<void> update(ValueEntry value, int id) async {
+  static Future<int> update(ValueEntry value, int id) async {
     return await DatabaseSQL.update(dbName, value,
         id: id, idName: "Id_Value_Entry");
+  }
+
+  static Future<List<dynamic>> getBy({required QueryOption queryOption}) async {
+    List<dynamic> listado =
+        await DatabaseSQL.get(dbName, queryOption: queryOption);
+    var data = List.generate(listado.length, (i) {
+      var temp = {};
+
+      for (var element in queryOption.columns!) {
+        for (var key in listado[i].keys) {
+          if (element == key) {
+            if (element == "Id_Value_Entry") {
+              temp["id"] = listado[i][key];
+            } else {
+              temp[element] = listado[i][key];
+            }
+          }
+        }
+      }
+      return temp;
+    });
+    return data;
   }
 }

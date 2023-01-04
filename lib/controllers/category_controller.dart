@@ -5,8 +5,13 @@ class CategoryController {
   static const String dbName = "Category";
   static Future<List<Category>> get() async {
     List<dynamic> listado = await DatabaseSQL.get(dbName);
-    return List.generate(listado.length,
-        (i) => Category(key: listado[i]['key'], name: listado[i]['name']));
+    return List.generate(
+        listado.length,
+        (i) => Category(
+            key: listado[i]['key'],
+            name: listado[i]['name'],
+            id: listado[i]['Id_Category'],
+            enable: listado[i]['enable'] == 1 ? true : false));
   }
 
   static Future<int> insert(Category category) async {
@@ -18,5 +23,11 @@ class CategoryController {
         "select T0.Id_Category from $dbName T0 where T0.key = '${category.key}'";
     List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
     return listado.first.row[0];
+  }
+
+  static Future<int> updateCategory(Category category) async {
+    int update = await DatabaseSQL.update(dbName, category,
+        id: category.id!, idName: 'Id_Category');
+    return update;
   }
 }

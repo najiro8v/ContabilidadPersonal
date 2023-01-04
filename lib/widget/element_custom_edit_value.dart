@@ -1,7 +1,6 @@
-// ignore_for_file: no_logic_in_create_state
-
 import 'package:contabilidad/provider/db_provider.dart';
-import 'package:contabilidad/widget/widget.dart';
+import 'package:contabilidad/widget/inputs_custom_value_entry.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
@@ -9,14 +8,14 @@ import 'package:provider/provider.dart';
 //import 'package:contabilidad/models/models.dart';
 
 // ignore: must_be_immutable
-class ElementCustomEdit extends StatefulWidget {
+class ElementCustomEditValueEntry extends StatefulWidget {
   final String label;
   final double? padding;
   final dynamic obj;
 
   Function update = () => {};
   Function delete = () => {};
-  ElementCustomEdit({
+  ElementCustomEditValueEntry({
     super.key,
     this.padding,
     required this.obj,
@@ -29,10 +28,10 @@ class ElementCustomEdit extends StatefulWidget {
   }
 
   @override
-  State<ElementCustomEdit> createState() => _ElementCustomEditState();
+  State<ElementCustomEditValueEntry> createState() => _ElementCustomEditState();
 }
 
-class _ElementCustomEditState extends State<ElementCustomEdit> {
+class _ElementCustomEditState extends State<ElementCustomEditValueEntry> {
   bool isEnable = false;
 
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
@@ -48,21 +47,20 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     var provider = Provider.of<DbProvider>(context);
     final idObj = widget.obj["id"].toString();
     final obj = widget.obj;
-    if (provider.controllerEntryList.containsKey(idObj) == false) {
-      var controllerDesc = TextEditingController(text: obj["name"]);
+    if (provider.controllerValueEntryList.containsKey(idObj) == false) {
+      var controllerDesc = TextEditingController(text: obj["desc"]);
       var controllerValue =
           TextEditingController(text: obj["value"].toString());
 
       TextEditingController(text: obj["value"].toString());
       Map<String, Map<String, TextEditingController?>> mapa = {
-        idObj: {"value": controllerValue, "name": controllerDesc}
+        idObj: {"value": controllerValue, "desc": controllerDesc}
       };
-      provider.controllerEntryList.addAll(mapa);
+      provider.controllerValueEntryList.addAll(mapa);
     }
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -73,10 +71,10 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
             Row(
               children: [
                 Expanded(
-                    child: InputsCustomEntry(
+                    child: InputsCustomValueEntry(
                   idMap: idObj,
-                  propiedad: "key",
-                  initialValue: obj["key"],
+                  propiedad: "entry_id",
+                  initialValue: obj["entry_id"].toString(),
                   labelText: "Llave",
                   enable: false,
                 )),
@@ -84,10 +82,11 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                   width: 10,
                 ),
                 Expanded(
-                    child: InputsCustomEntry(
+                    child: InputsCustomValueEntry(
                   idMap: idObj,
                   labelText: "Valor",
                   enable: isEnable,
+                  initialValue: obj["value"].toString(),
                   propiedad: "value",
                   isNumber: true,
                   keyboardType: TextInputType.number,
@@ -100,9 +99,9 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
               children: [
                 Expanded(
                     flex: 4,
-                    child: InputsCustomEntry(
+                    child: InputsCustomValueEntry(
                       idMap: idObj,
-                      propiedad: "name",
+                      propiedad: "desc",
                       labelText: "Descrición",
                       enable: isEnable,
                     )),

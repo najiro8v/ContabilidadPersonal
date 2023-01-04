@@ -1,10 +1,21 @@
 class Category {
-  final String? name;
-  final String? key;
-  Category({required this.name, required this.key});
+  String? name;
+  String? key;
+  bool? enable;
+  final int? id;
+  Category({required this.name, required this.key, this.id, this.enable});
 
   Map<String, dynamic> toMap() {
-    return {"name": name, "key": key};
+    return {"name": name, "key": key, "enable": enable == true ? 1 : 0};
+  }
+
+  Map<String, dynamic> toMapAll() {
+    return {
+      "name": name,
+      "key": key,
+      "id": id,
+      "enable": enable == true ? 1 : 0
+    };
   }
 }
 
@@ -19,9 +30,9 @@ class Type {
 
 class Entry {
   final int? id;
-  final String key;
-  final String? name;
-  final double? value;
+  String key;
+  String? name;
+  double? value;
   final int? category;
   final String? categoryKey;
   final String? categoryName;
@@ -37,19 +48,29 @@ class Entry {
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key, "category_id": category, "value": value};
   }
+
+  Map<String, dynamic> toMapAll() {
+    return {
+      "name": name,
+      "key": key,
+      "category_id": category,
+      "value": value,
+      "id": id
+    };
+  }
 }
 
 class ValueEntry {
   final int? id;
-  final String? desc;
-  final double? value;
-  final int? date;
-  final double? latitud;
+  String? desc;
+  double? value;
+  int? date;
+  double? latitud;
   final double? length;
-  final int? type;
-  final int? entry;
-  final String? entryName;
-  final String? categoryName;
+  int? type;
+  int? entry;
+  String? entryName;
+  String? categoryName;
 
   ValueEntry(
       {required this.desc,

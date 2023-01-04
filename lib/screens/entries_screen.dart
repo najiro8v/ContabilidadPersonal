@@ -1,7 +1,10 @@
+import 'package:contabilidad/provider/providers.dart';
+import 'package:contabilidad/widget/element_custom_edit_value.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/controllers/controller.dart';
 import 'package:contabilidad/widget/widget.dart';
 import 'package:contabilidad/models/models.dart';
+import 'package:provider/provider.dart';
 
 class EntriesScreen extends StatefulWidget {
   const EntriesScreen({Key? key}) : super(key: key);
@@ -21,6 +24,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   getEntrys({int toast = 0}) async {
     listado = await ValueEntryController.get();
     listado.sort((a, b) => a.categoryName!.compareTo(b.categoryName!));
+
     final dateFilter = formDate["dateI"] ?? DateTime.now();
     final m = dateFilter.month < 10
         ? "0${dateFilter.toUtc().month}"
@@ -35,61 +39,26 @@ class _EntriesScreenState extends State<EntriesScreen> {
     setState(() {});
   }
 
-  Future<dynamic> updateFunction(obj, id, formValues) async {
+  Future<dynamic> updateFunction(obj, context) async {
+    var id = obj["id"].toString();
+    final dbP = Provider.of<DbProvider>(context, listen: false);
     final updateValueEntry = ValueEntry(
-      desc: formValues["desc"],
-      value: double.parse(formValues["value"]),
-      date: obj.date,
-      entry: obj.entry,
-      latitud: obj.latitud,
-      length: obj.length,
-      type: obj.type,
+      id: obj["id"],
+      desc: dbP.controllerValueEntryList[id]!["desc"]!.text,
+      value: double.tryParse(dbP.controllerValueEntryList[id]!["value"]!.text),
+      date: obj["date"],
+      entry: obj["entry_id"],
+      latitud: 1,
+      length: 1,
+      type: obj["type_id"],
     );
-    return await ValueEntryController.update(updateValueEntry, id);
+    return await dbP.updateValueEntry(updateValueEntry);
   }
 
-  Future<dynamic> deleteFunction(id) async {
-    return await ValueEntryController.delete(id);
+  Future<dynamic> deleteFunction(id, context) async {
+    final dbP = Provider.of<DbProvider>(context, listen: false);
+    await dbP.deleteValueEntry(id);
   }
-
-  Future _openDatePicker() async => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: const Text("Periodo de las entradas"),
-            content: Form(
-              key: myFormKey,
-              child: Column(
-                children: [
-                  InputDatePickerFormField(
-                      onDateSaved: (value) {
-                        formDate["dateI"] = value;
-                        setState(() {});
-                      },
-                      fieldLabelText: "Fecha incial",
-                      initialDate: formDate["dateI"] ?? DateTime.now(),
-                      firstDate: DateTime(DateTime.now().year - 20,
-                          DateTime.now().month, DateTime.now().day),
-                      lastDate: DateTime(DateTime.now().year + 20,
-                          DateTime.now().month, DateTime.now().day),
-                      onDateSubmitted: (value) {
-                        formDate["dateI"] = value;
-                        setState(() {});
-                      },
-                      autofocus: true),
-                ],
-              ),
-            ),
-            actionsAlignment: MainAxisAlignment.spaceAround,
-            actions: [
-              TextButton(
-                onPressed: _return,
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.deepOrange[700]),
-                child: const Text("Cancelar"),
-              ),
-              TextButton(onPressed: submit, child: const Text("Guardar"))
-            ],
-          ));
 
   submit() async {
     myFormKey.currentState!.save();
@@ -101,10 +70,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
     Navigator.of(context).pop();
   }
 
-  _return() {
-    Navigator.of(context).pop();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -113,38 +78,177 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<DbProvider>(context);
+    if (provider.categoryEntries != null) {
+      provider.keyFormFieldDropE!.currentState
+          // ignore: invalid_use_of_protected_member
+          ?.setValue(provider.categoryEntries!.id);
+    }
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blueGrey.withOpacity(0.5),
-          child: const Icon(Icons.date_range_outlined),
-          onPressed: () async {
-            await _openDatePicker();
-          }),
-      extendBody: true,
-      body: ListView.builder(
-        itemBuilder: (_, index) {
-          if (listado.isEmpty) {
-            return const Center(
-                child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "Listado Sin Entradas",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ));
-          }
+        appBar: AppBar(title: const Text("Mis Registros")),
+        floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.filter_alt_off_outlined),
+            onPressed: () async {
+              if (provider.keyFormFieldDropE!.currentState != null) {
+                provider.keyFormFieldDropE!.currentState!.reset();
+                provider.categoryEntries = null;
+                provider.filterEntries = [];
+              }
 
-          return ElementCustomEdit(
-              emitFunction: getEntrys(),
-              padding: 10,
-              label: "lolo",
-              obj: listado[index],
-              deleteFunction: deleteFunction,
-              updateFunction: updateFunction);
-        },
-        itemCount: listado.isEmpty ? 1 : listado.length,
-      ),
+              provider.categorya = null;
+              await provider.getEntry();
+            }),
+        body: Column(children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: _TitleFilter(),
+          ),
+          provider.valueEntrysD2!.isEmpty
+              ? const _NotList()
+              : Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (_, index) {
+                      provider.valueEntrysD2![index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: ElementCustomEditValueEntry(
+                            padding: 10,
+                            label: "lolo",
+                            obj: provider.valueEntrysD2![index],
+                            deleteFunction: deleteFunction,
+                            updateFunction: updateFunction),
+                      );
+                    },
+                    itemCount: provider.valueEntrysD2!.isEmpty
+                        ? 1
+                        : provider.valueEntrysD2!.length,
+                  ),
+                ),
+        ]));
+  }
+}
+
+class _TitleFilter extends StatelessWidget {
+  const _TitleFilter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var provider = Provider.of<DbProvider>(context);
+    provider.getEntry();
+    provider.getCategorias();
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+                child: DropdownButtonFormField(
+                    key: provider.keyFormFieldDropE,
+                    decoration: const InputDecoration(labelText: "Categorias"),
+                    items: provider.categorias != null
+                        ? provider.categorias!
+                            .where((element) => element.enable!)
+                            .map((Category e) => DropdownMenuItem(
+                                  value: e.id,
+                                  child: Text(e.name!),
+                                ))
+                            .toList()
+                        : const [
+                            DropdownMenuItem(
+                              value: 0,
+                              child: Text("1"),
+                            ),
+                            DropdownMenuItem(
+                              value: 1,
+                              child: Text("2"),
+                            )
+                          ],
+                    onChanged: (value) async {
+                      await provider.setSubCategoriasFilter(value.toString());
+                    })),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+                child: TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.search_sharp), labelText: "Busqueda"),
+            )),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: ((context, index) {
+              Entry entry = provider.categoryEntries != null
+                  ? provider.registrosEntries![index]
+                  : provider.registrosAll![index];
+              return Container(
+                width: 100,
+                key: Key(entry.key.toString()),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                child: CheckFilter(
+                  filter: entry,
+                ),
+              );
+            }),
+            shrinkWrap: true,
+            itemCount: provider.categoryEntries != null
+                ? provider.registrosEntries!.length
+                : provider.registrosAll!.length,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.filter_list),
+                label: const Text("Filtros")),
+            TextButton(
+                onPressed: () async {
+                  // await _openDatePicker();
+                  await provider.getValueEntries();
+                  await provider.setNewList();
+                },
+                child: const Text("Buscar"))
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
+}
+
+class _NotList extends StatelessWidget {
+  const _NotList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Center(
+          child: Text(
+            "Listado Sin Entradas",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     );
   }
 }

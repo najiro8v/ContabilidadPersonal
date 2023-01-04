@@ -8,7 +8,7 @@ class EntryController {
 
   static Future<List<Entry>> get() async {
     String query =
-        "select t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategoryController.dbName} T1 ON T1.Id_Category = T0.category_id ORDER BY t0.name";
+        "select T0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategoryController.dbName} T1 ON T1.Id_Category = T0.category_id ORDER BY t0.name";
     List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
     return List.generate(
         listado.length,
@@ -18,6 +18,20 @@ class EntryController {
             key: listado[i]['key'],
             name: listado[i]['name'],
             categoryKey: listado[i]['categoryKey'],
+            id: listado[i]['Id_Entry']));
+  }
+
+  static Future<List<Entry>> getByCategory(String idCategory) async {
+    String query =
+        "select t0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name from $dbName as T0 where T0.category_id = $idCategory ORDER BY t0.name";
+    List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
+    return List.generate(
+        listado.length,
+        (i) => Entry(
+            value: listado[i]['value'],
+            category: listado[i]['category_id'],
+            key: listado[i]['key'],
+            name: listado[i]['name'],
             id: listado[i]['Id_Entry']));
   }
 
@@ -54,14 +68,15 @@ class EntryController {
     return listado.first.row[0];
   }
 
-  static Future<void> update(Entry value, int id) async {
+  static Future<int> update(Entry value, int id) async {
     return await DatabaseSQL.update(dbName, value, id: id, idName: "Id_Entry");
   }
 
-  static Future<void> delete(int id) async {
+  static Future<int> delete(int id) async {
     var delete = await DatabaseSQL.delete(dbName, id: id, idName: "Id_Entry");
     if (delete < 0) {
       throw Error();
     }
+    return delete;
   }
 }

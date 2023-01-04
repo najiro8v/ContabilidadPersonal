@@ -1,7 +1,8 @@
+import 'package:contabilidad/controllers/controller.dart';
 import 'package:flutter/material.dart';
 
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+//import 'package:syncfusion_flutter_charts/charts.dart';
+//import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DataScreen extends StatefulWidget {
   const DataScreen({super.key});
@@ -11,38 +12,58 @@ class DataScreen extends StatefulWidget {
 }
 
 class _DataScreenState extends State<DataScreen> {
-  Map<num, String> data = {
-    1: "Lunes",
-    2: "Martes",
-    3: "Miercoles",
-    4: "Jueves",
-    5: "Viernes"
+  Map<int, WeekValue> week = {
+    1: WeekValue("L", 0),
+    2: WeekValue("M", 0),
+    3: WeekValue("K", 0),
+    4: WeekValue("J", 0),
+    5: WeekValue("V", 0),
+    6: WeekValue("S", 0),
+    7: WeekValue("D", 0),
   };
+  List<GDPData> data = <GDPData>[];
+  getValuesEntry() async {
+    var a = await ValueEntryController.get();
+
+    for (var element in a) {
+      final dateInt =
+          DateTime.fromMillisecondsSinceEpoch(element.date! * 1000, isUtc: true)
+              .weekday;
+      week[dateInt]!.value += 1; // element.value!;
+    }
+    data =
+        week.entries.map((e) => GDPData(e.value.name, e.value.value)).toList();
+    setState(() {});
+    return;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getValuesEntry();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Syncfusion Flutter chart'),
-        ),
         body: Column(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: SfSparkBarChart(
-                data: data.entries.map((e) => e.key).toList(),
-                axisCrossesAt: 0,
-                trackball: SparkChartTrackball(
-                    dashArray: [1, 5, 10, 15],
-                    hideDelay: 1,
-                    tooltipFormatter: ((details) {
-                      details;
-                      return data[details.y].toString();
-                    }),
-                    activationMode: SparkChartActivationMode.tap),
-                labelDisplayMode: SparkChartLabelDisplayMode.all),
-          )
-          //Initialize the chart widget
-          /*SfCartesianChart(
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        /* child: SfSparkBarChart(
+            data: data.entries.map((e) => e.key).toList(),
+            axisCrossesAt: 0,
+            trackball: SparkChartTrackball(
+                dashArray: [1, 5, 10, 15],
+                hideDelay: 1,
+                tooltipFormatter: ((details) {
+                  details;
+                  return data[details.y].toString();
+                }),
+                activationMode: SparkChartActivationMode.tap),
+            labelDisplayMode: SparkChartLabelDisplayMode.all),*/
+      )
+      //Initialize the chart widget
+      /*SfCartesianChart(
               primaryXAxis: CategoryAxis(),
               // Chart title
               title: ChartTitle(text: 'Half yearly sales analysis'),
@@ -59,8 +80,8 @@ class _DataScreenState extends State<DataScreen> {
                     // Enable data label
                     dataLabelSettings: DataLabelSettings(isVisible: true))
               ]),*/
-          ,
-          /* Expanded(
+      ,
+      /* Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               //Initialize the spark charts widget
@@ -79,13 +100,18 @@ class _DataScreenState extends State<DataScreen> {
               ),
             ),
           )*/
-        ]));
+    ]));
   }
 }
 
-class _SalesData {
-  _SalesData(this.year, this.sales);
+class GDPData {
+  GDPData(this.x, this.y);
+  final String x;
+  final double y;
+}
 
-  final String year;
-  final double sales;
+class WeekValue {
+  WeekValue(this.name, this.value);
+  final String name;
+  double value;
 }
