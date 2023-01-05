@@ -95,4 +95,15 @@ class ValueEntry {
       "length": length,
     };
   }
+
+  static ValueEntry fromMap(Map<String, dynamic> json) {
+    return ValueEntry(
+        entry: json["entry_id"],
+        type: json["type_id"],
+        desc: json["desc"],
+        value: json["value"],
+        date: json["date"],
+        latitud: json["latitud"],
+        length: json["length"]);
+  }
 }

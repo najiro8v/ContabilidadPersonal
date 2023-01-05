@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 import 'package:contabilidad/provider/providers.dart';
+import "package:contabilidad/models/models.dart" show ValueEntry;
 
 // ignore: must_be_immutable
 class InputsCustom extends StatefulWidget {
@@ -86,6 +87,7 @@ class _InputsCustomState extends State<InputsCustom> {
                   ? (value) {
                       var valueEntry = bd.valueEntry!.toMap();
                       valueEntry[widget.propiedad!] = value;
+                      bd.valueEntry = ValueEntry.fromMap(valueEntry);
                     }
                   : (value) {
                       var valueEntry = bd.valueEntry!.toMap();
