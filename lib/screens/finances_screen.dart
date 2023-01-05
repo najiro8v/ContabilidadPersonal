@@ -67,13 +67,6 @@ class _FinancesScreenState extends State<FinancesScreen> {
                 labelText: "valor",
                 padding: 10,
                 keyboardType: TextInputType.number,
-                onValueChanges: (value) {
-                  String valor = value;
-                  if (valor.isEmpty) return;
-                  valor.replaceAll(" ", "");
-                  if (valor.contains(",")) valor = valor.replaceAll(",", ".");
-                  entryValue.valueEntry!.value = double.tryParse(valor);
-                },
               ),
             if (entryValue.entrya != null && entryValue.entrya!.id != null)
               TextButton(

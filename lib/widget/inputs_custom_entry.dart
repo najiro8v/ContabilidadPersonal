@@ -99,6 +99,7 @@ class _InputsCustomState extends State<InputsCustom> {
                       }
                       valueEntry[widget.propiedad!] =
                           valor.isEmpty ? 0 : double.parse(valor);
+                      bd.valueEntry = ValueEntry.fromMap(valueEntry);
                     }))),
     );
   }
