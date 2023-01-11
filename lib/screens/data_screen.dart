@@ -2,7 +2,7 @@ import 'package:contabilidad/controllers/controller.dart';
 import 'package:flutter/material.dart';
 
 //import 'package:syncfusion_flutter_charts/charts.dart';
-//import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DataScreen extends StatefulWidget {
   const DataScreen({super.key});
@@ -46,10 +46,119 @@ class _DataScreenState extends State<DataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(children: [
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        /* child: SfSparkBarChart(
+        body: Column(
+      children: [
+        _LastEntries(),
+        _Filters(),
+        _Chart(),
+        _LastEntries(),
+      ],
+    ));
+  }
+}
+
+class _Chart extends StatelessWidget {
+  Map<int, String> week = {
+    1: "L",
+    2: "M",
+    3: "K",
+    4: "J",
+    5: "V",
+    6: "S",
+    7: "D",
+  };
+  List<SalesDaa> chartData = [
+    SalesDaa(xValue: 1, yValue: 1.0),
+    SalesDaa(xValue: 2, yValue: 2),
+    SalesDaa(xValue: 3, yValue: 3),
+    SalesDaa(xValue: 4, yValue: 4),
+    SalesDaa(xValue: 5, yValue: 5),
+    SalesDaa(xValue: 6, yValue: 6),
+    SalesDaa(xValue: 7, yValue: 7),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Container(
+            child: SfSparkBarChart.custom(
+                yValueMapper: (e) => chartData[e].yValue,
+                xValueMapper: (e) => chartData[e].xValue * 10,
+                dataCount: chartData.length,
+                axisCrossesAt: 0,
+                trackball: SparkChartTrackball(
+                    hideDelay: 1,
+                    tooltipFormatter: ((details) {
+                      return week[(details.x / 10)]!.toString();
+                      //data[details.y].toString();
+                    }),
+                    activationMode: SparkChartActivationMode.tap),
+                labelDisplayMode: SparkChartLabelDisplayMode.all)));
+  }
+}
+
+class SalesDaa {
+  double yValue;
+  int xValue;
+  SalesDaa({required this.yValue, required this.xValue});
+}
+
+class SalesData {
+  final double yValue;
+  SalesData({required this.yValue});
+}
+
+class _Filters extends StatelessWidget {
+  const _Filters({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+              flex: 1,
+              child: TextFormField(
+                  decoration: InputDecoration(label: Text("Fecha1")))),
+          const SizedBox(width: 10),
+          Expanded(
+              flex: 1,
+              child: TextFormField(
+                  decoration: InputDecoration(label: Text("Fecha1")))),
+          const SizedBox(width: 10),
+          Expanded(
+              flex: 1,
+              child: TextFormField(
+                  decoration: InputDecoration(label: Text("Fecha1")))),
+        ],
+      ),
+    );
+  }
+}
+
+class _LastEntries extends StatelessWidget {
+  const _LastEntries({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [Text("Last")],
+            ),
+            Column(
+              children: [Text("Last")],
+            ),
+          ],
+          /* child: SfSparkBarChart(
             data: data.entries.map((e) => e.key).toList(),
             axisCrossesAt: 0,
             trackball: SparkChartTrackball(
@@ -61,9 +170,9 @@ class _DataScreenState extends State<DataScreen> {
                 }),
                 activationMode: SparkChartActivationMode.tap),
             labelDisplayMode: SparkChartLabelDisplayMode.all),*/
-      )
-      //Initialize the chart widget
-      /*SfCartesianChart(
+        )
+        //Initialize the chart widget
+        /*SfCartesianChart(
               primaryXAxis: CategoryAxis(),
               // Chart title
               title: ChartTitle(text: 'Half yearly sales analysis'),
@@ -80,8 +189,8 @@ class _DataScreenState extends State<DataScreen> {
                     // Enable data label
                     dataLabelSettings: DataLabelSettings(isVisible: true))
               ]),*/
-      ,
-      /* Expanded(
+
+        /* Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               //Initialize the spark charts widget
@@ -100,7 +209,7 @@ class _DataScreenState extends State<DataScreen> {
               ),
             ),
           )*/
-    ]));
+        );
   }
 }
 
