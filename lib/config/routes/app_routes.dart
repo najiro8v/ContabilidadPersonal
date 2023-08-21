@@ -4,6 +4,45 @@ import "package:flutter/material.dart";
 
 import "package:contabilidad/domain/entities/models/models.dart";
 import "package:contabilidad/presentations/screens/screens.dart";
+import "package:go_router/go_router.dart";
+
+final appRoutes = GoRouter(initialLocation: "/home", routes: [
+  GoRoute(
+    path: "entries",
+    name: "Registros",
+    builder: (context, state) => FinancesScreen(),
+  ),
+  GoRoute(
+    path: "finances",
+    name: "Inicio",
+    builder: (context, state) => DataScreen(),
+  ),
+  GoRoute(
+    path: "configs",
+    name: "Configuración",
+    builder: (context, state) => SettingsScreen(),
+  ),
+  GoRoute(
+    path: "Categorias",
+    name: "category",
+    builder: (context, state) => UpdateScreen(),
+  ),
+  GoRoute(
+    path: "Mis Registros",
+    name: "registries",
+    builder: (context, state) => EntriesScreen(),
+  ),
+  GoRoute(
+    path: "Mis categorias",
+    name: "categoryScreen",
+    builder: (context, state) => CategoryAdd(),
+  ),
+  GoRoute(
+    path: "sub categorias",
+    name: "subcategoryScreen",
+    builder: (context, state) => SubCategoryAdd(),
+  )
+]);
 
 class AppRoutes {
   static const initalRoute = "home";
