@@ -1,8 +1,7 @@
-import 'package:contabilidad/provider/db_provider.dart';
-import 'package:contabilidad/themes/app_themes.dart';
+import 'package:contabilidad/presentations/provider/db_provider.dart';
+import 'package:contabilidad/config/themes/app_themes.dart';
 import 'package:flutter/material.dart';
-
-import 'package:contabilidad/routes/app_routes.dart';
+import 'package:contabilidad/config/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
 void main() {
