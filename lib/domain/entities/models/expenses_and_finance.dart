@@ -1,9 +1,10 @@
-class Category {
+import 'package:contabilidad/domain/entities/models/account.dart';
+
+class Category extends BaseAccount {
   String? name;
   String? key;
   bool? enable;
-  final int? id;
-  Category({required this.name, required this.key, this.id, this.enable});
+  Category({required this.name, required this.key, this.enable, super.id});
 
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key, "enable": enable == true ? 1 : 0};
@@ -28,8 +29,7 @@ class Type {
   }
 }
 
-class Entry {
-  final int? id;
+class Entry extends BaseAccount {
   String key;
   String? name;
   double? value;
@@ -44,7 +44,7 @@ class Entry {
       required this.category,
       this.categoryKey,
       this.categoryName,
-      this.id});
+      super.id});
   Map<String, dynamic> toMap() {
     return {"name": name, "key": key, "category_id": category, "value": value};
   }
@@ -60,8 +60,7 @@ class Entry {
   }
 }
 
-class ValueEntry {
-  final int? id;
+class ValueEntry extends BaseAccount {
   String? desc;
   double? value;
   int? date;
@@ -82,7 +81,7 @@ class ValueEntry {
       required this.entry,
       this.entryName,
       this.categoryName,
-      this.id});
+      super.id});
 
   Map<String, dynamic> toMap() {
     return {

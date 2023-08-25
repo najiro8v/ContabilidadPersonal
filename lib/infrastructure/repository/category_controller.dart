@@ -1,9 +1,14 @@
 import 'package:contabilidad/domain/entities/models/models.dart' show Category;
 import 'package:contabilidad/infrastructure/datasources/db/db.dart';
 
+import '../datasources/sql_lite_datasources.dart';
+
 class CategoryController {
+  
   static const String dbName = "Category";
   static Future<List<Category>> get() async {
+    final repo = SqlLiteDataSource<Category>();
+    await repo.add(Category(name: "name", key: "key"))
     List<dynamic> listado = await DatabaseSQL.get(dbName);
     return List.generate(
         listado.length,

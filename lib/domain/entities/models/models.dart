@@ -1,4 +1,4 @@
-export 'package:contabilidad/domain/entities/models/menu_option.dart';
-export 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
-export 'package:contabilidad/domain/entities/models/widget_models.dart';
-export 'package:contabilidad/domain/entities/models/query_option.dart';
+export 'menu_option.dart';
+export 'expenses_and_finance.dart';
+export 'query_option.dart';
+export 'account.dart';
