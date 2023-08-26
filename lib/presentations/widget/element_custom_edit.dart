@@ -47,9 +47,9 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<DbProvider>(context);
+    return Placeholder();
+    /* var provider = Provider.of<DbProvider>(context);
     final idObj = widget.obj["id"].toString();
     final obj = widget.obj;
     if (provider.controllerEntryList.containsKey(idObj) == false) {
@@ -180,6 +180,6 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
           ],
         ),
       ),
-    );
+    );*/
   }
 }

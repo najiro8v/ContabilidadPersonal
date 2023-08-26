@@ -4,7 +4,6 @@ import 'package:contabilidad/domain/entities/models/models.dart';
 import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:contabilidad/presentations/provider/db_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'registries/registries_filter.screen.dart';
 import "package:contabilidad/presentations/widget/widget.dart";
 
@@ -30,8 +29,9 @@ class _FinancesScreenState extends State<FinancesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var entryValue = Provider.of<DbProvider>(context);
-    return Scaffold(
+    // var entryValue = Provider.of<DbProvider>(context);
+    return Placeholder();
+    /*Scaffold(
       body: Form(
         key: myFormKey,
         child: Padding(
@@ -105,9 +105,10 @@ class _FinancesScreenState extends State<FinancesScreen> {
             Navigator.of(context).pushNamed("registries");
           },
           child: const Icon(Icons.format_list_bulleted_sharp)),
-    );
+    );*/
   }
 }
+/*
 
 class _TitleFilter extends StatelessWidget {
   const _TitleFilter({
@@ -224,3 +225,4 @@ class _TitleFilter extends StatelessWidget {
     );
   }
 }
+*/

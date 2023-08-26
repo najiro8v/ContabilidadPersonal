@@ -1,6 +1,6 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
 import "package:flutter/material.dart";
-import 'package:provider/provider.dart';
+
 import 'package:contabilidad/presentations/provider/providers.dart';
 
 class CategoryAdd extends StatelessWidget {
@@ -8,7 +8,9 @@ class CategoryAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<DbProvider>(context, listen: false);
+    return Container();
+/*
+    ///    final categoryProvider = Provider.of<DbProvider>(context, listen: false);
     Category categoryEdit = ModalRoute.of(context)!.settings.arguments != null
         ? ModalRoute.of(context)!.settings.arguments as Category
         : Category(name: "", key: null);
@@ -56,5 +58,6 @@ class CategoryAdd extends StatelessWidget {
                     categoryProvider.editCat == false ? "Guardar" : "Editar"))
           ],
         ));
+        */
   }
 }

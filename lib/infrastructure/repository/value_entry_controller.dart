@@ -1,4 +1,4 @@
-import 'package:contabilidad/domain/entities/models/models.dart'
+/*import 'package:contabilidad/domain/entities/models/models.dart'
     show QueryOption, ValueEntry;
 import 'package:contabilidad/infrastructure/datasources/db/db.dart';
 import 'category_controller.dart';
@@ -92,3 +92,4 @@ class ValueEntryController {
     return data;
   }
 }
+*/

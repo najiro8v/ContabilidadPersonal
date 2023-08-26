@@ -1,6 +1,6 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
 import "package:flutter/material.dart";
-import 'package:provider/provider.dart';
+
 import 'package:contabilidad/presentations/provider/providers.dart';
 
 class SubCategoryAdd extends StatelessWidget {
@@ -8,12 +8,12 @@ class SubCategoryAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryProvider = Provider.of<DbProvider>(context);
+    // final categoryProvider = Provider.of<DbProvider>(context);
     Entry categoryEdit = ModalRoute.of(context)!.settings.arguments != null
         ? ModalRoute.of(context)!.settings.arguments as Entry
         : Entry(name: "", value: 0, key: "", category: 0);
     final bool edit = categoryEdit.key == "" ? false : true;
-    categoryProvider.entry = categoryEdit;
+    //  categoryProvider.entry = categoryEdit;
     return Scaffold(
         appBar: AppBar(title: const Center(child: Text("Mis Categoria"))),
         body: ListView(
@@ -29,20 +29,20 @@ class SubCategoryAdd extends StatelessWidget {
                 decoration: const InputDecoration(labelText: "Nombre"),
                 initialValue: categoryEdit.name ?? "",
                 onChanged: (value) {
-                  categoryProvider.entry?.name = value;
-                  categoryProvider.entry?.key = value;
+                  //  categoryProvider.entry?.name = value;
+                  // categoryProvider.entry?.key = value;
                 }),
             TextFormField(
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: "Valor"),
                 initialValue: categoryEdit.value.toString(),
                 onChanged: (value) {
-                  categoryProvider.entry?.value = double.tryParse(value) ?? 0;
+                  // categoryProvider.entry?.value = double.tryParse(value) ?? 0;
                 }),
             TextButton(
                 onPressed: () async {
-                  bool saved = await categoryProvider.saveSubCategory(
-                      categoryProvider.entry!, categoryEdit.categoryKey!);
+                  bool saved = true; //await categoryProvider.saveSubCategory(
+                  //      categoryProvider.entry!, categoryEdit.categoryKey!);
                   if (saved) {
                     // ignore: use_build_context_synchronously
                     Navigator.of(context, rootNavigator: true).pop();

@@ -1,29 +1,35 @@
 import 'package:contabilidad/domain/datasources/datasources.dart';
 import 'package:contabilidad/domain/entities/models/models.dart';
 
+import 'db/db.dart';
+
 class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   List<T> list = [];
+  final String dbName;
+
+  SqlLiteDataSource({required this.dbName});
   @override
-  Future<T?> add(T obj) {
-    print("");
+  Future<T?> add(T obj, {QueryOption? query}) async {
+    dynamic element = await DatabaseSQL.insert(dbName, obj);
+    print("test");
     // TODO: implement add
-    throw UnimplementedError();
+    return element as T;
   }
 
   @override
-  Future<T?> find(T obj) {
-    // TODO: implement find
-    throw UnimplementedError();
+  Future<T?> find(T obj, {QueryOption? query}) async {
+    List<dynamic> list = await DatabaseSQL.get(dbName, queryOption: query);
+    return list.first.fromMap() as T;
   }
 
   @override
-  Future<List<T?>> getAll() {
+  Future<List<T?>> getAll({QueryOption? query}) {
     // TODO: implement getAll
     throw UnimplementedError();
   }
 
   @override
-  Future<bool> remove(String? id) {
+  Future<bool> remove(String? id, {QueryOption? query}) {
     // TODO: implement remove
     throw UnimplementedError();
   }

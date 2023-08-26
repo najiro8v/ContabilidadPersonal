@@ -15,6 +15,8 @@ class _CheckFilterState extends State<CheckFilter> {
 
   @override
   Widget build(BuildContext context) {
+    return Placeholder();
+    /*
     var provider = Provider.of<DbProvider>(context);
     checkFun() async {
       if ((!isChecked) == true) {
@@ -63,6 +65,6 @@ class _CheckFilterState extends State<CheckFilter> {
               )),
         ],
       ),
-    );
+    );*/
   }
 }

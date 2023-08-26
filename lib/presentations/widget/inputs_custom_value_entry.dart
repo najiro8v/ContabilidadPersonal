@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
 import 'package:contabilidad/presentations/provider/providers.dart';
 
 // ignore: must_be_immutable
@@ -56,8 +55,9 @@ class _InputsCustomState extends State<InputsCustomValueEntry> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
-
+    //final provider = Provider.of<DbProvider>(context, listen: false);
+    return Placeholder();
+/*
     TextEditingController? controller =
         provider.controllerValueEntryList[widget.idMap!]![widget.propiedad] ??
             TextEditingController(text: widget.initialValue);
@@ -96,6 +96,6 @@ class _InputsCustomState extends State<InputsCustomValueEntry> {
                         valor = valor.replaceAll(",", ".");
                       }
                     }))),
-    );
+    );*/
   }
 }

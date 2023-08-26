@@ -2,7 +2,6 @@ import 'package:contabilidad/presentations/provider/providers.dart';
 import 'package:contabilidad/presentations/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/domain/entities/models/models.dart';
-import 'package:provider/provider.dart';
 
 class EntriesScreen extends StatefulWidget {
   const EntriesScreen({Key? key}) : super(key: key);
@@ -19,24 +18,25 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   Future<dynamic> updateFunction(obj, context) async {
     var id = obj["id"].toString();
-    final dbP = Provider.of<DbProvider>(context, listen: false);
+    // final dbP = Provider.of<DbProvider>(context, listen: false);
     final updateValueEntry = ValueEntry(
       id: obj["id"],
-      desc: dbP.controllerValueEntryList[id]!["desc"]!.text,
-      value: double.tryParse(dbP.controllerValueEntryList[id]!["value"]!.text),
+      desc: "", //dbP.controllerValueEntryList[id]!["desc"]!.text,
+      value:
+          1, //double.tryParse(dbP.controllerValueEntryList[id]!["value"]!.text),
       date: obj["date"],
       entry: obj["entry_id"],
       latitud: 1,
       length: 1,
       type: obj["type_id"],
     );
-    return await dbP.updateValueEntry(updateValueEntry);
+    return {}; // await dbP.updateValueEntry(updateValueEntry);
   }
   //Eliminar Registro
 
   Future<dynamic> deleteFunction(id, context) async {
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-    await dbP.deleteValueEntry(id);
+    //  final dbP = Provider.of<DbProvider>(context, listen: false);
+    //await dbP.deleteValueEntry(id);
   }
 //#Fin de Region Para CRUD Entrada
 
@@ -47,7 +47,8 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context);
+    return Container();
+    /* final provider = Provider.of<DbProvider>(context);
     if (provider.categoryEntries != null) {
       provider.keyFormFieldDropE!.currentState
           // ignore: invalid_use_of_protected_member
@@ -61,11 +62,11 @@ class _EntriesScreenState extends State<EntriesScreen> {
         provider.filterEntries = [];
       }
       provider.categorya = null;
-      await provider.getEntry();
-    }
+      await provider.getEntry();*/
+  }
 
 /*Region Screen */
-    return Scaffold(
+  /*  return Scaffold(
         appBar: AppBar(title: const Text("Mis Registros")),
         floatingActionButton: FloatingActionButton(
             onPressed: resetFilter,
@@ -79,7 +80,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
               ? const _NotList()
               : _listRegister(provider),
         ]));
-  }
+  }*/
 
 /*Return*/
   Expanded _listRegister(DbProvider provider) {
@@ -94,8 +95,9 @@ class _EntriesScreenState extends State<EntriesScreen> {
                 padding: 10,
                 label: "lolo",
                 obj: provider.valueEntrysD2![index],
-                deleteFunction: deleteFunction,
-                updateFunction: updateFunction),
+                deleteFunction: () {}, // deleteFunction,
+                updateFunction: () {} //updateFunction
+                ),
           );
         },
         itemCount: provider.valueEntrysD2!.isEmpty
@@ -113,7 +115,7 @@ class _TitleFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<DbProvider>(context);
+    /*var provider = Provider.of<DbProvider>(context);
     provider.getEntry();
     provider.getCategorias();
 
@@ -147,10 +149,11 @@ class _TitleFilter extends StatelessWidget {
         ),
       ],
     );
+  }*/
+    return Placeholder();
   }
-}
 
-class _NotList extends StatelessWidget {
+/*class _NotList extends StatelessWidget {
   const _NotList({
     Key? key,
   }) : super(key: key);
@@ -252,5 +255,5 @@ class _DropwdownFilter extends StatelessWidget {
             onChanged: (value) async {
               await provider.setSubCategoriasFilter(value.toString());
             }));
-  }
+  }*/
 }

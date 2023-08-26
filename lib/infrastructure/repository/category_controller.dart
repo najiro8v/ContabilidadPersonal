@@ -2,21 +2,20 @@ import 'package:contabilidad/domain/entities/models/models.dart' show Category;
 import 'package:contabilidad/infrastructure/datasources/db/db.dart';
 
 import '../datasources/sql_lite_datasources.dart';
-
+/*
 class CategoryController {
-  
   static const String dbName = "Category";
   static Future<List<Category>> get() async {
-    final repo = SqlLiteDataSource<Category>();
-    await repo.add(Category(name: "name", key: "key"))
-    List<dynamic> listado = await DatabaseSQL.get(dbName);
+    final repo = SqlLiteDataSource<Category>(dbName: dbName);
+    await repo.add(Category(name: "name", key: "key"));
+    /*List<dynamic> listado = await DatabaseSQL.get(dbName);
     return List.generate(
         listado.length,
         (i) => Category(
             key: listado[i]['key'],
             name: listado[i]['name'],
             id: listado[i]['Id_Category'],
-            enable: listado[i]['enable'] == 1 ? true : false));
+            enable: listado[i]['enable'] == 1 ? true : false));*/
   }
 
   static Future<int> insert(Category category) async {
@@ -36,3 +35,4 @@ class CategoryController {
     return update;
   }
 }
+*/

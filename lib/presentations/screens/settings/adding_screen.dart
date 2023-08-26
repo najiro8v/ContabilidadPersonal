@@ -26,7 +26,7 @@ class _AddingScreenState extends State<AddingScreen> {
   bool event = true;
 
   listCategories() async {
-    List<Category> listado = await CategoryController.get();
+    List<Category> listado = []; //await CategoryController.get();
     for (var e in listado) {
       dropdownOptions.addAll({"${e.key}": "${e.name}"});
     }
@@ -123,25 +123,25 @@ class _AddingScreenState extends State<AddingScreen> {
                       var newCategory = Category(
                           key: formValues["categoryKey"],
                           name: formValues["category"]);
-                      idCategory = await CategoryController.insert(newCategory);
+                      /*   idCategory = await CategoryController.insert(newCategory);
                       await EntryController.insert(Entry(
                           key: newCategory.key.toString().characters.first,
                           name: "",
                           value: 0,
-                          category: idCategory));
+                          category: idCategory));*/
                     } else {
                       var category = Category(
                           key: formValues["categoryKey"],
                           name: formValues["category"]);
-                      idCategory = await CategoryController.getId(category);
+                      //   idCategory = await CategoryController.getId(category);
                     }
-                    await EntryController.insert(Entry(
+                    /*   await EntryController.insert(Entry(
                         key: formValues["entryKey"]!,
                         name: formValues["entry"],
                         value: formValues["entryValue"]!.isEmpty
                             ? 0
                             : double.parse(formValues["entryValue"]!),
-                        category: idCategory));
+                        category: idCategory));*/
                     myFormKey.currentState!.reset();
                     option = "";
                     // ignore: use_build_context_synchronously

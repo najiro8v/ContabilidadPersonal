@@ -47,6 +47,8 @@ class _ElementCustomEditState extends State<ElementCustomEditValueEntry> {
 
   @override
   Widget build(BuildContext context) {
+    return Placeholder();
+/*
     var provider = Provider.of<DbProvider>(context);
     final idObj = widget.obj["id"].toString();
     final obj = widget.obj;
@@ -179,6 +181,6 @@ class _ElementCustomEditState extends State<ElementCustomEditValueEntry> {
           ],
         ),
       ),
-    );
+    );*/
   }
 }

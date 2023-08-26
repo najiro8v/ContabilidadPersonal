@@ -3,30 +3,31 @@ import 'package:contabilidad/presentations/widget/widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:contabilidad/presentations/provider/providers.dart';
-import 'package:provider/provider.dart';
 
 class UpdateScreen extends StatelessWidget {
   const UpdateScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final bd = Provider.of<DbProvider>(context);
-    bd.getCategorias();
+    final bd = []; // Provider.of<DbProvider>(context);
+    //bd.getCategorias();
 
     return (Scaffold(
       appBar: AppBar(title: const Text("Update Setting")),
       body: SingleChildScrollView(
-        child: ExpansionPanelList.radio(
-            children: bd.categorias!.isEmpty
+        child: ExpansionPanelList.radio(children: []
+            /*
+            bd.categorias!.isEmpty
                 ? []
                 : bd.categorias!
                     .map((e) => _PanelRadio(e: e, context: context)
                         .expansionPanelRadio())
-                    .toList()),
+                    .toList()*/
+            ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          bd.editCat = false;
+          // bd.editCat = false;
           Navigator.pushNamed(context, 'categoryScreen');
         },
         backgroundColor: Colors.indigo,
@@ -46,13 +47,13 @@ class _PanelRadio {
   _PanelRadio({required this.e, required this.context});
 
   ExpansionPanelRadio expansionPanelRadio() {
-    final bd = Provider.of<DbProvider>(context);
+    //final bd = Provider.of<DbProvider>(context);
     return ExpansionPanelRadio(
         canTapOnHeader: true,
         value: e.key.toString(),
         headerBuilder: (context, isExpanded) {
           if (isExpanded) {
-            bd.getSubCategorias(e.key!);
+            //     bd.getSubCategorias(e.key!);
           }
           return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,7 +66,7 @@ class _PanelRadio {
                     _AddWidget(category: e),
                     IconButton(
                       onPressed: () {
-                        bd.editCat = true;
+                        //          bd.editCat = true;
                         Navigator.pushNamed(context, 'categoryScreen',
                             arguments: e);
                       },
@@ -74,7 +75,7 @@ class _PanelRadio {
                     ),
                     IconButton(
                         onPressed: () {
-                          bd.disableCategory(e);
+                          //       bd.disableCategory(e);
                         },
                         icon: Icon(
                             e.enable! ? Icons.lock_open : Icons.lock_outline),
@@ -95,36 +96,40 @@ class _ListViewEntry extends StatelessWidget {
   Map<String, List<dynamic>> subCategoryI = {};
   Future<dynamic> updateFunction(obj, context) async {
     var id = obj["id"].toString();
-    final dbP = Provider.of<DbProvider>(context, listen: false);
+    //   final dbP = Provider.of<DbProvider>(context, listen: false);
 
     Entry newEntry = Entry(
-      name: dbP.controllerEntryList[id]!["name"]!.text,
-      value: double.tryParse(dbP.controllerEntryList[id]!["value"]!.text),
+      name: "", //dbP.controllerEntryList[id]!["name"]!.text,
+      value: 1, //double.tryParse(dbP.controllerEntryList[id]!["value"]!.text),
       key: obj["key"],
       category: obj["category_id"],
       id: obj["id"],
     );
-    return await dbP.updateSubCategory(newEntry);
+    //return await dbP.updateSubCategory(newEntry);
   }
 
   Future<dynamic> deleteFunction(id, context) async {
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-    await dbP.deleteSubCategory(id);
+    //  final dbP = Provider.of<DbProvider>(context, listen: false);
+    // await dbP.deleteSubCategory(id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final bd = Provider.of<DbProvider>(context);
+//    final bd = Provider.of<DbProvider>(context);
 
     return ListView.builder(
         primary: false,
         shrinkWrap: true,
         itemCount:
-            bd.subCategory[e.key] != null ? bd.subCategory[e.key]!.length : 0,
+            1, //      bd.subCategory[e.key] != null ? bd.subCategory[e.key]!.length : 0,
         itemBuilder: (context, index) {
-          var entry = bd.subCategory[e.key]![index];
+          var entry = Entry(
+              key: "key",
+              name: "name",
+              value: 1,
+              category: 1); //bd.subCategory[e.key]![index];
           return Container(
-              key: Key(entry["id"].toString()),
+              key: Key("entry['id'].toString()"),
               margin: const EdgeInsets.all(10),
               child: ElementCustomEdit(
                 deleteFunction: deleteFunction,

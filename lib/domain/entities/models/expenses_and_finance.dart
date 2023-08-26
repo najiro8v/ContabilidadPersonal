@@ -18,6 +18,13 @@ class Category extends BaseAccount {
       "enable": enable == true ? 1 : 0
     };
   }
+
+  Category fromMap(Map<String, dynamic> json) => Category(
+        key: json["key"],
+        name: json["name"],
+        id: json["id"],
+        enable: json["enable"] == 1 ? true : false,
+      );
 }
 
 class Type {
@@ -58,6 +65,14 @@ class Entry extends BaseAccount {
       "id": id
     };
   }
+
+  Entry fromMap(Map<String, dynamic> json) => Entry(
+      value: json['value'],
+      category: json['category_id'],
+      key: json['key'],
+      name: json['name'],
+      categoryKey: json['categoryKey'],
+      id: json['Id_Entry']);
 }
 
 class ValueEntry extends BaseAccount {

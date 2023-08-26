@@ -1,6 +1,5 @@
 import 'package:contabilidad/presentations/provider/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class RegistriesFilterScreen extends StatelessWidget {
   const RegistriesFilterScreen({super.key});
@@ -30,8 +29,8 @@ class RegistriesFilterScreen extends StatelessWidget {
               margin: const EdgeInsets.all(10),
               child: TextButton.icon(
                   onPressed: () {
-                    Provider.of<DbProvider>(context, listen: false).descr =
-                        e.text;
+                    //   Provider.of<DbProvider>(context, listen: false).descr =
+                    //     e.text;
                     Navigator.pop(context);
                   },
                   icon: Icon(e.icon),

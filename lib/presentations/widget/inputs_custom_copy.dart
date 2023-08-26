@@ -56,6 +56,8 @@ class _InputsCustomState extends State<InputsCustomEntry> {
 
   @override
   Widget build(BuildContext context) {
+    return Placeholder();
+    /*
     final provider = Provider.of<DbProvider>(context, listen: false);
 
     TextEditingController? controller =
@@ -102,6 +104,6 @@ class _InputsCustomState extends State<InputsCustomEntry> {
                       /* valueEntry[widget.propiedad!] =
                           valor.isEmpty ? 0 : double.parse(valor);*/
                     }))),
-    );
+    );*/
   }
 }

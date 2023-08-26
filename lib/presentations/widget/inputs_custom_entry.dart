@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
 import 'package:contabilidad/presentations/provider/providers.dart';
 import "package:contabilidad/domain/entities/models/models.dart"
     show ValueEntry;
@@ -56,6 +55,8 @@ class _InputsCustomState extends State<InputsCustom> {
 
   @override
   Widget build(BuildContext context) {
+    return Placeholder();
+    /*
     final bd = Provider.of<DbProvider>(context, listen: false);
 
     TextEditingController? controller = bd.controllerCategory[widget.propiedad];
@@ -102,6 +103,6 @@ class _InputsCustomState extends State<InputsCustom> {
                           valor.isEmpty ? 0 : double.parse(valor);
                       bd.valueEntry = ValueEntry.fromMap(valueEntry);
                     }))),
-    );
+    );*/
   }
 }

@@ -1,4 +1,4 @@
-import 'package:contabilidad/domain/entities/models/models.dart'
+/*import 'package:contabilidad/domain/entities/models/models.dart'
     show Entry, QueryOption;
 import 'package:contabilidad/infrastructure/datasources/db/db.dart';
 
@@ -81,3 +81,4 @@ class EntryController {
     return delete;
   }
 }
+*/

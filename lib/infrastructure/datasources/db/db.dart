@@ -153,7 +153,7 @@ class DatabaseSQL {
     db.close();
   }
 
-  static Future<int> insert(String dbName, dynamic model) async {
+  static Future<dynamic> insert(String dbName, dynamic model) async {
     Database database = await instance.database;
 
     final response = await database.insert(dbName, model.toMap());
