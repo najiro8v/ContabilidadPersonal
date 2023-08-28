@@ -30,7 +30,7 @@ class _FinancesScreenState extends State<FinancesScreen> {
   @override
   Widget build(BuildContext context) {
     // var entryValue = Provider.of<DbProvider>(context);
-    return Placeholder();
+    return Placeholder(child: Text("Prueba de libreria"));
     /*Scaffold(
       body: Form(
         key: myFormKey,

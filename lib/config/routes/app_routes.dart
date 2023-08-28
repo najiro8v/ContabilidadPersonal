@@ -8,37 +8,37 @@ import "package:go_router/go_router.dart";
 
 final appRoutes = GoRouter(initialLocation: "/home", routes: [
   GoRoute(
-    path: "entries",
+    path: "/home",
     name: "Registros",
     builder: (context, state) => FinancesScreen(),
   ),
   GoRoute(
-    path: "finances",
+    path: "/finances",
     name: "Inicio",
     builder: (context, state) => DataScreen(),
   ),
   GoRoute(
-    path: "configs",
+    path: "/configs",
     name: "Configuración",
     builder: (context, state) => SettingsScreen(),
   ),
   GoRoute(
-    path: "Categorias",
+    path: "/Categorias",
     name: "category",
     builder: (context, state) => UpdateScreen(),
   ),
   GoRoute(
-    path: "Mis Registros",
+    path: "/Mis_Registros",
     name: "registries",
     builder: (context, state) => EntriesScreen(),
   ),
   GoRoute(
-    path: "Mis categorias",
+    path: "/Mis_categorias",
     name: "categoryScreen",
     builder: (context, state) => CategoryAdd(),
   ),
   GoRoute(
-    path: "sub categorias",
+    path: "/sub_categorias",
     name: "subcategoryScreen",
     builder: (context, state) => SubCategoryAdd(),
   )
