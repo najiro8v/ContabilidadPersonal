@@ -1,11 +1,13 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
+
 import 'package:flutter/material.dart';
 import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //repositorio inmutables
-final movieRepositoryProvider = Provider((ref) {
-  // return MovieRepositoryImplementations(MoviedbDatasource());
+final CategoryProvider = FutureProvider<List<Category>>((ref) async {
+  final category = CategoryController();
+  return category.readData(QueryOption());
 });
 
 class DbProvider extends ChangeNotifier {

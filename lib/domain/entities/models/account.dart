@@ -1,4 +1,3 @@
-abstract class BaseAccount {
-  final int? id;
-  BaseAccount({this.id});
+abstract class BaseAccount<T> {
+  int? id;
 }

@@ -6,26 +6,30 @@ import 'db/db.dart';
 class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   List<T> list = [];
   final String dbName;
+  final T Function(Map<String, Object?> json) fromMap;
 
-  SqlLiteDataSource({required this.dbName});
+  SqlLiteDataSource({required this.dbName, required this.fromMap});
+
   @override
-  Future<T?> add(T obj, {QueryOption? query}) async {
+  Future<T> add(T obj, {QueryOption? query}) async {
     dynamic element = await DatabaseSQL.insert(dbName, obj);
-    print("test");
-    // TODO: implement add
     return element as T;
   }
 
   @override
-  Future<T?> find(T obj, {QueryOption? query}) async {
+  Future<T> find(T obj, {QueryOption? query}) async {
     List<dynamic> list = await DatabaseSQL.get(dbName, queryOption: query);
-    return list.first.fromMap() as T;
+    return fromMap(list.first);
   }
 
   @override
-  Future<List<T?>> getAll({QueryOption? query}) {
-    // TODO: implement getAll
-    throw UnimplementedError();
+  Future<List<T>> getAll({QueryOption? query}) async {
+    List<dynamic> list = await DatabaseSQL.get(dbName, queryOption: query);
+    return list.map(
+      (e) {
+        return fromMap(e);
+      },
+    ).toList();
   }
 
   @override

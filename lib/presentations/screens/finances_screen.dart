@@ -4,17 +4,18 @@ import 'package:contabilidad/domain/entities/models/models.dart';
 import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:contabilidad/presentations/provider/db_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'registries/registries_filter.screen.dart';
 import "package:contabilidad/presentations/widget/widget.dart";
 
-class FinancesScreen extends StatefulWidget {
+class FinancesScreen extends ConsumerStatefulWidget {
   const FinancesScreen({Key? key}) : super(key: key);
 
   @override
-  State<FinancesScreen> createState() => _FinancesScreenState();
+  ConsumerState<FinancesScreen> createState() => _FinancesScreenState();
 }
 
-class _FinancesScreenState extends State<FinancesScreen> {
+class _FinancesScreenState extends ConsumerState<FinancesScreen> {
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
 
   void _showToast(BuildContext context) {
@@ -28,9 +29,27 @@ class _FinancesScreenState extends State<FinancesScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // var entryValue = Provider.of<DbProvider>(context);
-    return Placeholder(child: Text("Prueba de libreria"));
+    var data = ref.watch(CategoryProvider);
+
+    return Scaffold(
+      body: data.when(
+          data: (value) => ListView.builder(
+              itemCount: value.length,
+              itemBuilder: (context, index) =>
+                  ListTile(title: Text(value[index].key ?? ""))),
+          error: (_, __) => Center(child: Placeholder(child: Text("Error"))),
+          loading: () =>
+              Center(child: Placeholder(child: Text("Prueba de libreria")))),
+    );
     /*Scaffold(
       body: Form(
         key: myFormKey,

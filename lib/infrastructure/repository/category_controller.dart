@@ -1,7 +1,18 @@
-import 'package:contabilidad/domain/entities/models/models.dart' show Category;
+import 'package:contabilidad/domain/entities/models/models.dart'
+    show Category, QueryOption;
 import 'package:contabilidad/infrastructure/datasources/db/db.dart';
 
 import '../datasources/sql_lite_datasources.dart';
+
+class CategoryController {
+  static const String _dbName = "Category";
+  final sqlPool =
+      SqlLiteDataSource<Category>(dbName: _dbName, fromMap: Category.fromMap);
+
+  Future<List<Category>> readData(QueryOption queryOption) async {
+    return await sqlPool.getAll(query: queryOption);
+  }
+}
 /*
 class CategoryController {
   static const String dbName = "Category";
