@@ -1,11 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:contabilidad/domain/entities/models/models.dart';
-import 'package:contabilidad/infrastructure/repository/controller.dart';
-import 'package:contabilidad/presentations/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'registries/registries_filter.screen.dart';
 import "package:contabilidad/presentations/widget/widget.dart";
 
 class FinancesScreen extends ConsumerStatefulWidget {
@@ -28,73 +22,71 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
     );
   }
 
+  final inputController = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    inputController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     // var entryValue = Provider.of<DbProvider>(context);
-    var data = ref.watch(CategoryProvider);
+    //var data = ref.watch(CategoryProvider);
 
     return Scaffold(
-      body: data.when(
-          data: (value) => ListView.builder(
-              itemCount: value.length,
-              itemBuilder: (context, index) =>
-                  ListTile(title: Text(value[index].key ?? ""))),
-          error: (_, __) => Center(child: Placeholder(child: Text("Error"))),
-          loading: () =>
-              Center(child: Placeholder(child: Text("Prueba de libreria")))),
-    );
-    /*Scaffold(
+      backgroundColor: Colors.white,
       body: Form(
         key: myFormKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
-            const _TitleFilter(),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
-              SwitchListTile(
-                  title: Text(
-                      "Entrada de tipo ${entryValue.valueEntry!.type == 1 ? "Credito" : "Debito"} "),
-                  value: entryValue.valueEntry!.type == 1 ? true : false,
-                  onChanged: ((value) {
-                    entryValue.valueEntry!.type = value == true ? 1 : 2;
-                  })),
+            const Text("data"),
+            //const _TitleFilter(),
+            //if (entryValue.entrya != null && entryValue.entrya!.id != null)
+            SwitchListTile(
+                title: const Text(
+                    "" //"Entrada de tipo ${entryValue.valueEntry!.type == 1 ? "Credito" : "Debito"} "
+                    ),
+                value: true, // entryValue.valueEntry!.type == 1 ? true : false,
+                onChanged: ((value) {
+                  // entryValue.valueEntry!.type = value == true ? 1 : 2;
+                })),
             const SizedBox(
               height: 8,
             ),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
-              InputsCustom(
-                initialValue: entryValue.entrya!.name!,
-                propiedad: "desc",
-                labelText: "descripción",
-                padding: 10,
-                isNumber: false,
-              ),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
-              InputsCustom(
-                initialValue: entryValue.entrya!.value!.toString(),
-                isNumber: true,
-                propiedad: "value",
-                labelText: "valor",
-                padding: 10,
-                keyboardType: TextInputType.number,
-              ),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
-              TextButton(
-                  onPressed: () async {
-                    myFormKey.currentState!.validate();
-                    if (!myFormKey.currentState!.validate()) {
-                      return;
-                    }
-                    if (entryValue.entrya == null) return;
+            //if (entryValue.entrya != null && entryValue.entrya!.id != null)
+            /*InputsCustom(
+              initialValue: "", // entryValue.entrya!.name!,
+              propiedad: "desc",
+              labelText: "descripción",
+              padding: 10,
+              isNumber: false,
+            ),*/
 
-                    final ValueEntry newEntry = ValueEntry(
+            ///if (entryValue.entrya != null && entryValue.entrya!.id != null)
+            WidgetInputsCustom(
+              controller: inputController,
+              labelText: "descipción",
+              onChanged: (value) {
+                //print(value);
+              },
+            ),
+            // if (entryValue.entrya != null && entryValue.entrya!.id != null)
+            TextButton(
+                onPressed: () async {
+                  myFormKey.currentState!.validate();
+                  if (!myFormKey.currentState!.validate()) {
+                    return;
+                  }
+                  //if (entryValue.entrya == null) return;
+
+                  /*final ValueEntry newEntry = ValueEntry(
                         desc: entryValue.valueEntry!.desc,
                         value: entryValue.valueEntry!.value,
                         date: DateTime.now().toUtc().millisecondsSinceEpoch,
@@ -103,19 +95,19 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                         type: entryValue.valueEntry!.type == 0 ? 1 : 2,
                         entry: entryValue.valueEntry!.entry);
                     int insert = await ValueEntryController.insert(newEntry);
+  */
+                  //myFormKey.currentState!.reset();
 
-                    //myFormKey.currentState!.reset();
-
-                    _showToast(context);
-                    setState(() {});
-                    if (insert > 0) {
+                  _showToast(context);
+                  setState(() {});
+                  /*if (insert > 0) {
                       entryValue.controllerCategory["desc"] =
                           TextEditingController(text: "");
                       entryValue.controllerCategory["value"] =
                           TextEditingController(text: "");
-                    }
-                  },
-                  child: const Text("Agregar Entrada")),
+                    }*/
+                },
+                child: const Text("Agregar Entrada")),
           ]),
         ),
       ),
@@ -124,7 +116,7 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
             Navigator.of(context).pushNamed("registries");
           },
           child: const Icon(Icons.format_list_bulleted_sharp)),
-    );*/
+    );
   }
 }
 /*
