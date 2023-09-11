@@ -177,23 +177,25 @@ class DatabaseSQL {
   static Future<List<dynamic>> get(String dbName,
       {String query = "", QueryOption? queryOption}) async {
     Database database = await instance.database;
+    final batch = database.batch();
 
-    final List<Map<String, dynamic>> result =
-        query.isEmpty && queryOption == null
-            ? await database.query(dbName)
-            : queryOption != null
-                ? await database.query(dbName,
-                    columns: queryOption.columns,
-                    distinct: queryOption.distinct,
-                    groupBy: queryOption.groupBy,
-                    having: queryOption.having,
-                    limit: queryOption.limit,
-                    offset: queryOption.offset,
-                    orderBy: queryOption.orderBy,
-                    where: queryOption.where,
-                    whereArgs: queryOption.whereArgs)
-                : await database.rawQuery(query);
-
-    return result.toList();
+    if (query.isEmpty && queryOption == null) {
+      batch.query(dbName);
+    } else if (queryOption != null) {
+      batch.query(dbName,
+          columns: queryOption.columns,
+          distinct: queryOption.distinct,
+          groupBy: queryOption.groupBy,
+          having: queryOption.having,
+          limit: queryOption.limit,
+          offset: queryOption.offset,
+          orderBy: queryOption.orderBy,
+          where: queryOption.where,
+          whereArgs: queryOption.whereArgs);
+    } else {
+      batch.rawQuery(query);
+    }
+    final lista = await batch.commit(continueOnError: false) as List<dynamic>;
+    return lista[0] ?? [];
   }
 }

@@ -1,18 +1,33 @@
+import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
 import 'package:contabilidad/domain/entities/models/models.dart'
     show Category, QueryOption;
-import 'package:contabilidad/infrastructure/datasources/db/db.dart';
-
 import '../datasources/sql_lite_datasources.dart';
 
 class CategoryController {
-  static const String _dbName = "Category";
+  static const String dbName = "Category";
   final sqlPool =
-      SqlLiteDataSource<Category>(dbName: _dbName, fromMap: Category.fromMap);
+      SqlLiteDataSource<Category>(dbName: dbName, fromMap: Category.fromMap);
 
-  Future<List<Category>> readData(QueryOption queryOption) async {
-    return await sqlPool.getAll(query: queryOption);
+  Future<List<Category>> readData({QueryOption? queryOption}) async {
+    final list = await sqlPool.getAll(queryOption: queryOption);
+    return list;
   }
 }
+
+class EntryController {
+  static const String dbName = "Entry";
+  final sqlPool =
+      SqlLiteDataSource<Entry>(dbName: dbName, fromMap: Entry.fromMap);
+
+  Future<List<Entry>> readData({QueryOption? queryOption}) async {
+    String query =
+        "select T0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategoryController.dbName} T1 ON T1.Id_Category = T0.category_id ORDER BY t0.name";
+    return await sqlPool.getAll(query: query);
+  }
+}
+
+
+
 /*
 class CategoryController {
   static const String dbName = "Category";

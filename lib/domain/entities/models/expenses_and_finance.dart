@@ -17,17 +17,19 @@ class Category implements BaseAccount {
     return {
       "name": name,
       "key": key,
-      "id": id,
+      "Id_Category": id,
       "enable": enable == true ? 1 : 0
     };
   }
 
-  static Category fromMap(Map<String, dynamic> json) => Category(
-        key: json["key"],
-        name: json["name"],
-        id: json["id"],
-        enable: json["enable"] == 1 ? true : false,
-      );
+  static Category fromMap(Map<String, dynamic> json) {
+    return Category(
+      key: json["key"],
+      name: json["name"],
+      id: json["id"] ?? json["Id_Category"],
+      enable: json["enable"] == 1 ? true : false,
+    );
+  }
   /*@override
   static Category fromMap(Map<String, dynamic> json) => Category(
         key: json["key"],
@@ -76,7 +78,7 @@ class Entry implements BaseAccount {
     };
   }
 
-  Entry fromMap(Map<String, dynamic> json) => Entry(
+  static Entry fromMap(Map<String, dynamic> json) => Entry(
       value: json['value'],
       category: json['category_id'],
       key: json['key'],

@@ -11,20 +11,22 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   SqlLiteDataSource({required this.dbName, required this.fromMap});
 
   @override
-  Future<T> add(T obj, {QueryOption? query}) async {
+  Future<T> add(T obj) async {
     dynamic element = await DatabaseSQL.insert(dbName, obj);
     return element as T;
   }
 
   @override
-  Future<T> find(T obj, {QueryOption? query}) async {
-    List<dynamic> list = await DatabaseSQL.get(dbName, queryOption: query);
+  Future<T> find(T obj, {QueryOption? queryOption, String? query}) async {
+    List<dynamic> list = await DatabaseSQL.get(dbName,
+        queryOption: queryOption, query: query ?? "");
     return fromMap(list.first);
   }
 
   @override
-  Future<List<T>> getAll({QueryOption? query}) async {
-    List<dynamic> list = await DatabaseSQL.get(dbName, queryOption: query);
+  Future<List<T>> getAll({QueryOption? queryOption, String? query}) async {
+    List<dynamic> list = await DatabaseSQL.get(dbName,
+        queryOption: queryOption, query: query ?? "");
     return list.map(
       (e) {
         return fromMap(e);
@@ -33,7 +35,7 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   }
 
   @override
-  Future<bool> remove(String? id, {QueryOption? query}) {
+  Future<bool> remove(String? id, {QueryOption? queryOption, String? query}) {
     // TODO: implement remove
     throw UnimplementedError();
   }
@@ -41,14 +43,14 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
 
 /*
  static Future<List<dynamic>> get(String dbName,
-      {String query = "", QueryOption? queryOption}) async {
+      {String queryOption = "", QueryOption? queryOption}) async {
     Database database = await instance.database;
 
     final List<Map<String, dynamic>> result =
-        query.isEmpty && queryOption == null
-            ? await database.query(dbName)
+        queryOption.isEmpty && queryOption == null
+            ? await database.queryOption(dbName)
             : queryOption != null
-                ? await database.query(dbName,
+                ? await database.queryOption(dbName,
                     columns: queryOption.columns,
                     distinct: queryOption.distinct,
                     groupBy: queryOption.groupBy,
@@ -58,7 +60,7 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
                     orderBy: queryOption.orderBy,
                     where: queryOption.where,
                     whereArgs: queryOption.whereArgs)
-                : await database.rawQuery(query);
+                : await database.rawQuery(queryOption);
 
     return result.toList();
   } */

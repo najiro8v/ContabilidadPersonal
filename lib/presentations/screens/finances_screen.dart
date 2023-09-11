@@ -1,3 +1,5 @@
+import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
+import 'package:contabilidad/presentations/provider/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:contabilidad/presentations/widget/widget.dart";
@@ -22,7 +24,9 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
     );
   }
 
-  final inputController = TextEditingController();
+  final inputControllerDesc = TextEditingController();
+  final inputControllerCant = TextEditingController();
+  final inputControllerPrice = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -30,7 +34,9 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
 
   @override
   void dispose() {
-    inputController.dispose();
+    inputControllerDesc.dispose();
+    inputControllerCant.dispose();
+    inputControllerPrice.dispose();
     super.dispose();
   }
 
@@ -47,7 +53,7 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
             const Text("data"),
-            //const _TitleFilter(),
+            _TitleFilter(),
             //if (entryValue.entrya != null && entryValue.entrya!.id != null)
             SwitchListTile(
                 title: const Text(
@@ -71,8 +77,24 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
 
             ///if (entryValue.entrya != null && entryValue.entrya!.id != null)
             WidgetInputsCustom(
-              controller: inputController,
+              controller: inputControllerDesc,
               labelText: "descipción",
+              onChanged: (value) {
+                //print(value);
+              },
+            ),
+            WidgetInputsCustom(
+              controller: inputControllerCant,
+              labelText: "Cantidad",
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                //print(value);
+              },
+            ),
+            WidgetInputsCustom(
+              controller: inputControllerPrice,
+              labelText: "Precio",
+              keyboardType: TextInputType.number,
               onChanged: (value) {
                 //print(value);
               },
@@ -119,59 +141,58 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
     );
   }
 }
-/*
 
-class _TitleFilter extends StatelessWidget {
-  const _TitleFilter({
+class _TitleFilter extends ConsumerWidget {
+  final GlobalKey<FormFieldState> keyFormFieldDrop =
+      GlobalKey<FormFieldState>();
+  _TitleFilter({
     Key? key,
   }) : super(key: key);
   @override
-  Widget build(BuildContext context) {
-    var categoP = Provider.of<DbProvider>(context);
-    categoP.getCategorias();
+  Widget build(BuildContext context, WidgetRef ref) {
+    var categoriaProvider = ref.watch(categoryProvider);
+    var entradaProvider = ref.watch(entryProvider(1));
+    //categoP.getCategorias();
 
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-                child: DropdownButtonFormField(
-                    key: categoP.keyFormFieldDrop,
-                    decoration: const InputDecoration(labelText: "Categorias"),
-                    items: categoP.categorias != null
-                        ? categoP.categorias!
-                            .where((element) => element.enable!)
-                            .map((Category e) => DropdownMenuItem(
-                                  value: e.id,
-                                  child: Text(e.name!),
-                                ))
-                            .toList()
-                        : const [
-                            DropdownMenuItem(
-                              value: "1",
-                              child: Text("Sin cargas"),
-                            ),
-                            DropdownMenuItem(
-                              value: "1",
-                              child: Text("Sin cargas"),
-                            )
-                          ],
-                    onChanged: (value) async {
-                      await categoP.setSubCategorias(value.toString());
-                    })),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-                child: TextFormField(
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.search_sharp), labelText: "Busqueda"),
-            )),
-          ],
-        ),
+        categoriaProvider.when(
+            data: (elements) {
+              final listElement = elements
+                  .where((element) => element.enable!)
+                  .map((Category e) => DropdownMenuItem(
+                        value: e.id,
+                        child: Text(e.name!),
+                      ))
+                  .toList();
+              return DropdownButtonFormField(
+                  items: listElement,
+                  onChanged: (value) async {
+                    // await categoP.setSubCategorias(value.toString());
+                  });
+            },
+            error: (error, _) => Text("Error Data"),
+            loading: () => const CircularProgressIndicator()),
+        entradaProvider.when(
+            data: (elements) {
+              final listElement = elements
+                  .map((Entry e) => DropdownMenuItem(
+                        value: e.id,
+                        child: Text(e.name!),
+                      ))
+                  .toList();
+              return DropdownButtonFormField(
+                  items: listElement,
+                  onChanged: (value) async {
+                    // await categoP.setSubCategorias(value.toString());
+                  });
+            },
+            error: (error, _) => Text("Error Data"),
+            loading: () => Container()),
         const SizedBox(
           height: 10,
         ),
+        /*
         if (categoP.categorya != null)
           SizedBox(
             height: 50,
@@ -231,9 +252,8 @@ class _TitleFilter extends StatelessWidget {
         ),
         const SizedBox(
           height: 10,
-        ),
+        ),*/
       ],
     );
   }
 }
-*/

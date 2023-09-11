@@ -11,6 +11,7 @@ class WidgetInputsCustom extends StatefulWidget {
   final TextEditingController controller;
   final double? padding;
   final Function(String)? onChanged;
+  final String? Function(String?)? validator;
 
   const WidgetInputsCustom(
       {super.key,
@@ -18,6 +19,7 @@ class WidgetInputsCustom extends StatefulWidget {
       this.labelText,
       this.helperText,
       this.icon,
+      this.validator,
       this.iconSuffix,
       this.keyboardType,
       this.onChanged,
@@ -30,16 +32,14 @@ class WidgetInputsCustom extends StatefulWidget {
 }
 
 class _InputsCustomState extends State<WidgetInputsCustom> {
-  late TextEditingController _controller;
   @override
   void initState() {
-    _controller = widget.controller;
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    widget.controller.dispose();
     super.dispose();
   }
 
@@ -48,7 +48,14 @@ class _InputsCustomState extends State<WidgetInputsCustom> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: widget.padding!),
       child: (TextFormField(
-        controller: _controller,
+        validator: widget.validator ??
+            (value) {
+              if (value == null || value.isEmpty) {
+                return "Campo Vacio";
+              }
+              return null;
+            },
+        controller: widget.controller,
         keyboardType: widget.keyboardType,
         decoration: InputDecoration(
           labelText: widget.labelText,

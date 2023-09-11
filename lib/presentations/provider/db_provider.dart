@@ -5,9 +5,14 @@ import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //repositorio inmutables
-final CategoryProvider = FutureProvider<List<Category>>((ref) async {
+final categoryProvider = FutureProvider<List<Category>>((ref) async {
   final category = CategoryController();
-  return category.readData(QueryOption());
+  return category.readData();
+});
+
+final entryProvider = FutureProvider.family<List<Entry>, int>((ref, id) async {
+  final entry = EntryController();
+  return entry.readData();
 });
 
 class DbProvider extends ChangeNotifier {
