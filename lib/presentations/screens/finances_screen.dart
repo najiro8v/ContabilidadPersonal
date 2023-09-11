@@ -34,9 +34,9 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
 
   @override
   void dispose() {
-    inputControllerDesc.dispose();
-    inputControllerCant.dispose();
-    inputControllerPrice.dispose();
+    //  inputControllerDesc.dispose();
+    // inputControllerCant.dispose();
+    //inputControllerPrice.dispose();
     super.dispose();
   }
 
@@ -52,7 +52,6 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
-            const Text("data"),
             _TitleFilter(),
             //if (entryValue.entrya != null && entryValue.entrya!.id != null)
             SwitchListTile(
@@ -150,46 +149,13 @@ class _TitleFilter extends ConsumerWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var categoriaProvider = ref.watch(categoryProvider);
-    var entradaProvider = ref.watch(entryProvider(1));
     //categoP.getCategorias();
 
-    return Column(
+    return const Column(
       children: [
-        categoriaProvider.when(
-            data: (elements) {
-              final listElement = elements
-                  .where((element) => element.enable!)
-                  .map((Category e) => DropdownMenuItem(
-                        value: e.id,
-                        child: Text(e.name!),
-                      ))
-                  .toList();
-              return DropdownButtonFormField(
-                  items: listElement,
-                  onChanged: (value) async {
-                    // await categoP.setSubCategorias(value.toString());
-                  });
-            },
-            error: (error, _) => Text("Error Data"),
-            loading: () => const CircularProgressIndicator()),
-        entradaProvider.when(
-            data: (elements) {
-              final listElement = elements
-                  .map((Entry e) => DropdownMenuItem(
-                        value: e.id,
-                        child: Text(e.name!),
-                      ))
-                  .toList();
-              return DropdownButtonFormField(
-                  items: listElement,
-                  onChanged: (value) async {
-                    // await categoP.setSubCategorias(value.toString());
-                  });
-            },
-            error: (error, _) => Text("Error Data"),
-            loading: () => Container()),
-        const SizedBox(
+        _CategorySelector(),
+        _SubCategory(),
+        SizedBox(
           height: 10,
         ),
         /*
@@ -254,6 +220,113 @@ class _TitleFilter extends ConsumerWidget {
           height: 10,
         ),*/
       ],
+    );
+  }
+}
+
+class _SubCategory extends ConsumerWidget {
+  const _SubCategory({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entradaProvider = ref.watch(entryProvider);
+    final screen = MediaQuery.of(context);
+    return SizedBox(
+      height: screen.size.height * 0.10,
+      child: entradaProvider.when(
+          data: (elements) {
+            return ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: elements.length,
+                itemBuilder: (context, index) =>
+                    _ButtonSubCategory(entry: elements[index]));
+            /*
+            final listElement = elements
+                .map((Entry e) => DropdownMenuItem(
+                      value: e.id,
+                      child: Text(e.name!),
+                    ))
+                .toList();
+            return DropdownButtonFormField(
+                items: listElement,
+                onChanged: (value) async {
+                  // await categoP.setSubCategorias(value.toString());
+                });*/
+          },
+          error: (error, _) => const WidgetErrorAlert(),
+          loading: () => Container()),
+    );
+  }
+}
+
+class _CategorySelector extends ConsumerWidget {
+  const _CategorySelector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    var categoriaProvider = ref.watch(categoryProvider);
+
+    return Center(
+      child: categoriaProvider.when(
+          data: (elements) {
+            final listElement = elements
+                .where((element) => element.enable!)
+                .map((Category e) => DropdownMenuItem(
+                      value: e.id,
+                      child: Text(e.name!),
+                    ))
+                .toList();
+            return DropdownButtonFormField(
+                items: listElement,
+                onChanged: (value) async {
+                  int newState = value as int;
+                  ref
+                      .read(entryIdProvider.notifier)
+                      .update((state) => newState);
+                  // await categoP.setSubCategorias(value.toString());
+                });
+          },
+          error: (error, _) => const WidgetErrorAlert(),
+          loading: () => const CircularProgressIndicator()),
+    );
+  }
+}
+
+class _ButtonSubCategory extends StatelessWidget {
+  final Entry entry;
+  const _ButtonSubCategory({super.key, required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: TextButton.icon(
+        onPressed: () {
+          /*categoP.entrya = register;
+          categoP.controllerCategory["desc"] =
+              TextEditingController(text: register.name);
+          categoP.controllerCategory["value"] =
+              TextEditingController(text: register.value.toString());
+          categoP.setValueEntry(ValueEntry(
+              desc: register.name,
+              value: register.value,
+              date: DateTime.now().toUtc().millisecondsSinceEpoch,
+              latitud: 1,
+              length: 1,
+              type: 1,
+              entry: register.id));*/
+        },
+        icon: const Icon(Icons.access_time_filled),
+        label: Text(
+          entry.name!,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
     );
   }
 }

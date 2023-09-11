@@ -1,5 +1,4 @@
 import 'package:contabilidad/domain/entities/models/account.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Category implements BaseAccount {
   String? name;

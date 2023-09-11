@@ -10,10 +10,13 @@ final categoryProvider = FutureProvider<List<Category>>((ref) async {
   return category.readData();
 });
 
-final entryProvider = FutureProvider.family<List<Entry>, int>((ref, id) async {
+final entryProvider = FutureProvider<List<Entry>>((ref) async {
+  final id = ref.watch(entryIdProvider);
   final entry = EntryController();
-  return entry.readData();
+  return entry.getByCategory(id: id);
 });
+
+final entryIdProvider = StateProvider((ref) => 1);
 
 class DbProvider extends ChangeNotifier {
   List<Category>? categorias = [];
