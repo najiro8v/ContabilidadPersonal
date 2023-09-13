@@ -16,6 +16,18 @@ class CategoryController {
   }
 }
 
+class ValueEntryController {
+  final datasource = ValueEntrySQLImplement();
+
+  Future<List<ValueEntry>> find({ValueEntry? entity}) async {
+    return await datasource.find(entity: entity);
+  }
+
+  Future<ValueEntry> insert({required ValueEntry entity}) async {
+    return await datasource.insert(entity: entity);
+  }
+}
+
 class EntryController {
   static const String dbName = "Entry";
   final sqlPool =
@@ -38,6 +50,9 @@ class EntryController {
     return await sqlPool.add(entry);
   }
 }
+
+
+
 
 
 

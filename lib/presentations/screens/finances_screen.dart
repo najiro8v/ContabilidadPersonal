@@ -90,8 +90,26 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                   inputControllerCant.text;
                   inputControllerDesc.text;
                   inputControllerPrice.text;
+                  final value =
+                      (double.tryParse(inputControllerPrice.text) ?? 0) *
+                          (double.tryParse(inputControllerCant.text) ?? 0);
+                  final entry = ref.read(entrySelectionProvider.notifier);
+                  final newValueEntry = ValueEntry(
+                    desc: inputControllerDesc.text,
+                    value: value,
+                    date: 1,
+                    entry: entry.state,
+                    type: 0,
+                    latitud: 0,
+                    length: 0,
+                  );
 
+                  ref.read(entryValueProviderState(newValueEntry));
                   _showToast(context);
+                  inputControllerCant.clear();
+                  inputControllerDesc.clear();
+                  inputControllerPrice.text = "";
+
                   setState(() {});
                 },
                 child: const Text("Agregar Entrada")),
@@ -146,6 +164,9 @@ class _SubCategory extends ConsumerWidget {
                     entry: elements[index],
                     onPressed: () {
                       final entry = elements[index];
+                      ref
+                          .read(entrySelectionProvider.notifier)
+                          .update((state) => entry.id);
                       controllers[0].text = entry.name ?? "";
                       controllers[1].text = "1";
                       controllers[2].text = entry.value.toString();

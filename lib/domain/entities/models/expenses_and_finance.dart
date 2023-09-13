@@ -128,15 +128,15 @@ class ValueEntry implements BaseAccount {
     };
   }
 
-  ValueEntry fromMap(Map<String, dynamic> json) {
+  static ValueEntry fromMap(Map<String, dynamic> json) {
     return ValueEntry(
         entry: json["entry_id"],
-        type: json["type_id"],
+        type: json["type_id"] ?? 0,
         desc: json["desc"],
         value: json["value"],
         date: json["date"],
-        latitud: json["latitud"],
-        length: json["length"]);
+        latitud: json["latitud"] ?? 1,
+        length: json["length"] ?? 1);
   }
 
   @override

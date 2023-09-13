@@ -1,8 +1,8 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
 
 class HelppersCategorySQL {
-  static QueryOption? ObjectToQuery(Category? category, String db) {
-    if (category == null) return null;
+  static QueryOption? objectToQuery(dynamic model, String db) {
+    if (model == null) return null;
 
     return QueryOption();
   }

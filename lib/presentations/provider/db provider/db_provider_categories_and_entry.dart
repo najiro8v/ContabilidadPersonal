@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //#Finance Region
 final categorySelectionProvider = StateProvider((ref) => 1);
+final entrySelectionProvider = StateProvider<int?>((ref) => null);
 
 final categoryProviderList = FutureProvider<List<Category>>((ref) async {
   final category = CategoryController();
@@ -16,6 +17,12 @@ final entryProviderList = FutureProvider<List<Entry>>((ref) async {
   final idCategory = ref.watch(categorySelectionProvider);
   final entry = EntryController();
   return entry.getByCategory(id: idCategory);
+});
+
+final entryValueProviderState =
+    FutureProvider.family<ValueEntry, ValueEntry>((ref, entity) async {
+  final valueEntry = ValueEntryController();
+  return valueEntry.insert(entity: entity);
 });
 
 //#End Finance Region
