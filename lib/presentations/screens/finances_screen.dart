@@ -1,4 +1,5 @@
 import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
+import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
 import 'package:contabilidad/presentations/provider/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,13 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
           child: ListView(children: [
-            _TitleFilter(),
+            _TitleFilter(
+              controllers: [
+                inputControllerDesc,
+                inputControllerCant,
+                inputControllerPrice
+              ],
+            ),
             SwitchListTile(
                 title: const Text(""),
                 value: check,
@@ -80,15 +87,9 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                   if (!myFormKey.currentState!.validate()) {
                     return;
                   }
-
-                  int idCategory = ref.read(entryIdProvider);
                   inputControllerCant.text;
                   inputControllerDesc.text;
                   inputControllerPrice.text;
-                  final category = Category(
-                      key: inputControllerCant.text,
-                      name: inputControllerDesc.text);
-                  ref.read(categoryProvider.notifier).addData(category);
 
                   _showToast(context);
                   setState(() {});
@@ -109,16 +110,15 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
 class _TitleFilter extends ConsumerWidget {
   final GlobalKey<FormFieldState> keyFormFieldDrop =
       GlobalKey<FormFieldState>();
-  _TitleFilter({
-    Key? key,
-  }) : super(key: key);
+  final List<TextEditingController> controllers;
+  _TitleFilter({Key? key, required this.controllers}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Column(
+    return Column(
       children: [
-        _CategorySelector(),
-        _SubCategory(),
-        SizedBox(
+        const _CategorySelector(),
+        _SubCategory(controllers: controllers),
+        const SizedBox(
           height: 10,
         ),
       ],
@@ -127,13 +127,12 @@ class _TitleFilter extends ConsumerWidget {
 }
 
 class _SubCategory extends ConsumerWidget {
-  const _SubCategory({
-    super.key,
-  });
+  final List<TextEditingController> controllers;
+  const _SubCategory({super.key, required this.controllers});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entradaProvider = ref.watch(entryProvider);
+    final entradaProvider = ref.watch(entryProviderList);
     final screen = MediaQuery.of(context);
     return SizedBox(
       height: screen.size.height * 0.10,
@@ -143,8 +142,14 @@ class _SubCategory extends ConsumerWidget {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: elements.length,
-                itemBuilder: (context, index) =>
-                    _ButtonSubCategory(entry: elements[index]));
+                itemBuilder: (context, index) => _ButtonSubCategory(
+                    entry: elements[index],
+                    onPressed: () {
+                      final entry = elements[index];
+                      controllers[0].text = entry.name ?? "";
+                      controllers[1].text = "1";
+                      controllers[2].text = entry.value.toString();
+                    }));
           },
           error: (error, _) => const WidgetErrorAlert(),
           loading: () => Container()),
@@ -159,41 +164,42 @@ class _CategorySelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var categoriaProvider = ref.watch(categoryProvider);
-    return Center(child: Listado(categoriaProvider, ref));
-  }
+    final categoriaProvider = ref.watch(categoryProviderList);
 
-  Widget Listado(List<Category> categoriaProvider, WidgetRef ref) {
-    ref.read(categoryProvider.notifier).getData();
-    if (categoriaProvider.isEmpty) {
-      return const SizedBox();
-    }
-    final listElement = categoriaProvider
-        .where((element) => element.enable!)
-        .map((Category e) => DropdownMenuItem(
-              value: e.id,
-              child: Text(e.name!),
-            ))
-        .toList();
-    return DropdownButtonFormField(
-        items: listElement,
-        onChanged: (value) async {
-          int newState = value as int;
-          ref.read(entryIdProvider.notifier).update((state) => newState);
-        });
+    return categoriaProvider.when(
+        data: (elements) {
+          final listElement = elements
+              .where((element) => element.enable!)
+              .map((Category e) => DropdownMenuItem(
+                    value: e.id,
+                    child: Text(e.name!),
+                  ))
+              .toList();
+          return DropdownButtonFormField(
+              items: listElement,
+              onChanged: (value) async {
+                int newState = value as int;
+                ref
+                    .read(categorySelectionProvider.notifier)
+                    .update((state) => newState);
+              });
+        },
+        error: (error, _) => const WidgetErrorAlert(),
+        loading: () => Container());
   }
 }
 
 class _ButtonSubCategory extends StatelessWidget {
   final Entry entry;
-  const _ButtonSubCategory({super.key, required this.entry});
+  final Function()? onPressed;
+  const _ButtonSubCategory({super.key, required this.entry, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: TextButton.icon(
-        onPressed: () {},
+        onPressed: onPressed,
         icon: const Icon(Icons.access_time_filled),
         label: Text(
           entry.name!,
