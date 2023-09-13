@@ -9,7 +9,11 @@ class Category implements BaseAccount {
   Category({required this.name, required this.key, this.enable, this.id});
 
   Map<String, dynamic> toMap() {
-    return {"name": name, "key": key, "enable": enable == true ? 1 : 0};
+    return {
+      "name": name,
+      "key": key,
+      "enable": enable == true || enable == null ? 1 : 0
+    };
   }
 
   Map<String, dynamic> toMapAll() {
@@ -17,7 +21,7 @@ class Category implements BaseAccount {
       "name": name,
       "key": key,
       "Id_Category": id,
-      "enable": enable == true ? 1 : 0
+      "enable": enable == true || enable == null ? 1 : 0
     };
   }
 

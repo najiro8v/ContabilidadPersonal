@@ -51,7 +51,7 @@ class _InputsCustomState extends State<WidgetInputsCustom> {
         validator: widget.validator ??
             (value) {
               if (value == null || value.isEmpty) {
-                return "Campo Vacio";
+                return " Debe llenar el campo ${widget.labelText ?? ""}";
               }
               return null;
             },

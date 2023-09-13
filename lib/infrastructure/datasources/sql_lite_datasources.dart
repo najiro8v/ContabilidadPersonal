@@ -13,7 +13,7 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   @override
   Future<T> add(T obj) async {
     dynamic element = await DatabaseSQL.insert(dbName, obj);
-    return element as T;
+    return fromMap(element);
   }
 
   @override

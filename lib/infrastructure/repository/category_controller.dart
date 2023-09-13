@@ -1,16 +1,18 @@
 import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
 import 'package:contabilidad/domain/entities/models/models.dart'
-    show Category, QueryOption;
+    show QueryOption;
 import '../datasources/sql_lite_datasources.dart';
+import 'RepositorySql/category_repo_sql.dart';
 
 class CategoryController {
-  static const String dbName = "Category";
-  final sqlPool =
-      SqlLiteDataSource<Category>(dbName: dbName, fromMap: Category.fromMap);
+  final datasource = CategorySQLImplement();
 
-  Future<List<Category>> readData({QueryOption? queryOption}) async {
-    final list = await sqlPool.getAll(queryOption: queryOption);
-    return list;
+  Future<List<Category>> find({Category? entity}) async {
+    return await datasource.find(entity: entity);
+  }
+
+  Future<Category> insert({required Category entity}) async {
+    return await datasource.insert(entity: entity);
   }
 }
 
@@ -21,7 +23,7 @@ class EntryController {
 
   Future<List<Entry>> readData({QueryOption? queryOption}) async {
     String query =
-        "select T0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategoryController.dbName} T1 ON T1.Id_Category = T0.category_id ORDER BY t0.name";
+        "select T0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name, T1.key as categoryKey from $dbName as T0 INNER JOIN ${CategorySQLImplement.dbName} T1 ON T1.Id_Category = T0.category_id ORDER BY t0.name";
     return await sqlPool.getAll(query: query);
   }
 
@@ -30,6 +32,10 @@ class EntryController {
     String query =
         "select t0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name from $dbName as T0 where T0.category_id = $id ORDER BY t0.name";
     return await sqlPool.getAll(query: query);
+  }
+
+  Future<Entry> insert(Entry entry) async {
+    return await sqlPool.add(entry);
   }
 }
 

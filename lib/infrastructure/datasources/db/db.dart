@@ -155,10 +155,11 @@ class DatabaseSQL {
 
   static Future<dynamic> insert(String dbName, dynamic model) async {
     Database database = await instance.database;
+    final batch = database.batch();
 
-    final response = await database.insert(dbName, model.toMap());
-
-    return response;
+    batch.insert(dbName, model.toMap());
+    await batch.commit(noResult: false, continueOnError: false);
+    return model.toMap();
   }
 
   static Future<int> delete(String dbName,
@@ -195,7 +196,7 @@ class DatabaseSQL {
     } else {
       batch.rawQuery(query);
     }
-    final lista = await batch.commit(continueOnError: false) as List<dynamic>;
-    return lista[0] ?? [];
+    final lista = await batch.commit(continueOnError: false);
+    return lista[0] as List;
   }
 }
