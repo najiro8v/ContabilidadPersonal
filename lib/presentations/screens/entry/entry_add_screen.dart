@@ -55,9 +55,4 @@ class EntryAdd extends ConsumerWidget {
           ],
         ));
   }
-
-  @override
-  dispose() {
-    inputControllerDesc.dispose();
-  }
 }

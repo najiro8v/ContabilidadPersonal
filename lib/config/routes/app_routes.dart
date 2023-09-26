@@ -1,6 +1,5 @@
 import 'package:contabilidad/presentations/screens/entries_screen.dart';
 import "package:contabilidad/presentations/screens/entry/entry_add_screen.dart";
-import 'package:contabilidad/presentations/screens/settings/settings_screen.dart';
 
 import "package:flutter/material.dart";
 
@@ -8,7 +7,7 @@ import "package:contabilidad/domain/entities/models/models.dart";
 import "package:contabilidad/presentations/screens/screens.dart";
 import "package:go_router/go_router.dart";
 
-final appRoutes = GoRouter(initialLocation: "/home", routes: [
+final appRoutes = GoRouter(initialLocation: "/test", routes: [
   GoRoute(
     path: "/home",
     name: "Registros",
@@ -18,11 +17,6 @@ final appRoutes = GoRouter(initialLocation: "/home", routes: [
     path: "/finances",
     name: "Inicio",
     builder: (context, state) => const DataScreen(),
-  ),
-  GoRoute(
-    path: "/configs",
-    name: "Configuración",
-    builder: (context, state) => const SettingsScreen(),
   ),
   GoRoute(
     path: "/Categorias",
@@ -51,9 +45,7 @@ final appRoutes = GoRouter(initialLocation: "/home", routes: [
         return EntryAdd(
           entry: entry,
         );
-      }
-      //(context, state) => const SubCategoryAdd(),
-      )
+      })
 ]);
 
 class AppRoutes {
@@ -71,12 +63,6 @@ class AppRoutes {
         route: "finances",
         icon: Icons.home,
         screen: const DataScreen()),
-    MenuOption(
-        menuPrincipal: true,
-        name: "Configuración",
-        route: "configs",
-        icon: Icons.settings,
-        screen: const SettingsScreen()),
     MenuOption(
         name: "Categorias",
         route: "category",
