@@ -7,7 +7,7 @@ import "package:contabilidad/domain/entities/models/models.dart";
 import "package:contabilidad/presentations/screens/screens.dart";
 import "package:go_router/go_router.dart";
 
-final appRoutes = GoRouter(initialLocation: "/test", routes: [
+final appRoutes = GoRouter(initialLocation: "/home", routes: [
   GoRoute(
     path: "/home",
     name: "Registros",
