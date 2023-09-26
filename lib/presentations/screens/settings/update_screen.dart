@@ -100,7 +100,7 @@ class _PanelRadio {
 
 class _ListViewEntry extends ConsumerWidget {
   final Category category;
-  _ListViewEntry({required this.category});
+  const _ListViewEntry({required this.category});
 
   Future<dynamic> updateFunction(entry) {
     //ref.read

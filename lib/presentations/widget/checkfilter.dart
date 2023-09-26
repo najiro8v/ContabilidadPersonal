@@ -14,7 +14,30 @@ class _CheckFilterState extends State<CheckFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return InkWell(
+      onTap: () {},
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            checkColor: Colors.white,
+//            fillColor: MaterialStateProperty.resolveWith(),
+            value: isChecked,
+            onChanged: (value) async {
+              //   await checkFun();
+            },
+          ),
+          TextButton(
+              onPressed: () {},
+              child: Text(
+                widget.filter.name!,
+                overflow: TextOverflow.ellipsis,
+              )),
+        ],
+      ),
+    );
     /*
     var provider = Provider.of<DbProvider>(context);
     checkFun() async {

@@ -175,17 +175,18 @@ class _TitleFilter extends StatelessWidget {
 class _ListValueEntrys extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entradaProvider = ref.watch(entryProviderList);
+    final entradaProvider = ref.watch(entryProvider);
     return SizedBox(
         height: 100,
-        child: entradaProvider.when(
-            data: (data) => Listado(data),
+        child:
+            entradaProvider.isEmpty ? Container() : listado(entradaProvider));
+    /* entradaProvider.when(
+            data: (data) => listado(data),
             error: (error, _) => const WidgetErrorAlert(),
-            loading: () => Container()));
+            loading: () => Container()))*/
   }
 
-  Widget Listado(List<Entry> provider) {
-    print("que esta pasadon doctor garcia");
+  Widget listado(List<Entry> provider) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemBuilder: ((context, index) {

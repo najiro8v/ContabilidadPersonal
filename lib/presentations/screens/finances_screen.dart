@@ -137,9 +137,7 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
 }
 
 class _AddCategory extends StatelessWidget {
-  const _AddCategory({
-    super.key,
-  });
+  const _AddCategory();
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +185,7 @@ class _TitleFilter extends StatelessWidget {
 
 class _SubCategory extends ConsumerWidget {
   final List<TextEditingController> controllers;
-  const _SubCategory({super.key, required this.controllers});
+  const _SubCategory({required this.controllers});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -221,9 +219,7 @@ class _SubCategory extends ConsumerWidget {
 }
 
 class _CategorySelector extends ConsumerWidget {
-  const _CategorySelector({
-    super.key,
-  });
+  const _CategorySelector();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -255,7 +251,7 @@ class _CategorySelector extends ConsumerWidget {
 class _ButtonSubCategory extends StatelessWidget {
   final Entry entry;
   final Function()? onPressed;
-  const _ButtonSubCategory({super.key, required this.entry, this.onPressed});
+  const _ButtonSubCategory({required this.entry, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

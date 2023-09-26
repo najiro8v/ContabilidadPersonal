@@ -1,7 +1,6 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
 
 import 'package:flutter/material.dart';
-import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final entryIdProvider = StateProvider((ref) => 1);

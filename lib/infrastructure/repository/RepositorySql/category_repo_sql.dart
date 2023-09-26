@@ -28,6 +28,7 @@ class CategorySQLImplement {
 
 class ValueEntrySQLImplement {
   static const String dbName = "Value_Entry";
+  static const String idName = "Id_Entry";
   final sqlPool = SqlLiteDataSource<ValueEntry>(
       dbName: dbName, fromMap: ValueEntry.fromMap);
 
@@ -40,6 +41,24 @@ class ValueEntrySQLImplement {
   Future<ValueEntry> insert({required ValueEntry entity}) async {
     final list = await sqlPool.add(entity);
     return list;
+  }
+
+  Future<List<ValueEntry>> getByEntry(
+      {QueryOption? queryOption, required List<int> id}) async {
+    String listId = id.join(",");
+    String query =
+        "select t0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name from $dbName as T0 where T0.category_id in ($listId) ORDER BY t0.name";
+    return await sqlPool.getAll(query: query);
+  }
+
+  Future<ValueEntry> findUpdate({required ValueEntry entity}) async {
+    final obj = await sqlPool.findUpdate(entity, idName);
+    return obj;
+  }
+
+  Future<bool> remove({required int id}) async {
+    final resp = await sqlPool.remove(id, idName);
+    return resp;
   }
 }
 

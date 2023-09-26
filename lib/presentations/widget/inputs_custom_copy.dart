@@ -51,7 +51,7 @@ class _InputsCustomState extends State<InputsCustomEntry> {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return const Placeholder();
     /*
     final provider = Provider.of<DbProvider>(context, listen: false);
 

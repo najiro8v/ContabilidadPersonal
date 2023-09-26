@@ -30,7 +30,7 @@ class _ElementCustomEditState extends State<ElementCustomEditValueEntry> {
   bool isEnable = false;
 
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-  void _showToast(BuildContext context, String message, {isError = false}) {
+  /*void _showToast(BuildContext context, String message, {isError = false}) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
@@ -39,11 +39,11 @@ class _ElementCustomEditState extends State<ElementCustomEditValueEntry> {
             isError ? Colors.deepOrangeAccent[400] : Colors.green[600],
       ),
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return const Placeholder();
 /*
     var provider = Provider.of<DbProvider>(context);
     final idObj = widget.obj["id"].toString();

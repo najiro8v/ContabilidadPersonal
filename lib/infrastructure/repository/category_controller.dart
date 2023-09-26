@@ -27,6 +27,18 @@ class ValueEntryController {
   Future<ValueEntry> insert({required ValueEntry entity}) async {
     return await datasource.insert(entity: entity);
   }
+
+  Future<List<ValueEntry>> findByEntry({required List<int> id}) async {
+    return await datasource.getByEntry(id: id);
+  }
+
+  Future<ValueEntry> findUpdate({required ValueEntry entity}) async {
+    return await datasource.findUpdate(entity: entity);
+  }
+
+  Future<bool> remove({required int id}) async {
+    return await datasource.remove(id: id);
+  }
 }
 
 class EntryController {
