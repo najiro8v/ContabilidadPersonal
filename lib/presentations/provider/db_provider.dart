@@ -4,58 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-//repositorio inmutables
-final categoryProvider1 = FutureProvider<List<Category>>((ref) async {
-  final category = CategoryController();
-  return category.find();
-});
-
-final categoryProvider2 =
-    StateNotifierProvider<CategoryState, List<Category>>((ref) {
-  return CategoryState();
-});
-final entryProvider1 = FutureProvider<List<Entry>>((ref) async {
-  final id = ref.watch(entryIdProvider);
-  final entry = EntryController();
-  return entry.findByCategory(id: [id]);
-});
-
-class EntryState extends StateNotifier<List<Entry>> {
-  final entry = EntryController();
-  int id = 1;
-  EntryState() : super([]) {
-    getData();
-  }
-
-  getData() async {
-    final list = await entry.findByCategory(id: [id]);
-    state = list;
-  }
-
-  changeCategory(int id) {
-    this.id = id;
-    getData();
-  }
-
-  addData(Entry entry) {}
-}
-
-class CategoryState extends StateNotifier<List<Category>> {
-  final categoryData = CategoryController();
-  int id = 1;
-  CategoryState() : super([]);
-
-  getData() async {
-    final list = await categoryData.find();
-    state = list;
-  }
-
-  addData(Category category) async {
-    final newCategory = await categoryData.insert(entity: category);
-    state = [...state, newCategory];
-  }
-}
-
 final entryIdProvider = StateProvider((ref) => 1);
 
 class DbProvider extends ChangeNotifier {
