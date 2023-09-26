@@ -62,27 +62,7 @@ class AppRoutes {
         name: "Inicio",
         route: "finances",
         icon: Icons.home,
-        screen: const DataScreen()),
-    MenuOption(
-        name: "Categorias",
-        route: "category",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const UpdateScreen()),
-    MenuOption(
-        name: "Mis Registros",
-        route: "registries",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const EntriesScreen()),
-    MenuOption(
-        name: "Mis Registros",
-        route: "categoryScreen",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: CategoryAdd()),
-    MenuOption(
-        name: "Mis Registros",
-        route: "subcategoryScreen",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const SubCategoryAdd()),
+        screen: const DataScreen())
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {
