@@ -14,6 +14,10 @@ class CategoryController {
   Future<Category> insert({required Category entity}) async {
     return await datasource.insert(entity: entity);
   }
+
+  Future<Category> findUpdate({required Category entity}) async {
+    return await datasource.findUpdate(entity: entity);
+  }
 }
 
 class ValueEntryController {
@@ -29,6 +33,30 @@ class ValueEntryController {
 }
 
 class EntryController {
+  final datasource = EntrySQLImplement();
+
+  Future<List<Entry>> find({Entry? entity}) async {
+    return await datasource.find(entity: entity);
+  }
+
+  Future<Entry> insert({required Entry entity}) async {
+    return await datasource.insert(entity: entity);
+  }
+
+  Future<List<Entry>> findByCategory({required List<int> id}) async {
+    return await datasource.getByCategory(id: id);
+  }
+
+  Future<Entry> findUpdate({required Entry entity}) async {
+    return await datasource.findUpdate(entity: entity);
+  }
+
+  Future<bool> remove({required int id}) async {
+    return await datasource.remove(id: id);
+  }
+}
+
+class EntryController1 {
   static const String dbName = "Entry";
   final sqlPool =
       SqlLiteDataSource<Entry>(dbName: dbName, fromMap: Entry.fromMap);

@@ -26,6 +26,6 @@ class SqlrepositoryImplements<T extends BaseAccount> implements Repository<T> {
 
   @override
   Future<bool> remove(String? id, {QueryOption? query}) async {
-    return datasource.remove(id);
+    return datasource.remove(int.parse(id!), "");
   }
 }

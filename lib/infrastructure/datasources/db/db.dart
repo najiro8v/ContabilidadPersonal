@@ -94,8 +94,6 @@ class DatabaseSQL {
         "FOREIGN KEY (type_id) REFERENCES Type (Id_Type) ON DELETE SET NULL ON UPDATE NO ACTION";
     valueEntryTB += ")";
     await db.execute(valueEntryTB);
-    /**Values default */
-    /*** */
   }
 
   _upgradeDB(Database db, int oldVersion, int version) async {
@@ -155,24 +153,25 @@ class DatabaseSQL {
 
   static Future<dynamic> insert(String dbName, dynamic model) async {
     Database database = await instance.database;
-    final batch = database.batch();
-
-    batch.insert(dbName, model.toMap());
-    await batch.commit(noResult: false, continueOnError: false);
+    final obj = await database.insert(dbName, model.toMap());
+    model.id = obj;
     return model.toMap();
   }
 
   static Future<int> delete(String dbName,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    return await database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
+    final obj =
+        await database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
+    return obj;
   }
 
   static Future<int> update(String dbName, dynamic model,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    return await database
+    final obj = await database
         .update(dbName, model.toMap(), where: "$idName = ?", whereArgs: [id]);
+    return obj;
   }
 
   static Future<List<dynamic>> get(String dbName,

@@ -15,7 +15,7 @@ final categoryProvider =
 final entryProvider = FutureProvider<List<Entry>>((ref) async {
   final id = ref.watch(entryIdProvider);
   final entry = EntryController();
-  return entry.getByCategory(id: id);
+  return entry.findByCategory(id: [id]);
 });
 
 class EntryState extends StateNotifier<List<Entry>> {
@@ -27,8 +27,8 @@ class EntryState extends StateNotifier<List<Entry>> {
 
   getData() async {
     final list = id == null
-        ? await entrySQL.readData()
-        : await entrySQL.getByCategory(id: id!);
+        ? await entrySQL.find()
+        : await entrySQL.findByCategory(id: [id!]);
     state = list;
   }
 

@@ -1,10 +1,10 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
-
-import 'package:flutter/material.dart';
 import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //#Finance Region
+final myCategoryEditProvider =
+    StateProvider<Category>((ref) => Category(name: "", key: null));
 final categorySelectionProvider = StateProvider((ref) => 1);
 final entrySelectionProvider = StateProvider<int?>((ref) => null);
 
@@ -16,7 +16,7 @@ final categoryProviderList = FutureProvider<List<Category>>((ref) async {
 final entryProviderList = FutureProvider<List<Entry>>((ref) async {
   final idCategory = ref.watch(categorySelectionProvider);
   final entry = EntryController();
-  return entry.getByCategory(id: idCategory);
+  return entry.findByCategory(id: [idCategory]);
 });
 
 final entryValueProviderState =
@@ -26,37 +26,12 @@ final entryValueProviderState =
 });
 
 //#End Finance Region
+
+// Category list Region
 final categoryProvider =
     StateNotifierProvider<CategoryState, List<Category>>((ref) {
   return CategoryState();
 });
-final entryProvider = FutureProvider<List<Entry>>((ref) async {
-  final id = ref.watch(entryIdProvider);
-  final entry = EntryController();
-  return entry.getByCategory(id: id);
-});
-
-class EntryState extends StateNotifier<List<Entry>> {
-  final entrySQL = EntryController();
-  int? id;
-  EntryState() : super([]) {
-    getData();
-  }
-
-  getData() async {
-    final list = id == null
-        ? await entrySQL.readData()
-        : await entrySQL.getByCategory(id: id!);
-    state = list;
-  }
-
-  changeCategory(int id) {
-    this.id = id;
-    getData();
-  }
-
-  addData(Entry entry) {}
-}
 
 class CategoryState extends StateNotifier<List<Category>> {
   final categoryData = CategoryController();
@@ -72,6 +47,84 @@ class CategoryState extends StateNotifier<List<Category>> {
     final newCategory = await categoryData.insert(entity: category);
     state = [...state, newCategory];
   }
+
+  editData(Category category) async {
+    final newState = [...state];
+    final newCategory = await categoryData.findUpdate(entity: category);
+    state = newState
+        .map((element) => element.id == newCategory.id ? newCategory : element)
+        .toList();
+  }
+
+  stateData(Category category) async {
+    final newState = [...state];
+    final newCategory = await categoryData.findUpdate(entity: category);
+    state = newState
+        .map((element) => element.id == newCategory.id ? newCategory : element)
+        .toList();
+  }
+
+  bool isEnableList() {
+    final list = state.where((element) => element.enable!);
+    return list.isEmpty;
+  }
 }
+
+//#End Category list Region
+
+// Entry list Region
+final entryProvider1 = FutureProvider<List<Entry>>((ref) async {
+  final id = ref.watch(entryIdProvider);
+  final entry = EntryController();
+  return entry.findByCategory(id: [id]);
+});
+
+final entryProvider = StateNotifierProvider<EntryState, List<Entry>>((ref) {
+  return EntryState();
+});
+
+class EntryState extends StateNotifier<List<Entry>> {
+  final entryData = EntryController();
+  int? id;
+  EntryState() : super([]) {
+    getData();
+  }
+
+  getData() async {
+    final list = id == null
+        ? await entryData.find()
+        : await entryData.findByCategory(id: [id!]);
+    state = list;
+  }
+
+  changeCategory(int id) {
+    this.id = id;
+    getData();
+  }
+
+  addData(Entry entry) async {
+    final newEntry = await entryData.insert(entity: entry);
+    state = [...state, newEntry];
+  }
+
+  editData(Entry entry) async {
+    final newState = [...state];
+    final newCategory = await entryData.findUpdate(entity: entry);
+    state = newState
+        .map((element) => element.id == newCategory.id ? newCategory : element)
+        .toList();
+  }
+
+  removeData(int id) async {
+    final newState = [...state];
+    final newCategory = await entryData.remove(id: id);
+    if (newCategory) {
+      newState.removeWhere((element) => element.id! == id);
+      state = [...newState];
+    }
+  }
+}
+
+//#End Entry list Region
 
 final entryIdProvider = StateProvider((ref) => 1);

@@ -39,7 +39,6 @@ class _InputsCustomState extends State<WidgetInputsCustom> {
 
   @override
   void dispose() {
-    widget.controller.dispose();
     super.dispose();
   }
 

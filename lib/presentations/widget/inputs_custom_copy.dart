@@ -42,7 +42,6 @@ class InputsCustomEntry extends StatefulWidget {
 }
 
 class _InputsCustomState extends State<InputsCustomEntry> {
-  //TextEditingController? _controller;
   @override
   void initState() {
     super.initState();
@@ -50,7 +49,6 @@ class _InputsCustomState extends State<InputsCustomEntry> {
 
   @override
   void dispose() {
-    // _controller!.dispose();
     super.dispose();
   }
 

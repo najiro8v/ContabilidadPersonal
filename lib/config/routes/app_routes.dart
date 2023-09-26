@@ -1,4 +1,5 @@
 import 'package:contabilidad/presentations/screens/entries_screen.dart';
+import "package:contabilidad/presentations/screens/entry/entry_add_screen.dart";
 import 'package:contabilidad/presentations/screens/settings/settings_screen.dart';
 
 import "package:flutter/material.dart";
@@ -11,38 +12,48 @@ final appRoutes = GoRouter(initialLocation: "/home", routes: [
   GoRoute(
     path: "/home",
     name: "Registros",
-    builder: (context, state) => FinancesScreen(),
+    builder: (context, state) => const HomeScreen(),
   ),
   GoRoute(
     path: "/finances",
     name: "Inicio",
-    builder: (context, state) => DataScreen(),
+    builder: (context, state) => const DataScreen(),
   ),
   GoRoute(
     path: "/configs",
     name: "Configuración",
-    builder: (context, state) => SettingsScreen(),
+    builder: (context, state) => const SettingsScreen(),
   ),
   GoRoute(
     path: "/Categorias",
     name: "category",
-    builder: (context, state) => UpdateScreen(),
+    builder: (context, state) => const UpdateScreen(),
   ),
   GoRoute(
     path: "/Mis_Registros",
     name: "registries",
-    builder: (context, state) => EntriesScreen(),
+    builder: (context, state) => const EntriesScreen(),
   ),
   GoRoute(
-    path: "/Mis_categorias",
-    name: "categoryScreen",
-    builder: (context, state) => CategoryAdd(),
-  ),
+      path: "/Mis_categorias",
+      name: "categoryScreen",
+      builder: (context, state) {
+        Category? category = state.extra as Category?;
+        return CategoryAdd(
+          category: category,
+        );
+      }),
   GoRoute(
-    path: "/sub_categorias",
-    name: "subcategoryScreen",
-    builder: (context, state) => SubCategoryAdd(),
-  )
+      path: "/sub_categorias",
+      name: "subcategoryScreen",
+      builder: (context, state) {
+        Entry? entry = state.extra as Entry?;
+        return EntryAdd(
+          entry: entry,
+        );
+      }
+      //(context, state) => const SubCategoryAdd(),
+      )
 ]);
 
 class AppRoutes {
@@ -80,7 +91,7 @@ class AppRoutes {
         name: "Mis Registros",
         route: "categoryScreen",
         icon: Icons.align_vertical_bottom_sharp,
-        screen: const CategoryAdd()),
+        screen: CategoryAdd()),
     MenuOption(
         name: "Mis Registros",
         route: "subcategoryScreen",

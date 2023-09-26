@@ -1,40 +1,27 @@
-// ignore_for_file: no_logic_in_create_state
-import 'widget.dart';
+import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
+import 'package:contabilidad/presentations/widget/inputs/input_custom.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
 
-//import 'package:contabilidad/models/models.dart';
-
-// ignore: must_be_immutable
-class ElementCustomEdit extends StatefulWidget {
-  final String label;
-  final double? padding;
-  final dynamic obj;
-
-  Function update = () => {};
-  Function delete = () => {};
-  ElementCustomEdit({
-    super.key,
-    this.padding,
-    required this.obj,
-    required this.label,
-    required deleteFunction,
-    required updateFunction,
-  }) {
-    update = updateFunction;
-    delete = deleteFunction;
-  }
+class CustomEditSubCategory extends StatefulWidget {
+  final Future<dynamic> Function(dynamic)? update;
+  final Future<dynamic> Function(dynamic)? delete;
+  final Entry entry;
+  const CustomEditSubCategory(
+      {super.key,
+      required this.delete,
+      required this.update,
+      required this.entry});
 
   @override
-  State<ElementCustomEdit> createState() => _ElementCustomEditState();
+  State<CustomEditSubCategory> createState() => _CustomEditSubCategorytate();
 }
 
-class _ElementCustomEditState extends State<ElementCustomEdit> {
+class _CustomEditSubCategorytate extends State<CustomEditSubCategory> {
   bool isEnable = false;
 
   final inputControllerDesc = TextEditingController();
-  final inputControllerCant = TextEditingController();
-  final inputControllerPrice = TextEditingController();
+  final inputControllerValue = TextEditingController();
+
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
   void _showToast(BuildContext context, String message, {isError = false}) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -48,21 +35,16 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    /* var provider = Provider.of<DbProvider>(context);
-    final idObj = widget.obj["id"].toString();
-    final obj = widget.obj;
-    if (provider.controllerEntryList.containsKey(idObj) == false) {
-      var controllerDesc = TextEditingController(text: obj["name"]);
-      var controllerValue =
-          TextEditingController(text: obj["value"].toString());
+  void dispose() {
+    inputControllerDesc.dispose();
+    inputControllerValue.dispose();
+    super.dispose();
+  }
 
-      TextEditingController(text: obj["value"].toString());
-      Map<String, Map<String, TextEditingController?>> mapa = {
-        idObj: {"value": controllerValue, "name": controllerDesc}
-      };
-      provider.controllerEntryList.addAll(mapa);
-    }*/
+  @override
+  Widget build(BuildContext context) {
+    inputControllerDesc.text = widget.entry.name.toString();
+    inputControllerValue.text = widget.entry.value.toString();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Form(
@@ -71,47 +53,29 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
           children: [
             Row(
               children: [
-                /*Expanded(
-                    child: InputsCustomEntry(
-                  idMap: idObj,
-                  propiedad: "key",
-                  initialValue: obj["key"],
-                  labelText: "Llave",
-                  enable: false,
-                )),*/
-                const SizedBox(
-                  width: 10,
-                ),
                 Expanded(
                     child: WidgetInputsCustom(
-                  controller: inputControllerCant,
-                  labelText: "Cantidad",
-                  keyboardType: TextInputType.number,
+                  controller: inputControllerDesc,
+                  labelText: "Descripción",
+                  keyboardType: TextInputType.text,
+                  enable: isEnable,
                   onChanged: (value) {},
                 )),
-                /* Expanded(
-                    child: InputsCustomEntry(
-                  idMap: idObj,
-                  labelText: "Valor",
-                  enable: isEnable,
-                  propiedad: "value",
-                  isNumber: true,
-                  keyboardType: TextInputType.number,
-                )),*/
               ],
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
-                /*Expanded(
+                Expanded(
                     flex: 4,
-                    child: InputsCustomEntry(
-                      idMap: idObj,
-                      propiedad: "name",
-                      labelText: "Descrición",
+                    child: WidgetInputsCustom(
+                      controller: inputControllerValue,
+                      labelText: "Valor",
+                      keyboardType: TextInputType.number,
                       enable: isEnable,
-                    )),*/
+                      onChanged: (value) {},
+                    )),
                 const SizedBox(
                   width: 10,
                 ),
@@ -133,14 +97,15 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                                 setState(() {});
                                 return;
                               }
+                              final price =
+                                  double.tryParse(inputControllerValue.text) ??
+                                      0;
+                              final newEntry = widget.entry.copyWith(
+                                  value: price, name: inputControllerDesc.text);
+                              widget.update!(newEntry);
                               String msg = "Registro actualizado con Exito";
                               bool isError = false;
-                              try {
-                                //int id = widget.obj is Map ? obj["id"] : obj.id;
-                                //   await widget.update(obj, context);
-                                //await widget.emitFunction;
-                              } catch (e) {
-                                // print(e);
+                              try {} catch (e) {
                                 msg = "Error en actualización de registro";
                                 isError = true;
                               } finally {
@@ -160,16 +125,12 @@ class _ElementCustomEditState extends State<ElementCustomEdit> {
                             String msg = "Registro eliminado con Exito";
                             bool isError = false;
                             try {
-                              //  int id = obj is Map ? obj["id"] : obj.id;
-                              // await widget.delete(id, context);
-                              // await widget.emitFunction;
+                              widget.delete!(widget.entry);
                             } catch (e) {
-                              developer.log('log me', name: 'my.app.category');
                               msg = "Error en eliminación de registro";
                               isError = true;
                             } finally {
                               _showToast(context, msg, isError: isError);
-                              //setState(() {});
                             }
                           },
                           child: const Icon(Icons.delete, size: 25),

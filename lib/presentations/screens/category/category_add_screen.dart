@@ -1,63 +1,48 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
+import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
+import 'package:contabilidad/presentations/widget/inputs/inputs_widgets.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:contabilidad/presentations/provider/providers.dart';
+import 'package:uuid/uuid.dart';
 
-class CategoryAdd extends StatelessWidget {
-  const CategoryAdd({super.key});
+class CategoryAdd extends ConsumerWidget {
+  final Category? category;
+  CategoryAdd({super.key, this.category});
 
+  final inputControllerDesc = TextEditingController();
   @override
-  Widget build(BuildContext context) {
-    return Container();
-/*
-    ///    final categoryProvider = Provider.of<DbProvider>(context, listen: false);
-    Category categoryEdit = ModalRoute.of(context)!.settings.arguments != null
-        ? ModalRoute.of(context)!.settings.arguments as Category
-        : Category(name: "", key: null);
-    categoryProvider.category = categoryEdit;
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(title: const Center(child: Text("Mis Categoria"))),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           children: [
-            TextFormField(
-                autofocus: true,
-                decoration:
-                    const InputDecoration(labelText: "Código de Categoria"),
-                initialValue: categoryEdit.key ?? "",
-                enabled: categoryEdit.key != null ? false : true,
-                onChanged: (value) {
-                  categoryProvider.category?.key = value;
-                }),
-            TextFormField(
-                decoration: const InputDecoration(labelText: "Descripción"),
-                initialValue: categoryEdit.name ?? "",
-                onChanged: (value) {
-                  categoryProvider.category?.name = value;
-                }),
+            WidgetInputsCustom(
+                controller: inputControllerDesc,
+                labelText: "Nombre de la categoria",
+                onChanged: (value) {}),
             TextButton(
                 onPressed: () async {
-                  if (categoryProvider.editCat == false) {
-                    bool saved = await categoryProvider
-                        .saveCategory(categoryProvider.category!);
-                    if (saved) {
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                    }
+                  if (inputControllerDesc.text.isEmpty) return;
+                  if (category == null) {
+                    var uuid = const Uuid().v4();
+                    final newCategory = Category(
+                        key: uuid,
+                        name: inputControllerDesc.text,
+                        enable: true);
+                    ref.read(categoryProvider.notifier).addData(newCategory);
                   } else {
-                    bool saved = await categoryProvider
-                        .updateCategory(categoryProvider.category!);
-                    if (saved) {
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                    }
+                    final newCategory =
+                        category!.copyWith(name: inputControllerDesc.text);
+                    ref.read(categoryProvider.notifier).editData(newCategory);
                   }
+
+                  context.pop();
                 },
-                child: Text(
-                    categoryProvider.editCat == false ? "Guardar" : "Editar"))
+                child: Text(category == null ? "Guardar" : "Actualizar"))
           ],
         ));
-        */
   }
 }

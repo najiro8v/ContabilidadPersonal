@@ -35,9 +35,20 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   }
 
   @override
-  Future<bool> remove(String? id, {QueryOption? queryOption, String? query}) {
-    // TODO: implement remove
-    throw UnimplementedError();
+  Future<bool> remove(int? id, String idName,
+      {QueryOption? queryOption, String? query}) async {
+    int element = await DatabaseSQL.delete(dbName, id: id!, idName: idName);
+    return !element.isNaN;
+  }
+
+  @override
+  Future<T> findUpdate(T obj, String idName) async {
+    dynamic element =
+        await DatabaseSQL.update(dbName, obj, id: obj.id!, idName: idName);
+    if (element != null) {
+      return obj;
+    }
+    return obj;
   }
 }
 

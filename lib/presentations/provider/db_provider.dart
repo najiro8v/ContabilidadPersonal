@@ -10,25 +10,25 @@ final categoryProvider1 = FutureProvider<List<Category>>((ref) async {
   return category.find();
 });
 
-final categoryProvider =
+final categoryProvider2 =
     StateNotifierProvider<CategoryState, List<Category>>((ref) {
   return CategoryState();
 });
-final entryProvider = FutureProvider<List<Entry>>((ref) async {
+final entryProvider1 = FutureProvider<List<Entry>>((ref) async {
   final id = ref.watch(entryIdProvider);
   final entry = EntryController();
-  return entry.getByCategory(id: id);
+  return entry.findByCategory(id: [id]);
 });
 
 class EntryState extends StateNotifier<List<Entry>> {
-  final entrySQL = EntryController();
+  final entry = EntryController();
   int id = 1;
   EntryState() : super([]) {
     getData();
   }
 
   getData() async {
-    final list = await entrySQL.getByCategory(id: id);
+    final list = await entry.findByCategory(id: [id]);
     state = list;
   }
 

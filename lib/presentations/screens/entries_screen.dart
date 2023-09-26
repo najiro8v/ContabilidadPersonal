@@ -1,7 +1,10 @@
+import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
 import 'package:contabilidad/presentations/provider/providers.dart';
+import 'package:contabilidad/presentations/widget/shared/categoria_dropdown.dart';
 import 'package:contabilidad/presentations/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/domain/entities/models/models.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EntriesScreen extends StatefulWidget {
   const EntriesScreen({Key? key}) : super(key: key);
@@ -47,7 +50,15 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(title: const Text("Mis Registros")),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: [
+          _TitleFilter(),
+        ]),
+      ),
+    );
     /* final provider = Provider.of<DbProvider>(context);
     if (provider.categoryEntries != null) {
       provider.keyFormFieldDropE!.currentState
@@ -118,7 +129,7 @@ class _TitleFilter extends StatelessWidget {
     /*var provider = Provider.of<DbProvider>(context);
     provider.getEntry();
     provider.getCategorias();
-
+*/
     var expanded = Expanded(
         child: TextFormField(
       decoration: const InputDecoration(
@@ -129,7 +140,7 @@ class _TitleFilter extends StatelessWidget {
       children: [
         Row(
           children: [
-            _DropwdownFilter(),
+            const Expanded(child: CategorySelector()),
             const SizedBox(
               width: 10,
             ),
@@ -143,15 +154,14 @@ class _TitleFilter extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        _ButtonFilter(),
+        //  _ButtonFilter(),
         const SizedBox(
           height: 10,
         ),
       ],
     );
-  }*/
-    return Placeholder();
   }
+}
 
 /*class _NotList extends StatelessWidget {
   const _NotList({
@@ -174,36 +184,44 @@ class _TitleFilter extends StatelessWidget {
     );
   }
 }
-
-class _ListValueEntrys extends StatelessWidget {
+*/
+class _ListValueEntrys extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entradaProvider = ref.watch(entryProviderList);
     return SizedBox(
         height: 100,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: ((context, index) {
-            Entry entry = provider.categoryEntries != null
-                ? provider.registrosEntries![index]
-                : provider.registrosAll![index];
-            return Container(
-              width: 100,
-              key: Key(entry.key.toString()),
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              child: CheckFilter(
-                filter: entry,
-              ),
-            );
-          }),
-          shrinkWrap: true,
-          itemCount: provider.categoryEntries != null
-              ? provider.registrosEntries!.length
-              : provider.registrosAll!.length,
-        ));
+        child: entradaProvider.when(
+            data: (data) => Listado(data),
+            error: (error, _) => const WidgetErrorAlert(),
+            loading: () => Container()));
+  }
+
+  Widget Listado(List<Entry> provider) {
+    print("que esta pasadon doctor garcia");
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemBuilder: ((context, index) {
+        Entry entry = provider[index];
+        return Container(
+          width: 100,
+          key: Key(entry.key.toString()),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          child: CheckFilter(
+            filter: entry,
+          ),
+        );
+      }),
+      shrinkWrap: true,
+      itemCount: provider.length,
+    );
   }
 }
 
+
+
+
+/*
 class _ButtonFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -225,11 +243,13 @@ class _ButtonFilter extends StatelessWidget {
     );
   }
 }
-
-class _DropwdownFilter extends StatelessWidget {
+*/
+/*
+class _DropwdownFilter extends ConsumerWidget
   @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
+  Widget build(BuildContext context,WidgetRef ref) {
+    final categoriaProvider = ref.watch(categoryProviderList);
+   // final provider = Provider.of<DbProvider>(context, listen: false);
     return Expanded(
         child: DropdownButtonFormField(
             key: provider.keyFormFieldDropE,
@@ -255,5 +275,5 @@ class _DropwdownFilter extends StatelessWidget {
             onChanged: (value) async {
               await provider.setSubCategoriasFilter(value.toString());
             }));
-  }*/
-}
+  }
+}*/

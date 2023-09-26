@@ -12,6 +12,7 @@ class Category implements BaseAccount {
     return {
       "name": name,
       "key": key,
+      "Id_Category": id,
       "enable": enable == true || enable == null ? 1 : 0
     };
   }
@@ -33,6 +34,16 @@ class Category implements BaseAccount {
       enable: json["enable"] == 1 ? true : false,
     );
   }
+
+  Category copyWith({String? name, String? key, bool? enable, int? id}) {
+    return Category(
+      key: key ?? this.key,
+      name: name ?? this.name,
+      id: id ?? this.id,
+      enable: enable ?? this.enable,
+    );
+  }
+
   /*@override
   static Category fromMap(Map<String, dynamic> json) => Category(
         key: json["key"],
@@ -88,6 +99,25 @@ class Entry implements BaseAccount {
       name: json['name'],
       categoryKey: json['categoryKey'],
       id: json['Id_Entry']);
+
+  Entry copyWith(
+      {String? name,
+      String? key,
+      bool? enable,
+      int? id,
+      double? value,
+      int? category,
+      String? categoryKey,
+      String? categoryName}) {
+    return Entry(
+        key: key ?? this.key,
+        name: name ?? this.name,
+        id: id ?? this.id,
+        category: category ?? this.category,
+        value: value ?? this.value,
+        categoryKey: categoryKey ?? this.categoryKey,
+        categoryName: categoryName ?? this.categoryName);
+  }
 
   @override
   int? id;

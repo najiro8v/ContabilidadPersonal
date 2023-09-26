@@ -1,9 +1,10 @@
 import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
 import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
-import 'package:contabilidad/presentations/provider/providers.dart';
+import 'package:contabilidad/presentations/widget/shared/categoria_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:contabilidad/presentations/widget/widget.dart";
+import 'package:go_router/go_router.dart';
 
 class FinancesScreen extends ConsumerStatefulWidget {
   const FinancesScreen({Key? key}) : super(key: key);
@@ -31,110 +32,150 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(categoryProvider.notifier).getData();
   }
 
   @override
   void dispose() {
+    inputControllerPrice.dispose();
+    inputControllerCant.dispose();
+    inputControllerDesc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Form(
-        key: myFormKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
-          child: ListView(children: [
-            _TitleFilter(
-              controllers: [
-                inputControllerDesc,
-                inputControllerCant,
-                inputControllerPrice
-              ],
-            ),
-            SwitchListTile(
-                title: const Text(""),
-                value: check,
-                onChanged: ((value) {
-                  setState(() => check = value);
-                })),
-            const SizedBox(
-              height: 8,
-            ),
-            WidgetInputsCustom(
-              controller: inputControllerDesc,
-              labelText: "Descripción",
-              onChanged: (value) {},
-            ),
-            WidgetInputsCustom(
-              controller: inputControllerCant,
-              labelText: "Cantidad",
-              keyboardType: TextInputType.number,
-              onChanged: (value) {},
-            ),
-            WidgetInputsCustom(
-              controller: inputControllerPrice,
-              labelText: "Precio",
-              keyboardType: TextInputType.number,
-              validator: (value) => null,
-              onChanged: (value) {},
-            ),
-            TextButton(
-                onPressed: () async {
-                  myFormKey.currentState!.validate();
-                  if (!myFormKey.currentState!.validate()) {
-                    return;
-                  }
-                  inputControllerCant.text;
-                  inputControllerDesc.text;
-                  inputControllerPrice.text;
-                  final value =
-                      (double.tryParse(inputControllerPrice.text) ?? 0) *
-                          (double.tryParse(inputControllerCant.text) ?? 0);
-                  final entry = ref.read(entrySelectionProvider.notifier);
-                  final newValueEntry = ValueEntry(
-                    desc: inputControllerDesc.text,
-                    value: value,
-                    date: 1,
-                    entry: entry.state,
-                    type: 0,
-                    latitud: 0,
-                    length: 0,
-                  );
+    final list = ref.watch(categoryProvider);
+    bool emptyList = list.where((element) => element.enable!).isEmpty;
+    if (emptyList) {
+      return const _AddCategory();
+    } else {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Form(
+          key: myFormKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+            child: ListView(children: [
+              _TitleFilter(
+                controllers: [
+                  inputControllerDesc,
+                  inputControllerCant,
+                  inputControllerPrice
+                ],
+              ),
+              SwitchListTile(
+                  title: const Text(""),
+                  value: check,
+                  onChanged: ((value) {
+                    setState(() => check = value);
+                  })),
+              const SizedBox(
+                height: 8,
+              ),
+              WidgetInputsCustom(
+                controller: inputControllerDesc,
+                labelText: "Descripción",
+                onChanged: (value) {},
+              ),
+              WidgetInputsCustom(
+                controller: inputControllerCant,
+                labelText: "Cantidad",
+                keyboardType: TextInputType.number,
+                onChanged: (value) {},
+              ),
+              WidgetInputsCustom(
+                controller: inputControllerPrice,
+                labelText: "Precio",
+                keyboardType: TextInputType.number,
+                validator: (value) => null,
+                onChanged: (value) {},
+              ),
+              TextButton(
+                  onPressed: () async {
+                    myFormKey.currentState!.validate();
+                    if (!myFormKey.currentState!.validate()) {
+                      return;
+                    }
+                    inputControllerCant.text;
+                    inputControllerDesc.text;
+                    inputControllerPrice.text;
+                    final value =
+                        (double.tryParse(inputControllerPrice.text) ?? 0) *
+                            (double.tryParse(inputControllerCant.text) ?? 0);
+                    final entry = ref.read(entrySelectionProvider.notifier);
+                    final newValueEntry = ValueEntry(
+                      desc: inputControllerDesc.text,
+                      value: value,
+                      date: 1,
+                      entry: entry.state,
+                      type: 0,
+                      latitud: 0,
+                      length: 0,
+                    );
 
-                  ref.read(entryValueProviderState(newValueEntry));
-                  _showToast(context);
-                  inputControllerCant.clear();
-                  inputControllerDesc.clear();
-                  inputControllerPrice.text = "";
+                    ref.read(entryValueProviderState(newValueEntry));
+                    _showToast(context);
+                    inputControllerCant.clear();
+                    inputControllerDesc.clear();
+                    inputControllerPrice.text = "";
 
-                  setState(() {});
-                },
-                child: const Text("Agregar Entrada")),
-          ]),
+                    setState(() {});
+                  },
+                  child: const Text("Agregar Entrada")),
+            ]),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed("registries");
-          },
-          child: const Icon(Icons.format_list_bulleted_sharp)),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed("registries");
+            },
+            child: const Icon(Icons.format_list_bulleted_sharp)),
+      );
+    }
+  }
+}
+
+class _AddCategory extends StatelessWidget {
+  const _AddCategory({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "No se encuentran categorias disponibles, por favor revisar el listado de categorias",
+          textAlign: TextAlign.center,
+          style: textTheme.labelLarge,
+        ),
+        IconButton(
+          onPressed: () => {context.push("/Categorias")},
+          icon: const Icon(
+            Icons.arrow_circle_right_outlined,
+            size: 50,
+          ),
+          color: Colors.indigo,
+        )
+      ],
     );
   }
 }
 
-class _TitleFilter extends ConsumerWidget {
+class _TitleFilter extends StatelessWidget {
   final GlobalKey<FormFieldState> keyFormFieldDrop =
       GlobalKey<FormFieldState>();
   final List<TextEditingController> controllers;
   _TitleFilter({Key? key, required this.controllers}) : super(key: key);
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        const _CategorySelector(),
+        const CategorySelector(),
         _SubCategory(controllers: controllers),
         const SizedBox(
           height: 10,
@@ -151,6 +192,7 @@ class _SubCategory extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entradaProvider = ref.watch(entryProviderList);
+
     final screen = MediaQuery.of(context);
     return SizedBox(
       height: screen.size.height * 0.10,
