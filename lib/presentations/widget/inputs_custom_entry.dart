@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:contabilidad/presentations/provider/providers.dart';
-import "package:contabilidad/domain/entities/models/models.dart"
-    show ValueEntry;
 
 // ignore: must_be_immutable
 class InputsCustom extends StatefulWidget {

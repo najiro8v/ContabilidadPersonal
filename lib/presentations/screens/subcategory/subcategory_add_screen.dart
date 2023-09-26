@@ -1,8 +1,6 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
 import "package:flutter/material.dart";
 
-import 'package:contabilidad/presentations/provider/providers.dart';
-
 class SubCategoryAdd extends StatelessWidget {
   const SubCategoryAdd({super.key});
 

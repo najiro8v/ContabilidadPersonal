@@ -20,19 +20,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
   //Actualizar Registro
 
   Future<dynamic> updateFunction(obj, context) async {
-    var id = obj["id"].toString();
-    // final dbP = Provider.of<DbProvider>(context, listen: false);
-    final updateValueEntry = ValueEntry(
-      id: obj["id"],
-      desc: "", //dbP.controllerValueEntryList[id]!["desc"]!.text,
-      value:
-          1, //double.tryParse(dbP.controllerValueEntryList[id]!["value"]!.text),
-      date: obj["date"],
-      entry: obj["entry_id"],
-      latitud: 1,
-      length: 1,
-      type: obj["type_id"],
-    );
     return {}; // await dbP.updateValueEntry(updateValueEntry);
   }
   //Eliminar Registro

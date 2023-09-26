@@ -1,4 +1,3 @@
-import '../provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/domain/entities/models/models.dart' show Entry;
 
