@@ -1,19 +1,19 @@
 import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
-import 'package:contabilidad/presentations/provider/providers.dart';
+import 'package:contabilidad/presentations/provider/provider_list_category.dart';
 import 'package:contabilidad/presentations/widget/shared/categoria_dropdown.dart';
 import 'package:contabilidad/presentations/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/domain/entities/models/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EntriesScreen extends StatefulWidget {
+class EntriesScreen extends ConsumerStatefulWidget {
   const EntriesScreen({Key? key}) : super(key: key);
 
   @override
-  State<EntriesScreen> createState() => _EntriesScreenState();
+  ConsumerState<EntriesScreen> createState() => _EntriesScreenState();
 }
 
-class _EntriesScreenState extends State<EntriesScreen> {
+class _EntriesScreenState extends ConsumerState<EntriesScreen> {
   List<ValueEntry> listado = [];
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
 //#Inicio de Region Para CRUD Entrada
@@ -39,11 +39,9 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Mis Registros")),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Column(children: [
-          _TitleFilter(),
-        ]),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: [const _TitleFilter(), _listRegister()]),
       ),
     );
     /* final provider = Provider.of<DbProvider>(context);
@@ -81,7 +79,31 @@ class _EntriesScreenState extends State<EntriesScreen> {
   }*/
 
 /*Return*/
-  Expanded _listRegister(DbProvider provider) {
+  Expanded _listRegister() {
+    final valueEntryList = ref.watch(valueEntryProvider);
+    return Expanded(
+      child: valueEntryList.isEmpty
+          ? Container()
+          : ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (_, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomEditValueEntry(
+                      delete: (index) {
+                        return Future(() => null);
+                      },
+                      update: (index) {
+                        return Future(() => null);
+                      },
+                      valueEntry: valueEntryList[index]),
+                );
+              },
+              itemCount: valueEntryList.length,
+            ),
+    );
+  }
+  /*Expanded _listRegister(DbProvider provider) {
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
@@ -103,7 +125,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
             : provider.valueEntrysD2!.length,
       ),
     );
-  }
+  }*/
 }
 
 class _TitleFilter extends StatelessWidget {

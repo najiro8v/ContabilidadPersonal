@@ -1,15 +1,17 @@
+import 'package:contabilidad/presentations/provider/provider_list_category.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/domain/entities/models/models.dart' show Entry;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CheckFilter extends StatefulWidget {
+class CheckFilter extends ConsumerStatefulWidget {
   final Entry filter;
   const CheckFilter({Key? key, required this.filter}) : super(key: key);
 
   @override
-  State<CheckFilter> createState() => _CheckFilterState();
+  ConsumerState<CheckFilter> createState() => _CheckFilterState();
 }
 
-class _CheckFilterState extends State<CheckFilter> {
+class _CheckFilterState extends ConsumerState<CheckFilter> {
   bool isChecked = false;
 
   @override
@@ -25,12 +27,12 @@ class _CheckFilterState extends State<CheckFilter> {
             checkColor: Colors.white,
 //            fillColor: MaterialStateProperty.resolveWith(),
             value: isChecked,
-            onChanged: (value) async {
-              //   await checkFun();
-            },
+            onChanged: (value) async {},
           ),
           TextButton(
-              onPressed: () {},
+              onPressed: () {
+                ref.read(valueEntryProvider.notifier).getData();
+              },
               child: Text(
                 widget.filter.name!,
                 overflow: TextOverflow.ellipsis,

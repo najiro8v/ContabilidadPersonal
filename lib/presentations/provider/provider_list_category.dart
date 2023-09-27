@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final collapseListProvider = StateProvider((ref) => false);
 final collaps1eListProvider = StateProvider((ref) => false);
 
-final entryProvider =
+final valueEntryProvider =
     StateNotifierProvider<ValueEntryState, List<ValueEntry>>((ref) {
   return ValueEntryState();
 });

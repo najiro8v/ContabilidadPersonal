@@ -19,7 +19,7 @@ class DatabaseSQL {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path,
-        version: 1, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   static Future<void> deleteDatabase() async =>
@@ -88,6 +88,7 @@ class DatabaseSQL {
     valueEntryTB += "date INTEGER NOT NULL,";
     valueEntryTB += "latitud INTEGER ,";
     valueEntryTB += "length INTEGER,";
+    valueEntryTB += "quantity REAL NOT NULL,";
     valueEntryTB +=
         "FOREIGN KEY (entry_id) REFERENCES Entry (Id_Entry) ON DELETE SET NULL ON UPDATE NO ACTION,";
     valueEntryTB +=
@@ -137,6 +138,7 @@ class DatabaseSQL {
       valueEntryTB += "date INTEGER NOT NULL,";
       valueEntryTB += "latitud INTEGER ,";
       valueEntryTB += "length INTEGER,";
+      valueEntryTB += "quantity REAL NOT NULL,";
       valueEntryTB +=
           "FOREIGN KEY (entry_id) REFERENCES Entry (Id_Entry) ON DELETE SET NULL ON UPDATE NO ACTION,";
       valueEntryTB +=

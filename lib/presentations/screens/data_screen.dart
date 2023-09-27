@@ -25,6 +25,7 @@ class _DataScreenState extends State<DataScreen> {
   getValuesEntry() async {
     var a = [
       ValueEntry(
+          quantity: 0,
           desc: "desc",
           value: 1,
           date: 1,

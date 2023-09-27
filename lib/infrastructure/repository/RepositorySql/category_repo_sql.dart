@@ -47,7 +47,12 @@ class ValueEntrySQLImplement {
       {QueryOption? queryOption, required List<int> id}) async {
     String listId = id.join(",");
     String query =
-        "select t0.Id_Entry,t0.value, t0.category_id, t0.key, t0.name from $dbName as T0 where T0.category_id in ($listId) ORDER BY t0.name";
+        'select t0.*, T1.name AS entryName, t2.name AS categoryName from $dbName as T0';
+    query +=
+        "  INNER JOIN ${EntrySQLImplement.dbName} as T1 on T0.entry_id = T1.${EntrySQLImplement.idName}";
+    query +=
+        "  INNER JOIN ${CategorySQLImplement.dbName}  as T2 on T2.${EntrySQLImplement.idName} = T1.category_id";
+    query += "  where T0.entry_id in ($listId) ORDER BY t0.name";
     return await sqlPool.getAll(query: query);
   }
 

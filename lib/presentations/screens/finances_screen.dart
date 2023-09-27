@@ -101,10 +101,12 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                     inputControllerDesc.text;
                     inputControllerPrice.text;
                     final value =
-                        (double.tryParse(inputControllerPrice.text) ?? 0) *
-                            (double.tryParse(inputControllerCant.text) ?? 0);
+                        (double.tryParse(inputControllerPrice.text) ?? 0);
+                    final quantity =
+                        (double.tryParse(inputControllerCant.text) ?? 0);
                     final entry = ref.read(entrySelectionProvider.notifier);
                     final newValueEntry = ValueEntry(
+                      quantity: quantity,
                       desc: inputControllerDesc.text,
                       value: value,
                       date: 1,
@@ -215,36 +217,6 @@ class _SubCategory extends ConsumerWidget {
           error: (error, _) => const WidgetErrorAlert(),
           loading: () => Container()),
     );
-  }
-}
-
-class _CategorySelector extends ConsumerWidget {
-  const _CategorySelector();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final categoriaProvider = ref.watch(categoryProviderList);
-
-    return categoriaProvider.when(
-        data: (elements) {
-          final listElement = elements
-              .where((element) => element.enable!)
-              .map((Category e) => DropdownMenuItem(
-                    value: e.id,
-                    child: Text(e.name!),
-                  ))
-              .toList();
-          return DropdownButtonFormField(
-              items: listElement,
-              onChanged: (value) async {
-                int newState = value as int;
-                ref
-                    .read(categorySelectionProvider.notifier)
-                    .update((state) => newState);
-              });
-        },
-        error: (error, _) => const WidgetErrorAlert(),
-        loading: () => Container());
   }
 }
 
