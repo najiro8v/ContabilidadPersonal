@@ -28,7 +28,7 @@ class CategorySQLImplement {
 
 class ValueEntrySQLImplement {
   static const String dbName = "Value_Entry";
-  static const String idName = "Id_Entry";
+  static const String idName = "Id_Value_Entry";
   final sqlPool = SqlLiteDataSource<ValueEntry>(
       dbName: dbName, fromMap: ValueEntry.fromMap);
 

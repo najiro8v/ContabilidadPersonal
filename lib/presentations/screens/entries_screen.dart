@@ -90,10 +90,13 @@ class _EntriesScreenState extends ConsumerState<EntriesScreen> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CustomEditValueEntry(
-                      delete: (index) {
+                      delete: (  valueEntry) {
+                        ValueEntry value=valueEntry;
+                        ref.read(valueEntryProvider.notifier).removeData(value.id!);
                         return Future(() => null);
                       },
-                      update: (index) {
+                      update: (valueEntry) {
+                        ref.read(valueEntryProvider.notifier).editData(valueEntry);
                         return Future(() => null);
                       },
                       valueEntry: valueEntryList[index]),

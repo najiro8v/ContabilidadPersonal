@@ -4,5 +4,5 @@ export 'inputs/inputs_widgets.dart';
 export 'drawer/custom_drawer.dart';
 export 'checkfilter.dart';
 export 'element_custom_edit_value.dart';
-export 'subcategory/custom_edit_value_entry.dart';
+export 'value entry/custom_edit_value_entry.dart';
 export 'shared/shared_widgets.dart';
