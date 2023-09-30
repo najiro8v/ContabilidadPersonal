@@ -1,4 +1,4 @@
-import 'package:contabilidad/domain/entities/models/models.dart';
+import 'package:contabilidad/domain/entities/entities.dart';
 import 'package:contabilidad/infrastructure/repository/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

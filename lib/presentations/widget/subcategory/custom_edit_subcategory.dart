@@ -1,4 +1,4 @@
-import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
+import 'package:contabilidad/domain/entities/models/models.dart';
 import 'package:contabilidad/presentations/widget/inputs/input_custom.dart';
 import 'package:flutter/material.dart';
 

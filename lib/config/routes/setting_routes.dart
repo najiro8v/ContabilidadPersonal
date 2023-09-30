@@ -1,5 +1,5 @@
 import "package:contabilidad/presentations/screens/settings/settings.dart";
-import "package:contabilidad/domain/entities/models/models.dart";
+import "package:contabilidad/domain/entities/entities.dart";
 import "package:flutter/material.dart";
 
 class SettingsRoutes {

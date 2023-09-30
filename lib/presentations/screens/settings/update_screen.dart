@@ -1,4 +1,5 @@
-import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
+import 'package:contabilidad/domain/entities/entities.dart'
+    show Category, Entry;
 import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
 import 'package:contabilidad/presentations/widget/subcategory/custom_edit_subcategory.dart';
 
@@ -101,13 +102,6 @@ class _PanelRadio {
 class _ListViewEntry extends ConsumerWidget {
   final Category category;
   const _ListViewEntry({required this.category});
-
-  Future<dynamic> updateFunction(entry) {
-    //ref.read
-    return Future(() => true);
-  }
-
-  Future<dynamic> deleteFunction(id, context) async {}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

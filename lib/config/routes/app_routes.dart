@@ -3,7 +3,7 @@ import "package:contabilidad/presentations/screens/entry/entry_add_screen.dart";
 
 import "package:flutter/material.dart";
 
-import "package:contabilidad/domain/entities/models/models.dart";
+import "package:contabilidad/domain/entities/entities.dart";
 import "package:contabilidad/presentations/screens/screens.dart";
 import "package:go_router/go_router.dart";
 

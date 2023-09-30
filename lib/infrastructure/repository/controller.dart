@@ -1,2 +1,3 @@
-export "package:contabilidad/infrastructure/repository/category_controller.dart";
-export "package:contabilidad/infrastructure/repository/entry_controller.dart";
+export "category_controller.dart";
+export "entry_controller.dart";
+export 'value_entry_controller.dart';
