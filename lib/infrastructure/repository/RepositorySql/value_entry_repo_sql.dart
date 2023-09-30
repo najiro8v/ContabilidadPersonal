@@ -11,8 +11,8 @@ class ValueEntrySQLImplement {
   final sqlPool = SqlLiteDataSource<ValueEntry>(
       dbName: dbName, fromMap: ValueEntry.fromMap);
 
-  Future<List<ValueEntry>> find({ValueEntry? entity}) async {
-    final queryOption = HelppersCategorySQL.objectToQuery(entity, dbName);
+  Future<List<ValueEntry>> find({Map<String, dynamic>? filter}) async {
+    final queryOption = HelppersSQL.objectToQuery(filter, dbName);
     final list = await sqlPool.getAll(queryOption: queryOption);
     return list;
   }

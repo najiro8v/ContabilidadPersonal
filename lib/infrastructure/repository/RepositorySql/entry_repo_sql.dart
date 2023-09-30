@@ -11,7 +11,7 @@ class EntrySQLImplement {
       SqlLiteDataSource<Entry>(dbName: dbName, fromMap: Entry.fromMap);
 
   Future<List<Entry>> find({Entry? entity}) async {
-    final queryOption = HelppersCategorySQL.objectToQuery(entity, dbName);
+    final queryOption = HelppersSQL.objectToQuery(entity?.toMap(), dbName);
     final list = await sqlPool.getAll(queryOption: queryOption);
     return list;
   }

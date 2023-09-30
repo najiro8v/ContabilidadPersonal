@@ -18,7 +18,7 @@ class ValueEntryState extends StateNotifier<List<ValueEntry>> {
     getData();
   }
 
-  getData() async {
+  getData({Map<String, dynamic>? filter}) async {
     List<int> ids = [];
     if (idList != null) {
       ids.addAll(idList!);
@@ -28,7 +28,7 @@ class ValueEntryState extends StateNotifier<List<ValueEntry>> {
     }
 
     final list = id == null && idList == null
-        ? await valueEntryData.find()
+        ? await valueEntryData.find(filter: filter)
         : await valueEntryData.findByEntry(id: ids);
     state = list;
   }

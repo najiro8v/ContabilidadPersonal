@@ -4,8 +4,8 @@ import 'RepositorySql/repository_sql.dart' show ValueEntrySQLImplement;
 class ValueEntryController {
   final datasource = ValueEntrySQLImplement();
 
-  Future<List<ValueEntry>> find({ValueEntry? entity}) async {
-    return await datasource.find(entity: entity);
+  Future<List<ValueEntry>> find({Map<String, dynamic>? filter}) async {
+    return await datasource.find(filter: filter);
   }
 
   Future<ValueEntry> insert({required ValueEntry entity}) async {

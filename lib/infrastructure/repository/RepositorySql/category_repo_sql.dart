@@ -9,7 +9,7 @@ class CategorySQLImplement {
       SqlLiteDataSource<Category>(dbName: dbName, fromMap: Category.fromMap);
 
   Future<List<Category>> find({Category? entity}) async {
-    final queryOption = HelppersCategorySQL.objectToQuery(entity, dbName);
+    final queryOption = HelppersSQL.objectToQuery(entity?.toMap(), dbName);
     final list = await sqlPool.getAll(queryOption: queryOption);
     return list;
   }

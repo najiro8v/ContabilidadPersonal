@@ -75,11 +75,6 @@ class CategoryState extends StateNotifier<List<Category>> {
 //#End Category list Region
 
 // Entry list Region
-final entryProvider1 = FutureProvider<List<Entry>>((ref) async {
-  final id = ref.watch(entryIdProvider);
-  final entry = EntryController();
-  return entry.findByCategory(id: [id]);
-});
 
 final entryProvider = StateNotifierProvider<EntryState, List<Entry>>((ref) {
   return EntryState();
@@ -93,6 +88,13 @@ class EntryState extends StateNotifier<List<Entry>> {
   }
 
   getData() async {
+    final list = id == null
+        ? await entryData.find()
+        : await entryData.findByCategory(id: [id!]);
+    state = list;
+  }
+
+  filterData({Entry? entry}) async {
     final list = id == null
         ? await entryData.find()
         : await entryData.findByCategory(id: [id!]);

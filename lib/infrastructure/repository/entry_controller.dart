@@ -8,6 +8,10 @@ class EntryController {
     return await datasource.find(entity: entity);
   }
 
+  Future<List<Entry>> find1({Entry? entity}) async {
+    return await datasource.find(entity: entity);
+  }
+
   Future<Entry> insert({required Entry entity}) async {
     return await datasource.insert(entity: entity);
   }
