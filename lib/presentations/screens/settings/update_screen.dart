@@ -15,7 +15,7 @@ class UpdateScreen extends ConsumerWidget {
     final categoriaP = ref.watch(categoryProvider);
 
     return Scaffold(
-        appBar: AppBar(title: const Text("Update Setting")),
+        appBar: AppBar(title: const Text("Mis categorias")),
         body: SingleChildScrollView(
             child: categoriaP.isEmpty
                 ? Container()

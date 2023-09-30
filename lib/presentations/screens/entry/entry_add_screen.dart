@@ -16,7 +16,7 @@ class EntryAdd extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        appBar: AppBar(title: const Center(child: Text("Mis Categoria"))),
+        appBar: AppBar(title: const Center(child: Text("Mi Entrada"))),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           children: [
