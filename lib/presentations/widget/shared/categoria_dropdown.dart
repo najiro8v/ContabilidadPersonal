@@ -25,7 +25,7 @@ class CategorySelector extends ConsumerWidget {
               child: Text(e.name!),
             ))
         .toList();
-    int selectedCategory = ref.read(categorySelectionProvider);
+    int? selectedCategory = ref.read(categorySelectionProvider);
     final categoryBackUp = elements.first.id;
     dynamic value = selectedCategory;
     try {
@@ -38,7 +38,7 @@ class CategorySelector extends ConsumerWidget {
         items: listElement,
         value: value,
         onChanged: (value) async {
-          int newState = value as int;
+          int? newState = value as int?;
           ref
               .read(categorySelectionProvider.notifier)
               .update((state) => newState);

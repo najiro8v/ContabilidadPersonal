@@ -1,4 +1,5 @@
 import 'package:contabilidad/domain/entities/models/account.dart';
+import 'package:flutter/foundation.dart';
 
 class Category implements BaseAccount {
   String? name;
@@ -175,7 +176,6 @@ class ValueEntry implements BaseAccount {
       int length = json["length"] ?? 0;
       int latitud = json["latitud"] ?? 0;
       value = ValueEntry(
-
           desc: json["desc"].toString(),
           value: json["value"] as double,
           date: json["date"],
@@ -186,7 +186,9 @@ class ValueEntry implements BaseAccount {
           entry: json["entry_id"],
           id: json["Id_Value_Entry"]);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     } finally {}
     return value;
   }

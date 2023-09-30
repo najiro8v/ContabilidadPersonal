@@ -23,51 +23,27 @@ class _EntriesScreenState extends ConsumerState<EntriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Mis Registros")),
+      floatingActionButton: FloatingActionButton(
+          onPressed: resetFilter,
+          child: const Icon(Icons.filter_alt_off_outlined)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(children: [const _TitleFilter(), _listRegister()]),
       ),
     );
-    /* final provider = Provider.of<DbProvider>(context);
-    if (provider.categoryEntries != null) {
-      provider.keyFormFieldDropE!.currentState
-          // ignore: invalid_use_of_protected_member
-          ?.setValue(provider.categoryEntries!.id);
-    }
-
-    resetFilter() async {
-      if (provider.keyFormFieldDropE!.currentState != null) {
-        provider.keyFormFieldDropE!.currentState!.reset();
-        provider.categoryEntries = null;
-        provider.filterEntries = [];
-      }
-      provider.categorya = null;
-      await provider.getEntry();*/
   }
 
-/*Region Screen */
-  /*  return Scaffold(
-        appBar: AppBar(title: const Text("Mis Registros")),
-        floatingActionButton: FloatingActionButton(
-            onPressed: resetFilter,
-            child: const Icon(Icons.filter_alt_off_outlined)),
-        body: Column(children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: _TitleFilter(),
-          ),
-          provider.valueEntrysD2!.isEmpty
-              ? const _NotList()
-              : _listRegister(provider),
-        ]));
-  }*/
+  resetFilter() async {
+    ref.read(categorySelectionProvider.notifier).update((state) => null);
+    ref.read(valueEntryProvider.notifier).cleanId();
+  }
 
 /*Return*/
   Expanded _listRegister() {
     final valueEntryList = ref.watch(valueEntryProvider);
     return Expanded(
       child: valueEntryList.isEmpty
-          ? Container()
+          ? const _NotList()
           : ListView.builder(
               shrinkWrap: true,
               itemBuilder: (_, index) {
@@ -94,29 +70,6 @@ class _EntriesScreenState extends ConsumerState<EntriesScreen> {
             ),
     );
   }
-  /*Expanded _listRegister(DbProvider provider) {
-    return Expanded(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: (_, index) {
-          provider.valueEntrysD2![index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: ElementCustomEditValueEntry(
-                padding: 10,
-                label: "lolo",
-                obj: provider.valueEntrysD2![index],
-                deleteFunction: () {}, // deleteFunction,
-                updateFunction: () {} //updateFunction
-                ),
-          );
-        },
-        itemCount: provider.valueEntrysD2!.isEmpty
-            ? 1
-            : provider.valueEntrysD2!.length,
-      ),
-    );
-  }*/
 }
 
 class _TitleFilter extends StatelessWidget {
@@ -159,17 +112,17 @@ class _TitleFilter extends StatelessWidget {
   }
 }
 
-/*class _NotList extends StatelessWidget {
+class _NotList extends StatelessWidget {
   const _NotList({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Center(
           child: Text(
             "Listado Sin Entradas",
@@ -180,19 +133,17 @@ class _TitleFilter extends StatelessWidget {
     );
   }
 }
-*/
+
 class _ListValueEntrys extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entradaProvider = ref.watch(entryProvider);
+    final entradaProvider = ref.watch(entryProviderList);
     return SizedBox(
         height: 100,
-        child:
-            entradaProvider.isEmpty ? Container() : listado(entradaProvider));
-    /* entradaProvider.when(
-            data: (data) => listado(data),
+        child: entradaProvider.when(
+            data: (data) => data.isEmpty ? Container() : listado(data),
             error: (error, _) => const WidgetErrorAlert(),
-            loading: () => Container()))*/
+            loading: () => Container()));
   }
 
   Widget listado(List<Entry> provider) {
@@ -221,10 +172,6 @@ class _ButtonFilter extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        /*TextButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.filter_list),
-            label: const Text("Filtros")),*/
         TextButton(
             onPressed: () async {
               ref.read(valueEntryProvider.notifier).getData();
@@ -234,37 +181,3 @@ class _ButtonFilter extends ConsumerWidget {
     );
   }
 }
-
-/*
-class _DropwdownFilter extends ConsumerWidget
-  @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    final categoriaProvider = ref.watch(categoryProviderList);
-   // final provider = Provider.of<DbProvider>(context, listen: false);
-    return Expanded(
-        child: DropdownButtonFormField(
-            key: provider.keyFormFieldDropE,
-            decoration: const InputDecoration(labelText: "Categorias"),
-            items: provider.categorias != null
-                ? provider.categorias!
-                    .where((element) => element.enable!)
-                    .map((Category e) => DropdownMenuItem(
-                          value: e.id,
-                          child: Text(e.name!),
-                        ))
-                    .toList()
-                : const [
-                    DropdownMenuItem(
-                      value: 0,
-                      child: Text("1"),
-                    ),
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text("2"),
-                    )
-                  ],
-            onChanged: (value) async {
-              await provider.setSubCategoriasFilter(value.toString());
-            }));
-  }
-}*/

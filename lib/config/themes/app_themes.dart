@@ -14,7 +14,7 @@ class AppTheme {
           iconTheme:
               MaterialStateProperty.all(IconThemeData(color: secondary))),
       textButtonTheme: TextButtonThemeData(
-        style:
-            TextButton.styleFrom(primary: secondary, backgroundColor: primary),
+        style: TextButton.styleFrom(
+            foregroundColor: secondary, backgroundColor: primary),
       ));
 }

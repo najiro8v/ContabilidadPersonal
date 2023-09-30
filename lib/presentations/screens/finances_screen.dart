@@ -105,11 +105,13 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                     final quantity =
                         (double.tryParse(inputControllerCant.text) ?? 0);
                     final entry = ref.read(entrySelectionProvider.notifier);
+
+                    final date = DateTime.now().millisecondsSinceEpoch;
                     final newValueEntry = ValueEntry(
                       quantity: quantity,
                       desc: inputControllerDesc.text,
                       value: value,
-                      date: 1,
+                      date: date,
                       entry: entry.state,
                       type: 0,
                       latitud: 0,
