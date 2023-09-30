@@ -13,15 +13,41 @@ final valueEntryProvider =
 class ValueEntryState extends StateNotifier<List<ValueEntry>> {
   final valueEntryData = ValueEntryController();
   int? id;
+  List<int>? idList;
   ValueEntryState() : super([]) {
     getData();
   }
 
   getData() async {
-    final list = id == null
+    List<int> ids = [];
+    if (idList != null) {
+      ids.addAll(idList!);
+    }
+    if (id != null) {
+      ids.add(id!);
+    }
+
+    final list = id == null && idList == null
         ? await valueEntryData.find()
-        : await valueEntryData.findByEntry(id: [id!]);
+        : await valueEntryData.findByEntry(id: ids);
     state = list;
+  }
+
+  addId(int id) {
+    idList ??= [id];
+    if (idList!.contains(id)) return;
+    idList!.add(id);
+  }
+
+  removeId(int id) {
+    if (idList == null) return;
+    if (!(idList!.contains(id))) return;
+    idList!.removeWhere((element) => element == id);
+  }
+
+  cleanId() {
+    idList = null;
+    id = null;
   }
 
   changeCategory(int id) {

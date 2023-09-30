@@ -177,7 +177,9 @@ class DatabaseSQL {
   }
 
   static Future<List<dynamic>> get(String dbName,
-      {String query = "", QueryOption? queryOption}) async {
+      {String query = "",
+      QueryOption? queryOption,
+      List<dynamic>? args}) async {
     Database database = await instance.database;
     final batch = database.batch();
 
@@ -195,7 +197,7 @@ class DatabaseSQL {
           where: queryOption.where,
           whereArgs: queryOption.whereArgs);
     } else {
-      batch.rawQuery(query);
+      batch.rawQuery(query, args);
     }
     final lista = await batch.commit(continueOnError: false);
     return lista[0] as List;

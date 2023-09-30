@@ -111,12 +111,13 @@ class _CustomEditValueEntryState extends State<CustomEditValueEntry> {
                               final price =
                                   double.tryParse(inputControllerValue.text) ??
                                       0;
-                                       final quantity=
-                                  double.tryParse(inputControllerValue.text) ??
+                              final quantity =
+                                  double.tryParse(inputControllerCant.text) ??
                                       0;
                               final newEntry = widget.valueEntry.copyWith(
-                                quantity: quantity,
-                                  value: price, desc: inputControllerDesc.text);
+                                  quantity: quantity,
+                                  value: price,
+                                  desc: inputControllerDesc.text);
                               widget.update!(newEntry);
                               String msg = "Registro actualizado con Exito";
                               bool isError = false;

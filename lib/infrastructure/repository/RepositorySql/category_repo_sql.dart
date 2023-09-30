@@ -45,15 +45,21 @@ class ValueEntrySQLImplement {
 
   Future<List<ValueEntry>> getByEntry(
       {QueryOption? queryOption, required List<int> id}) async {
-    String listId = id.join(",");
     String query =
         'select t0.*, T1.name AS entryName, t2.name AS categoryName from $dbName as T0';
     query +=
         "  INNER JOIN ${EntrySQLImplement.dbName} as T1 on T0.entry_id = T1.${EntrySQLImplement.idName}";
     query +=
-        "  INNER JOIN ${CategorySQLImplement.dbName}  as T2 on T2.${EntrySQLImplement.idName} = T1.category_id";
-    query += "  where T0.entry_id in ($listId) ORDER BY t0.name";
-    return await sqlPool.getAll(query: query);
+        "  INNER JOIN ${CategorySQLImplement.dbName}  as T2 on T2.${CategorySQLImplement.idName} = T1.category_id";
+    if (id.isNotEmpty) {
+      String args = "?";
+      for (var i = 0; i < id.length - 1; i++) {
+        args += ",?";
+      }
+      query += "  where T0.entry_id in ($args) ORDER BY t0.desc";
+    }
+    return await sqlPool.getAll(
+        query: query, args: id.isEmpty ? null : [...id]);
   }
 
   Future<ValueEntry> findUpdate({required ValueEntry entity}) async {

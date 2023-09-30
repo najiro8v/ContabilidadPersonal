@@ -130,7 +130,7 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
         ),
         floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed("registries");
+              context.push("/Mis_Registros");
             },
             child: const Icon(Icons.format_list_bulleted_sharp)),
       );

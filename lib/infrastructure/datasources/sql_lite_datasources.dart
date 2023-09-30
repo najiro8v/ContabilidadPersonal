@@ -24,9 +24,10 @@ class SqlLiteDataSource<T extends BaseAccount> implements Datasources<T> {
   }
 
   @override
-  Future<List<T>> getAll({QueryOption? queryOption, String? query}) async {
+  Future<List<T>> getAll(
+      {QueryOption? queryOption, String? query, List<dynamic>? args}) async {
     List<dynamic> list = await DatabaseSQL.get(dbName,
-        queryOption: queryOption, query: query ?? "");
+        queryOption: queryOption, query: query ?? "", args: args);
     return list.map(
       (e) {
         return fromMap(e);
