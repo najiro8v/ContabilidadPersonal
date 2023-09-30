@@ -19,7 +19,7 @@ class DatabaseSQL {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path,
-        version: 1, onCreate: _createDB, onUpgrade: _upgradeDB);
+        version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   static Future<void> deleteDatabase() async =>
@@ -88,14 +88,13 @@ class DatabaseSQL {
     valueEntryTB += "date INTEGER NOT NULL,";
     valueEntryTB += "latitud INTEGER ,";
     valueEntryTB += "length INTEGER,";
+    valueEntryTB += "quantity REAL NOT NULL,";
     valueEntryTB +=
         "FOREIGN KEY (entry_id) REFERENCES Entry (Id_Entry) ON DELETE SET NULL ON UPDATE NO ACTION,";
     valueEntryTB +=
         "FOREIGN KEY (type_id) REFERENCES Type (Id_Type) ON DELETE SET NULL ON UPDATE NO ACTION";
     valueEntryTB += ")";
     await db.execute(valueEntryTB);
-    /**Values default */
-    /*** */
   }
 
   _upgradeDB(Database db, int oldVersion, int version) async {
@@ -139,6 +138,7 @@ class DatabaseSQL {
       valueEntryTB += "date INTEGER NOT NULL,";
       valueEntryTB += "latitud INTEGER ,";
       valueEntryTB += "length INTEGER,";
+      valueEntryTB += "quantity REAL NOT NULL,";
       valueEntryTB +=
           "FOREIGN KEY (entry_id) REFERENCES Entry (Id_Entry) ON DELETE SET NULL ON UPDATE NO ACTION,";
       valueEntryTB +=
@@ -153,47 +153,53 @@ class DatabaseSQL {
     db.close();
   }
 
-  static Future<int> insert(String dbName, dynamic model) async {
+  static Future<dynamic> insert(String dbName, dynamic model) async {
     Database database = await instance.database;
-
-    final response = await database.insert(dbName, model.toMap());
-
-    return response;
+    final obj = await database.insert(dbName, model.toMap());
+    model.id = obj;
+    return model.toMap();
   }
 
   static Future<int> delete(String dbName,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    return await database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
+    final obj =
+        await database.delete(dbName, where: "$idName = ?", whereArgs: [id]);
+    return obj;
   }
 
   static Future<int> update(String dbName, dynamic model,
       {required int id, required String idName}) async {
     Database database = await instance.database;
-    return await database
+    final obj = await database
         .update(dbName, model.toMap(), where: "$idName = ?", whereArgs: [id]);
+    return obj;
   }
 
   static Future<List<dynamic>> get(String dbName,
-      {String query = "", QueryOption? queryOption}) async {
+      {String query = "",
+      QueryOption? queryOption,
+      List<dynamic>? args}) async {
     Database database = await instance.database;
+    final batch = database.batch();
 
-    final List<Map<String, dynamic>> result =
-        query.isEmpty && queryOption == null
-            ? await database.query(dbName)
-            : queryOption != null
-                ? await database.query(dbName,
-                    columns: queryOption.columns,
-                    distinct: queryOption.distinct,
-                    groupBy: queryOption.groupBy,
-                    having: queryOption.having,
-                    limit: queryOption.limit,
-                    offset: queryOption.offset,
-                    orderBy: queryOption.orderBy,
-                    where: queryOption.where,
-                    whereArgs: queryOption.whereArgs)
-                : await database.rawQuery(query);
-
-    return result.toList();
+    if (query.isEmpty && queryOption == null) {
+      batch.query(dbName);
+    } else if (queryOption != null) {
+      batch.query(dbName,
+          columns: queryOption.columns,
+          distinct: queryOption.distinct,
+          groupBy: queryOption.groupBy,
+          having: queryOption.having,
+          limit: queryOption.limit,
+          offset: queryOption.offset,
+          orderBy: queryOption.orderBy,
+          where: queryOption.where,
+          whereArgs: queryOption.whereArgs);
+    } else {
+      batch.rawQuery(query, args);
+    }
+    final lista = await batch.commit(continueOnError: false);
+    return lista[0] as List;
   }
 }

@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:provider/provider.dart';
-import 'package:contabilidad/presentations/provider/providers.dart';
 
 // ignore: must_be_immutable
 class InputsCustomEntry extends StatefulWidget {
@@ -43,7 +39,6 @@ class InputsCustomEntry extends StatefulWidget {
 }
 
 class _InputsCustomState extends State<InputsCustomEntry> {
-  //TextEditingController? _controller;
   @override
   void initState() {
     super.initState();
@@ -51,12 +46,13 @@ class _InputsCustomState extends State<InputsCustomEntry> {
 
   @override
   void dispose() {
-    // _controller!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    return const Placeholder();
+    /*
     final provider = Provider.of<DbProvider>(context, listen: false);
 
     TextEditingController? controller =
@@ -103,6 +99,6 @@ class _InputsCustomState extends State<InputsCustomEntry> {
                       /* valueEntry[widget.propiedad!] =
                           valor.isEmpty ? 0 : double.parse(valor);*/
                     }))),
-    );
+    );*/
   }
 }

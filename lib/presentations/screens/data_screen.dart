@@ -1,4 +1,4 @@
-import 'package:contabilidad/infrastructure/repository/controller.dart';
+import 'package:contabilidad/domain/entities/models/models.dart';
 import 'package:flutter/material.dart';
 
 //import 'package:syncfusion_flutter_charts/charts.dart';
@@ -23,7 +23,17 @@ class _DataScreenState extends State<DataScreen> {
   };
   List<GDPData> data = <GDPData>[];
   getValuesEntry() async {
-    var a = await ValueEntryController.get();
+    var a = [
+      ValueEntry(
+          quantity: 0,
+          desc: "desc",
+          value: 1,
+          date: 1,
+          latitud: 1,
+          length: 1,
+          type: 1,
+          entry: 1)
+    ]; //await ValueEntryController.get();
 
     for (var element in a) {
       final dateInt =

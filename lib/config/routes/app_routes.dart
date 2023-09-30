@@ -1,9 +1,52 @@
 import 'package:contabilidad/presentations/screens/entries_screen.dart';
-import 'package:contabilidad/presentations/screens/settings/settings_screen.dart';
+import "package:contabilidad/presentations/screens/entry/entry_add_screen.dart";
+
 import "package:flutter/material.dart";
 
-import "package:contabilidad/domain/entities/models/models.dart";
+import "package:contabilidad/domain/entities/entities.dart";
 import "package:contabilidad/presentations/screens/screens.dart";
+import "package:go_router/go_router.dart";
+
+final appRoutes = GoRouter(initialLocation: "/home", routes: [
+  GoRoute(
+    path: "/home",
+    name: "Registros",
+    builder: (context, state) => const HomeScreen(),
+  ),
+  GoRoute(
+    path: "/finances",
+    name: "Inicio",
+    builder: (context, state) => const DataScreen(),
+  ),
+  GoRoute(
+    path: "/Categorias",
+    name: "category",
+    builder: (context, state) => const UpdateScreen(),
+  ),
+  GoRoute(
+    path: "/Mis_Registros",
+    name: "registries",
+    builder: (context, state) => const EntriesScreen(),
+  ),
+  GoRoute(
+      path: "/Mis_categorias",
+      name: "categoryScreen",
+      builder: (context, state) {
+        Category? category = state.extra as Category?;
+        return CategoryAdd(
+          category: category,
+        );
+      }),
+  GoRoute(
+      path: "/sub_categorias",
+      name: "subcategoryScreen",
+      builder: (context, state) {
+        Entry? entry = state.extra as Entry?;
+        return EntryAdd(
+          entry: entry,
+        );
+      })
+]);
 
 class AppRoutes {
   static const initalRoute = "home";
@@ -19,33 +62,7 @@ class AppRoutes {
         name: "Inicio",
         route: "finances",
         icon: Icons.home,
-        screen: const DataScreen()),
-    MenuOption(
-        menuPrincipal: true,
-        name: "Configuración",
-        route: "configs",
-        icon: Icons.settings,
-        screen: const SettingsScreen()),
-    MenuOption(
-        name: "Categorias",
-        route: "category",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const UpdateScreen()),
-    MenuOption(
-        name: "Mis Registros",
-        route: "registries",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const EntriesScreen()),
-    MenuOption(
-        name: "Mis Registros",
-        route: "categoryScreen",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const CategoryAdd()),
-    MenuOption(
-        name: "Mis Registros",
-        route: "subcategoryScreen",
-        icon: Icons.align_vertical_bottom_sharp,
-        screen: const SubCategoryAdd()),
+        screen: const DataScreen())
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

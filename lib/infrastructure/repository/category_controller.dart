@@ -1,33 +1,18 @@
-import 'package:contabilidad/domain/entities/models/models.dart' show Category;
-import 'package:contabilidad/infrastructure/datasources/db/db.dart';
+import 'package:contabilidad/domain/entities/entities.dart' show Category;
+import 'RepositorySql/repository_sql.dart' show CategorySQLImplement;
 
 class CategoryController {
-  static const String dbName = "Category";
-  static Future<List<Category>> get() async {
-    List<dynamic> listado = await DatabaseSQL.get(dbName);
-    return List.generate(
-        listado.length,
-        (i) => Category(
-            key: listado[i]['key'],
-            name: listado[i]['name'],
-            id: listado[i]['Id_Category'],
-            enable: listado[i]['enable'] == 1 ? true : false));
+  final datasource = CategorySQLImplement();
+
+  Future<List<Category>> find({Category? entity}) async {
+    return await datasource.find(entity: entity);
   }
 
-  static Future<int> insert(Category category) async {
-    return await DatabaseSQL.insert(dbName, category);
+  Future<Category> insert({required Category entity}) async {
+    return await datasource.insert(entity: entity);
   }
 
-  static Future<int> getId(Category category) async {
-    String query =
-        "select T0.Id_Category from $dbName T0 where T0.key = '${category.key}'";
-    List<dynamic> listado = await DatabaseSQL.get(dbName, query: query);
-    return listado.first.row[0];
-  }
-
-  static Future<int> updateCategory(Category category) async {
-    int update = await DatabaseSQL.update(dbName, category,
-        id: category.id!, idName: 'Id_Category');
-    return update;
+  Future<Category> findUpdate({required Category entity}) async {
+    return await datasource.findUpdate(entity: entity);
   }
 }

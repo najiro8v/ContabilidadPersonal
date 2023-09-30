@@ -1,23 +1,21 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:contabilidad/domain/entities/models/models.dart';
-import 'package:contabilidad/infrastructure/repository/controller.dart';
-import 'package:contabilidad/presentations/provider/db_provider.dart';
+import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
+import 'package:contabilidad/presentations/widget/shared/categoria_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'registries/registries_filter.screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:contabilidad/presentations/widget/widget.dart";
+import 'package:go_router/go_router.dart';
 
-class FinancesScreen extends StatefulWidget {
+class FinancesScreen extends ConsumerStatefulWidget {
   const FinancesScreen({Key? key}) : super(key: key);
 
   @override
-  State<FinancesScreen> createState() => _FinancesScreenState();
+  ConsumerState<FinancesScreen> createState() => _FinancesScreenState();
 }
 
-class _FinancesScreenState extends State<FinancesScreen> {
+class _FinancesScreenState extends ConsumerState<FinancesScreen> {
   final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-
+  bool check = false;
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
@@ -28,199 +26,219 @@ class _FinancesScreenState extends State<FinancesScreen> {
     );
   }
 
+  final inputControllerDesc = TextEditingController();
+  final inputControllerCant = TextEditingController();
+  final inputControllerPrice = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    ref.read(categoryProvider.notifier).getData();
+  }
+
+  @override
+  void dispose() {
+    inputControllerPrice.dispose();
+    inputControllerCant.dispose();
+    inputControllerDesc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var entryValue = Provider.of<DbProvider>(context);
-    return Scaffold(
-      body: Form(
-        key: myFormKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
-          child: ListView(children: [
-            const _TitleFilter(),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
+    final list = ref.watch(categoryProvider);
+    bool emptyList = list.where((element) => element.enable!).isEmpty;
+    if (emptyList) {
+      return const _AddCategory();
+    } else {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Form(
+          key: myFormKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+            child: ListView(children: [
+              _TitleFilter(
+                controllers: [
+                  inputControllerDesc,
+                  inputControllerCant,
+                  inputControllerPrice
+                ],
+              ),
               SwitchListTile(
-                  title: Text(
-                      "Entrada de tipo ${entryValue.valueEntry!.type == 1 ? "Credito" : "Debito"} "),
-                  value: entryValue.valueEntry!.type == 1 ? true : false,
+                  title: const Text(""),
+                  value: check,
                   onChanged: ((value) {
-                    entryValue.valueEntry!.type = value == true ? 1 : 2;
+                    setState(() => check = value);
                   })),
-            const SizedBox(
-              height: 8,
-            ),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
-              InputsCustom(
-                initialValue: entryValue.entrya!.name!,
-                propiedad: "desc",
-                labelText: "descripción",
-                padding: 10,
-                isNumber: false,
+              const SizedBox(
+                height: 8,
               ),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
-              InputsCustom(
-                initialValue: entryValue.entrya!.value!.toString(),
-                isNumber: true,
-                propiedad: "value",
-                labelText: "valor",
-                padding: 10,
+              WidgetInputsCustom(
+                controller: inputControllerDesc,
+                labelText: "Descripción",
+                onChanged: (value) {},
+              ),
+              WidgetInputsCustom(
+                controller: inputControllerCant,
+                labelText: "Cantidad",
                 keyboardType: TextInputType.number,
+                onChanged: (value) {},
               ),
-            if (entryValue.entrya != null && entryValue.entrya!.id != null)
+              WidgetInputsCustom(
+                controller: inputControllerPrice,
+                labelText: "Precio",
+                keyboardType: TextInputType.number,
+                validator: (value) => null,
+                onChanged: (value) {},
+              ),
               TextButton(
                   onPressed: () async {
                     myFormKey.currentState!.validate();
                     if (!myFormKey.currentState!.validate()) {
                       return;
                     }
-                    if (entryValue.entrya == null) return;
+                    inputControllerCant.text;
+                    inputControllerDesc.text;
+                    inputControllerPrice.text;
+                    final value =
+                        (double.tryParse(inputControllerPrice.text) ?? 0);
+                    final quantity =
+                        (double.tryParse(inputControllerCant.text) ?? 0);
+                    final entry = ref.read(entrySelectionProvider.notifier);
 
-                    final ValueEntry newEntry = ValueEntry(
-                        desc: entryValue.valueEntry!.desc,
-                        value: entryValue.valueEntry!.value,
-                        date: DateTime.now().toUtc().millisecondsSinceEpoch,
-                        latitud: 1,
-                        length: 1,
-                        type: entryValue.valueEntry!.type == 0 ? 1 : 2,
-                        entry: entryValue.valueEntry!.entry);
-                    int insert = await ValueEntryController.insert(newEntry);
+                    final date = DateTime.now().millisecondsSinceEpoch;
+                    final newValueEntry = ValueEntry(
+                      quantity: quantity,
+                      desc: inputControllerDesc.text,
+                      value: value,
+                      date: date,
+                      entry: entry.state,
+                      type: 0,
+                      latitud: 0,
+                      length: 0,
+                    );
 
-                    //myFormKey.currentState!.reset();
-
+                    ref.read(entryValueProviderState(newValueEntry));
                     _showToast(context);
+                    inputControllerCant.clear();
+                    inputControllerDesc.clear();
+                    inputControllerPrice.text = "";
+
                     setState(() {});
-                    if (insert > 0) {
-                      entryValue.controllerCategory["desc"] =
-                          TextEditingController(text: "");
-                      entryValue.controllerCategory["value"] =
-                          TextEditingController(text: "");
-                    }
                   },
                   child: const Text("Agregar Entrada")),
-          ]),
+            ]),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed("registries");
-          },
-          child: const Icon(Icons.format_list_bulleted_sharp)),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              context.push("/Mis_Registros");
+            },
+            child: const Icon(Icons.format_list_bulleted_sharp)),
+      );
+    }
+  }
+}
+
+class _AddCategory extends StatelessWidget {
+  const _AddCategory();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "No se encuentran categorias disponibles, por favor revisar el listado de categorias",
+          textAlign: TextAlign.center,
+          style: textTheme.labelLarge,
+        ),
+        IconButton(
+          onPressed: () => {context.push("/Categorias")},
+          icon: const Icon(
+            Icons.arrow_circle_right_outlined,
+            size: 50,
+          ),
+          color: Colors.indigo,
+        )
+      ],
     );
   }
 }
 
 class _TitleFilter extends StatelessWidget {
-  const _TitleFilter({
-    Key? key,
-  }) : super(key: key);
+  final GlobalKey<FormFieldState> keyFormFieldDrop =
+      GlobalKey<FormFieldState>();
+  final List<TextEditingController> controllers;
+  _TitleFilter({Key? key, required this.controllers}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var categoP = Provider.of<DbProvider>(context);
-    categoP.getCategorias();
-
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-                child: DropdownButtonFormField(
-                    key: categoP.keyFormFieldDrop,
-                    decoration: const InputDecoration(labelText: "Categorias"),
-                    items: categoP.categorias != null
-                        ? categoP.categorias!
-                            .where((element) => element.enable!)
-                            .map((Category e) => DropdownMenuItem(
-                                  value: e.id,
-                                  child: Text(e.name!),
-                                ))
-                            .toList()
-                        : const [
-                            DropdownMenuItem(
-                              value: "1",
-                              child: Text("Sin cargas"),
-                            ),
-                            DropdownMenuItem(
-                              value: "1",
-                              child: Text("Sin cargas"),
-                            )
-                          ],
-                    onChanged: (value) async {
-                      await categoP.setSubCategorias(value.toString());
-                    })),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-                child: TextFormField(
-              decoration: const InputDecoration(
-                  icon: Icon(Icons.search_sharp), labelText: "Busqueda"),
-            )),
-          ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        if (categoP.categorya != null)
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: ((context, index) {
-                Entry register = categoP.registros![index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: TextButton.icon(
-                    onPressed: () {
-                      categoP.entrya = register;
-                      categoP.controllerCategory["desc"] =
-                          TextEditingController(text: register.name);
-                      categoP.controllerCategory["value"] =
-                          TextEditingController(
-                              text: register.value.toString());
-                      categoP.setValueEntry(ValueEntry(
-                          desc: register.name,
-                          value: register.value,
-                          date: DateTime.now().toUtc().millisecondsSinceEpoch,
-                          latitud: 1,
-                          length: 1,
-                          type: 1,
-                          entry: register.id));
-                    },
-                    icon: const Icon(Icons.access_time_filled),
-                    label: Text(
-                      register.name!,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                );
-              }),
-              shrinkWrap: true,
-              itemCount: categoP.registros!.length,
-            ),
-          ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          const RegistriesFilterScreen(),
-                    ),
-                  );
-                },
-                child: const Text("..."))
-          ],
-        ),
+        const CategorySelector(),
+        _SubCategory(controllers: controllers),
         const SizedBox(
           height: 10,
         ),
       ],
+    );
+  }
+}
+
+class _SubCategory extends ConsumerWidget {
+  final List<TextEditingController> controllers;
+  const _SubCategory({required this.controllers});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entradaProvider = ref.watch(entryProviderList);
+
+    final screen = MediaQuery.of(context);
+    return SizedBox(
+      height: screen.size.height * 0.10,
+      child: entradaProvider.when(
+          data: (elements) {
+            return ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: elements.length,
+                itemBuilder: (context, index) => _ButtonSubCategory(
+                    entry: elements[index],
+                    onPressed: () {
+                      final entry = elements[index];
+                      ref
+                          .read(entrySelectionProvider.notifier)
+                          .update((state) => entry.id);
+                      controllers[0].text = entry.name ?? "";
+                      controllers[1].text = "1";
+                      controllers[2].text = entry.value.toString();
+                    }));
+          },
+          error: (error, _) => const WidgetErrorAlert(),
+          loading: () => Container()),
+    );
+  }
+}
+
+class _ButtonSubCategory extends StatelessWidget {
+  final Entry entry;
+  final Function()? onPressed;
+  const _ButtonSubCategory({required this.entry, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: TextButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.access_time_filled),
+        label: Text(
+          entry.name!,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
     );
   }
 }

@@ -1,45 +1,19 @@
-import 'package:contabilidad/presentations/provider/providers.dart';
+import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
+import 'package:contabilidad/presentations/provider/provider_list_category.dart';
+import 'package:contabilidad/presentations/widget/shared/categoria_dropdown.dart';
 import 'package:contabilidad/presentations/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:contabilidad/domain/entities/models/models.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EntriesScreen extends StatefulWidget {
+class EntriesScreen extends ConsumerStatefulWidget {
   const EntriesScreen({Key? key}) : super(key: key);
 
   @override
-  State<EntriesScreen> createState() => _EntriesScreenState();
+  ConsumerState<EntriesScreen> createState() => _EntriesScreenState();
 }
 
-class _EntriesScreenState extends State<EntriesScreen> {
-  List<ValueEntry> listado = [];
-  final GlobalKey<FormState> myFormKey = GlobalKey<FormState>();
-//#Inicio de Region Para CRUD Entrada
-  //Actualizar Registro
-
-  Future<dynamic> updateFunction(obj, context) async {
-    var id = obj["id"].toString();
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-    final updateValueEntry = ValueEntry(
-      id: obj["id"],
-      desc: dbP.controllerValueEntryList[id]!["desc"]!.text,
-      value: double.tryParse(dbP.controllerValueEntryList[id]!["value"]!.text),
-      date: obj["date"],
-      entry: obj["entry_id"],
-      latitud: 1,
-      length: 1,
-      type: obj["type_id"],
-    );
-    return await dbP.updateValueEntry(updateValueEntry);
-  }
-  //Eliminar Registro
-
-  Future<dynamic> deleteFunction(id, context) async {
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-    await dbP.deleteValueEntry(id);
-  }
-//#Fin de Region Para CRUD Entrada
-
+class _EntriesScreenState extends ConsumerState<EntriesScreen> {
   @override
   void initState() {
     super.initState();
@@ -47,61 +21,53 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context);
-    if (provider.categoryEntries != null) {
-      provider.keyFormFieldDropE!.currentState
-          // ignore: invalid_use_of_protected_member
-          ?.setValue(provider.categoryEntries!.id);
-    }
-
-    resetFilter() async {
-      if (provider.keyFormFieldDropE!.currentState != null) {
-        provider.keyFormFieldDropE!.currentState!.reset();
-        provider.categoryEntries = null;
-        provider.filterEntries = [];
-      }
-      provider.categorya = null;
-      await provider.getEntry();
-    }
-
-/*Region Screen */
     return Scaffold(
-        appBar: AppBar(title: const Text("Mis Registros")),
-        floatingActionButton: FloatingActionButton(
-            onPressed: resetFilter,
-            child: const Icon(Icons.filter_alt_off_outlined)),
-        body: Column(children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: _TitleFilter(),
-          ),
-          provider.valueEntrysD2!.isEmpty
-              ? const _NotList()
-              : _listRegister(provider),
-        ]));
+      appBar: AppBar(title: const Text("Mis Registros")),
+      floatingActionButton: FloatingActionButton(
+          onPressed: resetFilter,
+          child: const Icon(Icons.filter_alt_off_outlined)),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(children: [const _TitleFilter(), _listRegister()]),
+      ),
+    );
+  }
+
+  resetFilter() async {
+    ref.read(categorySelectionProvider.notifier).update((state) => null);
+    ref.read(valueEntryProvider.notifier).cleanId();
   }
 
 /*Return*/
-  Expanded _listRegister(DbProvider provider) {
+  Expanded _listRegister() {
+    final valueEntryList = ref.watch(valueEntryProvider);
     return Expanded(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: (_, index) {
-          provider.valueEntrysD2![index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: ElementCustomEditValueEntry(
-                padding: 10,
-                label: "lolo",
-                obj: provider.valueEntrysD2![index],
-                deleteFunction: deleteFunction,
-                updateFunction: updateFunction),
-          );
-        },
-        itemCount: provider.valueEntrysD2!.isEmpty
-            ? 1
-            : provider.valueEntrysD2!.length,
-      ),
+      child: valueEntryList.isEmpty
+          ? const _NotList()
+          : ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (_, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomEditValueEntry(
+                      delete: (valueEntry) {
+                        ValueEntry value = valueEntry;
+                        ref
+                            .read(valueEntryProvider.notifier)
+                            .removeData(value.id!);
+                        return Future(() => null);
+                      },
+                      update: (valueEntry) {
+                        ref
+                            .read(valueEntryProvider.notifier)
+                            .editData(valueEntry);
+                        return Future(() => null);
+                      },
+                      valueEntry: valueEntryList[index]),
+                );
+              },
+              itemCount: valueEntryList.length,
+            ),
     );
   }
 }
@@ -113,10 +79,6 @@ class _TitleFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<DbProvider>(context);
-    provider.getEntry();
-    provider.getCategorias();
-
     var expanded = Expanded(
         child: TextFormField(
       decoration: const InputDecoration(
@@ -127,7 +89,7 @@ class _TitleFilter extends StatelessWidget {
       children: [
         Row(
           children: [
-            _DropwdownFilter(),
+            const Expanded(child: CategorySelector()),
             const SizedBox(
               width: 10,
             ),
@@ -157,10 +119,10 @@ class _NotList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Center(
           child: Text(
             "Listado Sin Entradas",
@@ -172,85 +134,50 @@ class _NotList extends StatelessWidget {
   }
 }
 
-class _ListValueEntrys extends StatelessWidget {
+class _ListValueEntrys extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entradaProvider = ref.watch(entryProviderList);
     return SizedBox(
         height: 100,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: ((context, index) {
-            Entry entry = provider.categoryEntries != null
-                ? provider.registrosEntries![index]
-                : provider.registrosAll![index];
-            return Container(
-              width: 100,
-              key: Key(entry.key.toString()),
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              child: CheckFilter(
-                filter: entry,
-              ),
-            );
-          }),
-          shrinkWrap: true,
-          itemCount: provider.categoryEntries != null
-              ? provider.registrosEntries!.length
-              : provider.registrosAll!.length,
-        ));
+        child: entradaProvider.when(
+            data: (data) => data.isEmpty ? Container() : listado(data),
+            error: (error, _) => const WidgetErrorAlert(),
+            loading: () => Container()));
   }
-}
 
-class _ButtonFilter extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.filter_list),
-            label: const Text("Filtros")),
-        TextButton(
-            onPressed: () async {
-              await provider.getValueEntries();
-              await provider.setNewList();
-            },
-            child: const Text("Buscar"))
-      ],
+  Widget listado(List<Entry> provider) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemBuilder: ((context, index) {
+        Entry entry = provider[index];
+        return Container(
+          width: 100,
+          key: Key(entry.key.toString()),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          child: CheckFilter(
+            filter: entry,
+          ),
+        );
+      }),
+      shrinkWrap: true,
+      itemCount: provider.length,
     );
   }
 }
 
-class _DropwdownFilter extends StatelessWidget {
+class _ButtonFilter extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<DbProvider>(context, listen: false);
-    return Expanded(
-        child: DropdownButtonFormField(
-            key: provider.keyFormFieldDropE,
-            decoration: const InputDecoration(labelText: "Categorias"),
-            items: provider.categorias != null
-                ? provider.categorias!
-                    .where((element) => element.enable!)
-                    .map((Category e) => DropdownMenuItem(
-                          value: e.id,
-                          child: Text(e.name!),
-                        ))
-                    .toList()
-                : const [
-                    DropdownMenuItem(
-                      value: 0,
-                      child: Text("1"),
-                    ),
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text("2"),
-                    )
-                  ],
-            onChanged: (value) async {
-              await provider.setSubCategoriasFilter(value.toString());
-            }));
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+            onPressed: () async {
+              ref.read(valueEntryProvider.notifier).getData();
+            },
+            child: const Text("Buscar"))
+      ],
+    );
   }
 }

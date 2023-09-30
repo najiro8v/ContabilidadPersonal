@@ -1,5 +1,5 @@
 import "package:contabilidad/presentations/screens/settings/settings.dart";
-import "package:contabilidad/domain/entities/models/models.dart";
+import "package:contabilidad/domain/entities/entities.dart";
 import "package:flutter/material.dart";
 
 class SettingsRoutes {
@@ -10,11 +10,6 @@ class SettingsRoutes {
         route: "editcateg",
         icon: Icons.align_vertical_bottom_sharp,
         screen: const UpdateScreen()),
-    MenuOption(
-        name: "Agregar Cateorias",
-        route: "addcateg",
-        icon: Icons.add_card_outlined,
-        screen: const AddingScreen()),
   ];
 
   static Map<String, Widget Function(BuildContext)> getAppRoutes() {

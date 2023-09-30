@@ -1,6 +1,9 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
+
 import 'package:flutter/material.dart';
-import 'package:contabilidad/infrastructure/repository/controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final entryIdProvider = StateProvider((ref) => 1);
 
 class DbProvider extends ChangeNotifier {
   List<Category>? categorias = [];
@@ -42,7 +45,7 @@ class DbProvider extends ChangeNotifier {
   TextEditingController? controllerValue;
 
   getCategorias<Category>() async {
-    categorias = await CategoryController.get();
+    //  categorias = await CategoryController.get();
     notifyListeners();
   }
 
@@ -58,7 +61,7 @@ class DbProvider extends ChangeNotifier {
   }
 
   getValueEntries() async {
-    valueEntrysD = await ValueEntryController.getBy(
+    /* valueEntrysD = await ValueEntryController.getBy(
         queryOption: QueryOption(
             columns: [
           "desc",
@@ -71,7 +74,7 @@ class DbProvider extends ChangeNotifier {
             where:
                 "entry_id in (${List.filled(filterEntries!.length, '?').join(',')})  ",
             whereArgs: filterEntries,
-            orderBy: "desc"));
+            orderBy: "desc"));*/
     notifyListeners();
   }
 
@@ -82,7 +85,7 @@ class DbProvider extends ChangeNotifier {
 
   getEntry<Entry>() async {
     //registros = await EntryController.get();
-    registrosAll = await EntryController.get();
+    //  registrosAll = await EntryController.get();
     notifyListeners();
   }
 
@@ -95,37 +98,37 @@ class DbProvider extends ChangeNotifier {
     if (lastOpen != key) {
       lastOpen = key;
       if (!subCategory.containsKey(key) || forceUpdate) {
-        int idCategory =
-            await CategoryController.getId(Category(key: key, name: ""));
+        /*/    int idCategory =
+    //        await CategoryController.getId(Category(key: key, name: ""));
         final List<dynamic> listado = await EntryController.getBy(
             queryOption: QueryOption(
                 columns: ["name", "key", "value", "Id_Entry", "category_id"],
                 where: "category_id = ? and name <> '' ",
                 whereArgs: [idCategory],
-                orderBy: "name"));
+                orderBy: "name"));*/
 
-        subCategory.addAll({key: listado});
+        // subCategory.addAll({key: listado});
         notifyListeners();
       }
     }
   }
 
   setSubCategorias(String idCategory) async {
-    registros = await EntryController.getByCategory(idCategory);
+    //registros = await EntryController.getByCategory(idCategory);
     categorya =
         categorias!.firstWhere((cat) => cat.id.toString() == idCategory);
     notifyListeners();
   }
 
   setSubCategoriasFilter(String idCategory) async {
-    registrosEntries = await EntryController.getByCategory(idCategory);
+    //  registrosEntries = await EntryController.getByCategory(idCategory);
     categoryEntries =
         categorias!.firstWhere((cat) => cat.id.toString() == idCategory);
     notifyListeners();
   }
 
   saveSubCategory(Entry entry, String keyCategory) async {
-    int wasInsert = await EntryController.insert(entry);
+    /* int wasInsert = await EntryController.insert(entry);
     if (wasInsert > 0) {
       final newEntry = Entry(
           key: entry.key,
@@ -138,31 +141,31 @@ class DbProvider extends ChangeNotifier {
       notifyListeners();
     }
 
-    return wasInsert > 0 ? true : false;
+    return wasInsert > 0 ? true : false;*/
   }
 
   deleteValueEntry(int id) async {
-    int wasDelete = await ValueEntryController.delete(id);
+    /*int wasDelete = await ValueEntryController.delete(id);
     if (wasDelete > 0) {
       valueEntrysD2!.removeWhere((item) => item["id"] == id);
 
       notifyListeners();
-    }
+    }*/
   }
 
   deleteSubCategory(int id) async {
-    int wasDelete = await EntryController.delete(id);
+    /*int wasDelete = await EntryController.delete(id);
     if (wasDelete > 0) {
       subCategory[lastOpen]!.removeWhere((item) => item["id"] == id);
       if (entrya != null && entrya!.id == id) {
         entrya = null;
       }
       notifyListeners();
-    }
+    }*/
   }
 
   saveCategory(Category category) async {
-    int wasInsert = await CategoryController.insert(category);
+    /*  int wasInsert = await CategoryController.insert(category);
     if (wasInsert > 0) {
       Category newCategory =
           Category(name: category.name, key: category.key, enable: true);
@@ -171,11 +174,11 @@ class DbProvider extends ChangeNotifier {
       return true;
     }
 
-    return false;
+    return false;*/
   }
 
   updateCategory(Category category) async {
-    int wasUpdate = await CategoryController.updateCategory(category);
+    /* int wasUpdate = await CategoryController.updateCategory(category);
     if (wasUpdate > 0) {
       Category newCategory =
           Category(name: category.name, key: category.key, enable: true);
@@ -184,11 +187,11 @@ class DbProvider extends ChangeNotifier {
       return true;
     }
 
-    return false;
+    return false;*/
   }
 
   updateSubCategory(Entry entry) async {
-    int wasUpdate = await EntryController.update(entry, entry.id!);
+    /* int wasUpdate = await EntryController.update(entry, entry.id!);
     if (wasUpdate > 0) {
       subCategory[lastOpen]!
           .firstWhere((item) => item["id"] == entry.id)["name"] = entry.name;
@@ -199,11 +202,11 @@ class DbProvider extends ChangeNotifier {
       return true;
     }
 
-    return false;
+    return false;*/
   }
 
   updateValueEntry(ValueEntry valueEntry) async {
-    int wasUpdate =
+    /* int wasUpdate =
         await ValueEntryController.update(valueEntry, valueEntry.id!);
     if (wasUpdate > 0) {
       valueEntrysD2!.firstWhere((item) => item["id"] == valueEntry.id)["desc"] =
@@ -216,11 +219,11 @@ class DbProvider extends ChangeNotifier {
       return true;
     }
 
-    return false;
+    return false;*/
   }
 
   disableCategory(Category category) async {
-    category.enable = !category.enable!;
+    /* category.enable = !category.enable!;
     int wasUpdate = await CategoryController.updateCategory(category);
     if (wasUpdate > 0) {
       var entryUpdate =
@@ -238,6 +241,6 @@ class DbProvider extends ChangeNotifier {
       return true;
     }
 
-    return false;
+    return false;*/
   }
 }

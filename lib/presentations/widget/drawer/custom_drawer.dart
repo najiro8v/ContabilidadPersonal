@@ -1,5 +1,7 @@
-import 'package:contabilidad/infrastructure/datasources/db/db.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -17,13 +19,13 @@ class CustomDrawer extends StatelessWidget {
           ),
           const _OptionConfig(
             text: "Categorias",
-            route: "category",
+            route: "/Categorias",
             icon: Icons.people_outline,
           ),
           space,
           const _OptionConfig(
             text: "Mis Registros",
-            route: "registries",
+            route: "/Mis_Registros",
             icon: Icons.people_outline,
           ),
           space,
@@ -36,7 +38,8 @@ class CustomDrawer extends StatelessWidget {
           _OptionConfig(
             text: "Cerrar Sesión",
             event: () async {
-              await DatabaseSQL.deleteDatabase();
+              // await DatabaseSQL.deleteDatabase();
+              SystemNavigator.pop();
             },
             icon: Icons.people_outline,
           ),
@@ -68,7 +71,7 @@ class _OptionConfig extends StatelessWidget {
             Scaffold.of(context).hasEndDrawer
                 ? Scaffold.of(context).closeEndDrawer()
                 : null;
-            Navigator.pushNamed(context, route ?? "home");
+            context.push(route ?? "/home");
           }),
     );
   }

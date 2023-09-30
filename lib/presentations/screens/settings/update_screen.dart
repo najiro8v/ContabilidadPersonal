@@ -1,139 +1,135 @@
-import 'package:contabilidad/domain/entities/models/expenses_and_finance.dart';
-import 'package:contabilidad/presentations/widget/widget.dart';
+import 'package:contabilidad/domain/entities/entities.dart'
+    show Category, Entry;
+import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
+import 'package:contabilidad/presentations/widget/subcategory/custom_edit_subcategory.dart';
 
 import 'package:flutter/material.dart';
-import 'package:contabilidad/presentations/provider/providers.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class UpdateScreen extends StatelessWidget {
+class UpdateScreen extends ConsumerWidget {
   const UpdateScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final bd = Provider.of<DbProvider>(context);
-    bd.getCategorias();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final categoriaP = ref.watch(categoryProvider);
 
-    return (Scaffold(
-      appBar: AppBar(title: const Text("Update Setting")),
-      body: SingleChildScrollView(
-        child: ExpansionPanelList.radio(
-            children: bd.categorias!.isEmpty
-                ? []
-                : bd.categorias!
-                    .map((e) => _PanelRadio(e: e, context: context)
-                        .expansionPanelRadio())
-                    .toList()),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          bd.editCat = false;
-          Navigator.pushNamed(context, 'categoryScreen');
-        },
-        backgroundColor: Colors.indigo,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 35,
-        ),
-      ),
-    ));
+    return Scaffold(
+        appBar: AppBar(title: const Text("Update Setting")),
+        body: SingleChildScrollView(
+            child: categoriaP.isEmpty
+                ? Container()
+                : function(ref, categoriaP, context)),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            context.push('/Mis_categorias');
+          },
+          backgroundColor: Colors.indigo,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 35,
+          ),
+        ));
+  }
+
+  Widget function(
+      WidgetRef ref, List<Category> categories, BuildContext context) {
+    final listado = categories.map((Category category) => _PanelRadio(
+        category: category,
+        context: context,
+        enable: () {
+          final newCategory =
+              category.copyWith(enable: !(category.enable ?? false));
+          ref.read(categoryProvider.notifier).stateData(newCategory);
+        }).expansionPanelRadio());
+    return ExpansionPanelList.radio(
+      children: listado.toList(),
+      expansionCallback: (panelIndex, isExpanded) {
+        int newState = (categories[panelIndex].id) as int;
+
+        if (isExpanded) {
+          ref.read(entryProvider.notifier).changeCategory(newState);
+        }
+      },
+    );
   }
 }
 
 class _PanelRadio {
-  Category e;
+  Category category;
   BuildContext context;
-  _PanelRadio({required this.e, required this.context});
+  Function() enable;
+  _PanelRadio(
+      {required this.category, required this.context, required this.enable});
 
   ExpansionPanelRadio expansionPanelRadio() {
-    final bd = Provider.of<DbProvider>(context);
     return ExpansionPanelRadio(
         canTapOnHeader: true,
-        value: e.key.toString(),
+        value: category,
         headerBuilder: (context, isExpanded) {
-          if (isExpanded) {
-            bd.getSubCategorias(e.key!);
-          }
           return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text("${e.name}")),
+                    child: Text("${category.name}")),
                 Row(
                   children: [
-                    _AddWidget(category: e),
-                    IconButton(
-                      onPressed: () {
-                        bd.editCat = true;
-                        Navigator.pushNamed(context, 'categoryScreen',
-                            arguments: e);
-                      },
-                      icon: const Icon(Icons.edit),
-                      color: Colors.blue,
-                    ),
-                    IconButton(
+                    if (!isExpanded) _AddWidget(category: category),
+                    if (!isExpanded)
+                      IconButton(
                         onPressed: () {
-                          bd.disableCategory(e);
+                          context.push('/Mis_categorias', extra: category);
                         },
-                        icon: Icon(
-                            e.enable! ? Icons.lock_open : Icons.lock_outline),
-                        color: e.enable! ? Colors.green : Colors.red)
+                        icon: const Icon(Icons.edit),
+                        color: Colors.blue,
+                      ),
+                    IconButton(
+                        onPressed: enable,
+                        icon: Icon(category.enable!
+                            ? Icons.lock_open
+                            : Icons.lock_outline),
+                        color: category.enable! ? Colors.green : Colors.red)
                   ],
                 )
               ]);
         },
-        body: SingleChildScrollView(child: _ListViewEntry(e: e)));
+        body: SingleChildScrollView(child: _ListViewEntry(category: category)));
   }
 }
 
-// ignore: must_be_immutable
-class _ListViewEntry extends StatelessWidget {
-  final Category e;
-  _ListViewEntry({required this.e});
-
-  Map<String, List<dynamic>> subCategoryI = {};
-  Future<dynamic> updateFunction(obj, context) async {
-    var id = obj["id"].toString();
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-
-    Entry newEntry = Entry(
-      name: dbP.controllerEntryList[id]!["name"]!.text,
-      value: double.tryParse(dbP.controllerEntryList[id]!["value"]!.text),
-      key: obj["key"],
-      category: obj["category_id"],
-      id: obj["id"],
-    );
-    return await dbP.updateSubCategory(newEntry);
-  }
-
-  Future<dynamic> deleteFunction(id, context) async {
-    final dbP = Provider.of<DbProvider>(context, listen: false);
-    await dbP.deleteSubCategory(id);
-  }
+class _ListViewEntry extends ConsumerWidget {
+  final Category category;
+  const _ListViewEntry({required this.category});
 
   @override
-  Widget build(BuildContext context) {
-    final bd = Provider.of<DbProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entryP = ref.watch(entryProvider);
 
-    return ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        itemCount:
-            bd.subCategory[e.key] != null ? bd.subCategory[e.key]!.length : 0,
-        itemBuilder: (context, index) {
-          var entry = bd.subCategory[e.key]![index];
-          return Container(
-              key: Key(entry["id"].toString()),
-              margin: const EdgeInsets.all(10),
-              child: ElementCustomEdit(
-                deleteFunction: deleteFunction,
-                updateFunction: updateFunction,
-                label: "",
-                obj: entry,
-                padding: 10,
-              ));
-        });
+    return entryP.isEmpty
+        ? Container()
+        : ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            itemCount: entryP.length,
+            itemBuilder: (context, index) {
+              Entry entry = entryP[index];
+              return Container(
+                  key: Key(entry.id.toString()),
+                  margin: const EdgeInsets.all(10),
+                  child: CustomEditSubCategory(
+                    delete: (entry) {
+                      ref.read(entryProvider.notifier).removeData(entry.id!);
+                      return Future(() => true);
+                    },
+                    update: (entry) {
+                      ref.read(entryProvider.notifier).editData(entry);
+                      return Future(() => true);
+                    },
+                    entry: entry,
+                  ));
+            });
   }
 }
 
@@ -144,14 +140,15 @@ class _AddWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () {
-          Navigator.pushNamed(context, 'subcategoryScreen',
-              arguments: Entry(
-                  name: "",
-                  value: 0,
-                  categoryName: category.name,
-                  category: category.id,
-                  categoryKey: category.key,
-                  key: ""));
+          final addEntry = Entry(
+              name: "",
+              value: 0,
+              id: null,
+              categoryName: category.name,
+              category: category.id,
+              categoryKey: category.key,
+              key: "");
+          context.push("/sub_categorias", extra: addEntry);
         },
         icon: Icon(
           Icons.playlist_add,
