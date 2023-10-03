@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final collapseListProvider = StateProvider((ref) => false);
 final collaps1eListProvider = StateProvider((ref) => false);
+final checktypeProvider = StateProvider((ref) => false);
 
 final valueEntryProvider =
     StateNotifierProvider<ValueEntryState, List<ValueEntry>>((ref) {

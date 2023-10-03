@@ -1,5 +1,6 @@
 import 'package:contabilidad/domain/entities/models/models.dart';
 import 'package:contabilidad/presentations/provider/db%20provider/db_provider_categories_and_entry.dart';
+import 'package:contabilidad/presentations/provider/provider_list_category.dart';
 import 'package:contabilidad/presentations/widget/shared/categoria_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -65,9 +66,13 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                 ],
               ),
               SwitchListTile(
-                  title: const Text(""),
+                  title: Text(
+                      " Tipo de registro: ${check ? "Ingresos" : "Gastos"}"),
                   value: check,
                   onChanged: ((value) {
+                    ref
+                        .read(checktypeProvider.notifier)
+                        .update((state) => value);
                     setState(() => check = value);
                   })),
               const SizedBox(
@@ -100,6 +105,7 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                     inputControllerCant.text;
                     inputControllerDesc.text;
                     inputControllerPrice.text;
+                    final check = ref.read(checktypeProvider);
                     final value =
                         (double.tryParse(inputControllerPrice.text) ?? 0);
                     final quantity =
@@ -113,7 +119,7 @@ class _FinancesScreenState extends ConsumerState<FinancesScreen> {
                       value: value,
                       date: date,
                       entry: entry.state,
-                      type: 0,
+                      type: check ? 0 : 1,
                       latitud: 0,
                       length: 0,
                     );
